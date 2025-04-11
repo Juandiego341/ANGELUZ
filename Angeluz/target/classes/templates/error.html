@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body class="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
+<nav th:replace="fragments/header :: navbar"></nav>
+
+<div class="min-h-screen flex items-center justify-center px-4 pt-16">
+    <div class="max-w-2xl w-full">
+        <!-- Error Message Section -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="p-8 text-center">
+                <div class="mb-6">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center justify-center animate-pulse">
+                            <i class="fas fa-paw text-red-200 text-8xl transform -rotate-12"></i>
+                        </div>
+                        <i class="fas fa-exclamation-circle text-red-500 text-6xl relative z-10"></i>
+                    </div>
+                </div>
+
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">¡Ups! Algo salió mal</h1>
+                <p class="text-gray-600 text-lg mb-8"
+                   th:text="${exception != null ? exception.message : 'Ha ocurrido un error inesperado.'}">
+                    Ha ocurrido un error inesperado.
+                </p>
+
+                <div class="space-y-4 mb-8">
+                    <p class="text-sm text-gray-500" th:if="${url != null}">
+                        URL solicitada: <span class="font-mono bg-gray-100 px-2 py-1 rounded" th:text="${url}"></span>
+                    </p>
+                    <a href="/"
+                       class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-105">
+                        <i class="fas fa-home mr-2"></i>
+                        Volver al Inicio
+                    </a>
+                </div>
+            </div>
+
+            <!-- Support Section -->
+            <div class="bg-gray-50 p-8 border-t border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">¿Necesitas ayuda con tu mascota?</h2>
+                <p class="text-gray-600 mb-6">Nuestro equipo de expertos está disponible 24/7 para ayudarte:</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="mailto:soporte@mascotasycompania.com"
+                       class="flex items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition duration-300 group">
+                        <i class="fas fa-envelope text-blue-600 text-xl group-hover:text-blue-700 mr-3"></i>
+                        <div>
+                            <p class="font-medium text-gray-800">Correo Electrónico</p>
+                            <p class="text-sm text-gray-600">soporte@mascotasycompania.com</p>
+                        </div>
+                    </a>
+
+                    <a href="tel:+1234567890"
+                       class="flex items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition duration-300 group">
+                        <i class="fas fa-phone-alt text-blue-600 text-xl group-hover:text-blue-700 mr-3"></i>
+                        <div>
+                            <p class="font-medium text-gray-800">Teléfono</p>
+                            <p class="text-sm text-gray-600">+1 234 567 890</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Emergency Support -->
+                <div class="mt-6 p-4 bg-red-50 rounded-lg border border-red-100">
+                    <div class="flex items-center">
+                        <i class="fas fa-ambulance text-red-500 text-xl mr-3"></i>
+                        <div>
+                            <p class="font-medium text-red-800">Emergencias Veterinarias</p>
+                            <p class="text-sm text-red-600">Disponible 24/7: <span
+                                    class="font-medium">+1 234 567 891</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Help Links -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="/services"
+               class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition duration-300 text-center">
+                <i class="fas fa-clipboard-list text-blue-600 text-xl mb-2"></i>
+                <p class="font-medium text-gray-800">Servicios</p>
+            </a>
+            <a href="/about"
+               class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition duration-300 text-center">
+                <i class="fas fa-info-circle text-blue-600 text-xl mb-2"></i>
+                <p class="font-medium text-gray-800">Acerca de</p>
+            </a>
+            <a href="/contact"
+               class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition duration-300 text-center">
+                <i class="fas fa-comments text-blue-600 text-xl mb-2"></i>
+                <p class="font-medium text-gray-800">Contacto</p>
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<!-- Custom Animation Script -->
+<script>
+    // Add subtle floating animation to the paw icon
+    const pawIcon = document.querySelector('.fa-paw');
+    let rotation = -12;
+    let direction = 1;
+
+    setInterval(() => {
+        rotation += (0.5 * direction);
+        if (Math.abs(rotation) >= 15) direction *= -1;
+        pawIcon.style.transform = `rotate(${rotation}deg)`;
+    }, 50);
+</script>
+</body>
+</html>
