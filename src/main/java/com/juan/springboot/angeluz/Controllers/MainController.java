@@ -19,4 +19,19 @@ public class MainController {
     public String register() {
         return "register"; // Página de registro
     }
+
+    @GetMapping("/services")
+    public String services() {
+        return "services";
+    }
+
+    @GetMapping("/about")
+    public String about() {
+        return "about";
+    }
+
+    @GetMapping("/contact")
+    public String contact() {
+        return "contact";
+    }
 }
