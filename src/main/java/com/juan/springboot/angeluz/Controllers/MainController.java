@@ -15,10 +15,6 @@ public class MainController {
     public String login() {
         return "login"; // Página de login
     }
-    @GetMapping("/register")
-    public String register() {
-        return "register"; // Página de registro
-    }
 
     @GetMapping("/services")
     public String services() {
@@ -34,4 +30,6 @@ public class MainController {
     public String contact() {
         return "contact";
     }
+
+
 }

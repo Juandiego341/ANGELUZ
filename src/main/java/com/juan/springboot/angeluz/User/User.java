@@ -1,6 +1,7 @@
 package com.juan.springboot.angeluz.User;
 
 import jakarta.persistence.*;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
 
@@ -8,6 +9,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    private String nombre;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -20,6 +24,14 @@ public class User {
 
     @Column(nullable = false)
     private String role;
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
     public Long getId() {
         return id;

@@ -1,0 +1,33 @@
+<!-- templates/admin/home.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="fragments/header :: header"><title>Panel Admin</title></head>
+<body class="bg-gray-100">
+<nav th:replace="fragments/header :: navbar"></nav>
+
+<div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">Panel de Administración</h1>
+    <p class="text-lg text-gray-600 mb-8">Gestión completa del sistema Angeluz</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <a href="/admin/usuarios" class="bg-white shadow-lg rounded-xl p-6 hover:bg-blue-50 transition">
+            <i class="fas fa-users text-3xl text-blue-600 mb-4"></i>
+            <h2 class="text-xl font-semibold text-gray-800">Usuarios</h2>
+            <p class="text-gray-600 text-sm">Ver y gestionar usuarios registrados.</p>
+        </a>
+        <a href="/admin/mascotas" class="bg-white shadow-lg rounded-xl p-6 hover:bg-blue-50 transition">
+            <i class="fas fa-dog text-3xl text-blue-600 mb-4"></i>
+            <h2 class="text-xl font-semibold text-gray-800">Mascotas</h2>
+            <p class="text-gray-600 text-sm">Ver fichas, historial y servicios.</p>
+        </a>
+        <a href="/admin/reportes" class="bg-white shadow-lg rounded-xl p-6 hover:bg-blue-50 transition">
+            <i class="fas fa-file-alt text-3xl text-blue-600 mb-4"></i>
+            <h2 class="text-xl font-semibold text-gray-800">Reportes</h2>
+            <p class="text-gray-600 text-sm">Generar reportes financieros y de atención.</p>
+        </a>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>
