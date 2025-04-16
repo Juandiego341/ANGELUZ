@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="es">
+
 <head th:fragment="header">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +10,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500&display=swap"
           rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -18,59 +22,52 @@
         }
     </style>
 </head>
+
 <body>
 <nav th:fragment="navbar" class="bg-white shadow-lg fixed w-full z-50">
     <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
-        <div class="flex h-20">
-            <div class="flex">
-                <div class="flex-shrink-0 ">
-                    <a href="">
-                        <img src="/images/Angeluz.png" alt="Angeluz Logo" class="h-16 w-20">
-                    </a>
+        <div class="flex h-20 items-center justify-between">
+            <!-- Logo -->
+            <div class="flex-shrink-0">
+                <a th:href="@{/}">
+                    <img src="/images/Angeluz.png" alt="Angeluz Logo" class="h-16 w-20">
+                </a>
+            </div>
+
+            <!-- Navegación -->
+            <div class="flex-1 flex justify-center">
+                <div class="hidden md:flex items-center space-x-8">
+                    <a th:href="@{/}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Inicio</a>
+                    <a th:href="@{/about}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Acerca de</a>
+                    <a th:href="@{/services}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Servicios</a>
+                    <a th:href="@{/contact}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Contacto</a>
                 </div>
             </div>
 
-            <nav th:fragment="navbar" class="bg-white shadow-lg fixed w-full z-50">
-                <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
-                    <div class="flex h-20 items-center justify-between">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <a href="/static">
-                                    <img src="/images/Angeluz.png" alt="Angeluz Logo" class="h-16 w-20">
-                                </a>
-                            </div>
-                        </div>
+            <!-- Login / Logout -->
+            <div class="flex items-center space-x-4">
+                <span sec:authorize="isAnonymous()">
+                    <a th:href="@{/login}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Iniciar sesión</a>
+                </span>
 
-                        <div class="flex-1 flex justify-center">
-                            <div class="hidden md:flex items-center space-x-8">
-                                <a href="/" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Inicio</a>
-                                <a href="/about" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Acerca de</a>
-                                <a href="/services" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Servicios</a>
-                                <a href="/contact" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Contacto</a>
-                            </div>
-                        </div>
+                <span sec:authorize="isAuthenticated()">
+                    <a th:href="@{/perfil}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Perfil</a>
 
-                        <div class="flex items-center space-x-4">
-                            <div th:if="${#authentication == null}">
-                                <a href="/register" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Iniciar sesión</a>
-                            </div>
-                            <div th:if="${#authentication != null}">
-                                <a href="/logout" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Cerrar sesión</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
+                    <form th:action="@{/logout}" method="post" class="inline">
+                        <button type="submit"
+                                class="text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">
+                            Cerrar sesión
+                        </button>
+                    </form>
+                </span>
+            </div>
         </div>
     </div>
 </nav>
-<script>
-    // Toggle mobile menu
-    document.querySelector('.mobile-menu-button').addEventListener('click', function () {
-        document.querySelector('.mobile-menu').classList.toggle('hidden');
-    });
 
+<script>
+    // Si tienes menú móvil lo puedes activar acá si lo agregas en el futuro
 </script>
+
 </body>
 </html>

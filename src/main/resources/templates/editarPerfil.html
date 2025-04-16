@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Perfil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+<header th:replace="fragments/header :: navbar"></header>
+
+<div class="max-w-2xl mx-auto mt-20 p-6 bg-white shadow-md rounded-xl">
+    <h1 class="text-2xl font-bold mb-6 text-blue-600">Editar Perfil</h1>
+
+    <form th:action="@{/perfil/editar}" method="post" th:object="${usuario}">
+        <div class="mb-4">
+            <label class="block font-semibold mb-1">Nombre:</label>
+            <input type="text" th:field="*{usuario.nombre}" class="w-full border px-3 py-2 rounded" required/>
+        </div>
+
+        <div class="mb-4">
+            <label class="block font-semibold mb-1">Correo electrónico:</label>
+            <input type="email" th:field="*{usuario.email}" class="w-full border px-3 py-2 rounded" required/>
+        </div>
+
+        <div class="mt-6">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Guardar cambios</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
