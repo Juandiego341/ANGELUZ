@@ -1,24 +1,31 @@
 <!-- templates/moderador/home.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="fragments/header :: header"><title>Panel Moderador</title></head>
+<head th:replace="fragments/headerModerator :: headerModerator">
+    <title>Panel Moderador</title>
+</head>
 <body class="bg-gray-100">
-<nav th:replace="fragments/header :: navbar"></nav>
+<nav th:replace="fragments/headerModerator :: navbarModerator"></nav>
 
-<div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-    <h1 class="text-4xl font-bold text-gray-900 mb-4">Panel de Moderación</h1>
+<div class="max-w-7xl mx-auto py-16 px-4 sm:px-7 lg:px-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">Panel de Moderador</h1>
     <p class="text-lg text-gray-600 mb-8">Revisión de citas y atención al cliente</p>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <a href="/moderador/citas" class="bg-white shadow-md rounded-lg p-6 hover:bg-blue-50 transition">
-            <i class="fas fa-calendar-check text-2xl text-blue-600 mb-2"></i>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <a href="/admin/usuarios" class="bg-white shadow-lg rounded-xl p-6 hover:bg-blue-50 transition">
+            <i class="fas fa-calendar-check text-3xl text-blue-600 mb-4"></i>
             <h2 class="text-xl font-semibold text-gray-800">Citas Programadas</h2>
             <p class="text-gray-600 text-sm">Ver y administrar citas de clientes.</p>
         </a>
-        <a href="/moderador/consultas" class="bg-white shadow-md rounded-lg p-6 hover:bg-blue-50 transition">
-            <i class="fas fa-comments text-2xl text-blue-600 mb-2"></i>
+        <a href="/admin/mascotas" class="bg-white shadow-lg rounded-xl p-6 hover:bg-blue-50 transition">
+            <i class="fas fa-comments text-3xl text-blue-600 mb-4"></i>
             <h2 class="text-xl font-semibold text-gray-800">Consultas</h2>
             <p class="text-gray-600 text-sm">Responder a dudas y mensajes de usuarios.</p>
+        </a>
+        <a href="/admin/reportes" class="bg-white shadow-lg rounded-xl p-6 hover:bg-blue-50 transition">
+            <i class="fas fa-exchange-alt text-3xl text-blue-600 mb-4"></i>
+            <h2 class="text-xl font-semibold text-gray-800">Entradas y Salidas</h2>
+            <p class="text-gray-600 text-sm">Gestionar registros de entradas y salidas.</p>
         </a>
     </div>
 </div>

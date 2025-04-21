@@ -1,9 +1,11 @@
 <!-- templates/admin/home.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="fragments/header :: header"><title>Panel Admin</title></head>
-<body class="bg-gray-100">
-<nav th:replace="fragments/header :: navbar"></nav>
+<head th:replace="fragments/headerAdmin :: headerAdmin">
+    <title>Panel Admin</title>
+</head>
+<body class="bg-gray-100 min-h-screen">
+<nav th:replace="fragments/headerAdmin :: navbarAdmin"></nav>
 
 <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
     <h1 class="text-4xl font-bold text-gray-900 mb-4">Panel de Administración</h1>

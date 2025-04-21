@@ -22,7 +22,7 @@ public class AngeluzApplication {
 				User admin = new User();
 				admin.setNombre("admin");
 				admin.setUsername("admin");
-				admin.setEmail("admin@angeluz.com");
+				admin.setEmail("admin@gmail.com");
 				admin.setPassword(encoder.encode("admin123"));
 				admin.setRole("ROLE_ADMIN");
 				userRepository.save(admin);

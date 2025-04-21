@@ -1,0 +1,60 @@
+<!-- templates/fragments/headerModerator.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="es">
+
+<head th:fragment="headerModerator">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Moderador</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+
+<nav th:fragment="navbarModerator" class="bg-white shadow-lg fixed w-full z-50">
+  <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+    <div class="flex h-18 items-center justify-between">
+      <div class="flex-shrink-0">
+        <a th:href="@{/moderador/home}">
+          <img src="/images/Angeluz.png" alt="Angeluz Logo" class="h-16 w-20">
+        </a>
+      </div>
+
+      <div class="flex-1 flex justify-center">
+        <div class="hidden md:flex items-center space-x-8">
+            <a th:href="@{/moderador/home}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Inicio</a>
+          <a th:href="@{/moderador/consultas}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Consultas</a>
+          <a th:href="@{/moderador/mascotas}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Citas</a>
+          <a th:href="@{/moderador/mascotas}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Entradas y Salidas</a>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <div sec:authorize="isAuthenticated()">
+          <a th:href="@{/perfil}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Perfil</a>
+          <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">
+              Cerrar sesión
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+</body>
+</html>
