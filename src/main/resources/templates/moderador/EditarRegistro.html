@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Registro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav th:replace="fragments/headerModerator :: navbarModerator"></nav>
+
+    <div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Editar Registro</h1>
+
+        <!-- Verificar si el registro está presente -->
+        <div th:if="${registro != null}">
+            <form th:action="@{/moderador/EntradasYSalidas/editar/{id}(id=${registro.id})}" th:object="${registro}" method="post" class="bg-white p-6 rounded-lg shadow-md">
+                <!-- Campo: Nombre del Propietario -->
+                <div class="mb-4">
+                    <label for="nombrePropietario" class="block text-sm font-medium text-gray-700">Nombre del Propietario</label>
+                    <input type="text" id="nombrePropietario" th:field="*{nombrePropietario}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
+                </div>
+
+                <!-- Campo: Correo -->
+                <div class="mb-4">
+                    <label for="correo" class="block text-sm font-medium text-gray-700">Correo</label>
+                    <input type="email" id="correo" th:field="*{correo}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
+                </div>
+
+                <!-- Campo: Celular -->
+                <div class="mb-4">
+                    <label for="celular" class="block text-sm font-medium text-gray-700">Celular</label>
+                    <input type="text" id="celular" th:field="*{celular}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
+                </div>
+
+                <!-- Campo: Qué va a ser -->
+                <div class="mb-4">
+                    <label for="queVaASer" class="block text-sm font-medium text-gray-700">¿Qué va a ser?</label>
+                    <input type="text" id="queVaASer" th:field="*{queVaASer}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
+                </div>
+
+                <!-- Botón para guardar cambios -->
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Mensaje de error si el registro no está presente -->
+        <div th:if="${registro == null}" class="text-red-600">
+            <p>No se encontró el registro para editar.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>
