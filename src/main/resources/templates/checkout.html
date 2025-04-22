@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<!-- Navbar -->
+<nav th:replace="fragments/headerModerator :: navbarModerator"></nav>
+
+<!-- Contenido principal -->
+<div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Formulario de Checkout</h1>
+    <form th:action="@{/moderador/checkout}" method="post" th:object="${entryForm}" class="bg-white p-6 rounded-lg shadow-md">
+        <!-- Información del propietario -->
+        <div class="mb-4">
+            <label for="nombrePropietario" class="block text-sm font-medium text-gray-700">Nombre del Propietario</label>
+            <input type="text" id="nombrePropietario" name="nombrePropietario" th:value="*{nombrePropietario}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        </div>
+        <div class="mb-4">
+            <label for="cedulaCiudadania" class="block text-sm font-medium text-gray-700">Cédula de Ciudadanía</label>
+            <input type="text" id="cedulaCiudadania" name="cedulaCiudadania" th:value="*{cedulaCiudadania}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        </div>
+        <div class="mb-4">
+            <label for="correo" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+            <input type="email" id="correo" name="correo" th:value="*{correo}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        </div>
+        <div class="mb-4">
+            <label for="celular" class="block text-sm font-medium text-gray-700">Celular</label>
+            <input type="text" id="celular" name="celular" th:value="*{celular}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        </div>
+        <div class="mb-4">
+            <label for="queVaASer" class="block text-sm font-medium text-gray-700">Tipo de Servicio</label>
+            <select id="queVaASer" name="queVaASer" th:value="*{queVaASer}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                <option value="" disabled selected>Seleccione una opción</option>
+                <option value="Alojamiento">Alojamiento</option>
+                <option value="Peluquería">Peluquería</option>
+            </select>
+        </div>
+        <div class="mb-4" th:if="*{queVaASer} == 'Alojamiento'">
+            <label for="fechaInicio" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
+            <input type="date" id="fechaInicio" name="fechaInicio" th:value="*{fechaInicio}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        </div>
+        <div class="mb-4" th:if="*{queVaASer} == 'Alojamiento'">
+            <label for="fechaFin" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
+            <input type="date" id="fechaFin" name="fechaFin" th:value="*{fechaFin}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        </div>
+        <div class="flex justify-end">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Siguiente</button>
+        </div>
+    </form>
+</div>
+
+<!-- Footer -->
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

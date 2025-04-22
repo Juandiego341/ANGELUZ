@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+                <html lang="en" xmlns:th="http://www.thymeleaf.org">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Entradas y Salidas</title>
+                    <script src="https://cdn.tailwindcss.com"></script>
+                </head>
+                <body class="bg-gray-100">
+                <!-- Navbar -->
+                <nav th:replace="fragments/headerModerator :: navbarModerator"></nav>
+
+                <!-- Contenido principal -->
+                <div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-6 mt-8">Gestión de Entradas y Salidas</h1>
+                    <p class="text-lg text-gray-600 mb-8">Administra los registros de entradas y salidas de manera eficiente.</p>
+                    <!-- Tabla de registros -->
+                    <div class="overflow-hidden shadow rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                            </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2023-10-01</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Entrada de mercancía</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="#" class="text-blue-600 hover:text-blue-900">Editar</a>
+                                    <a href="#" class="text-red-600 hover:text-red-900 ml-4">Eliminar</a>
+                                </td>
+                            </tr>
+                            <!-- Más filas aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Botón para agregar registro -->
+                    <div class="mt-6">
+                        <a href="/moderador/checkout" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Agregar Registro</a>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer th:replace="fragments/footer :: footer"></footer>
+                </body>
+                </html>

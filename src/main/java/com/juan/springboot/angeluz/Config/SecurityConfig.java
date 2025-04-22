@@ -26,11 +26,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login", "/css/**", "/js/**","/images/**","/").permitAll()
+                        .requestMatchers("/register", "/login", "/css/**", "/js/**", "/images/**", "/", "/home", "/contact", "/services").permitAll() // Rutas públicas
+                        .requestMatchers("/agendar-cita").authenticated() // Requiere autenticación
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/moderador/**").hasRole("MODERATOR")
-                        .requestMatchers("/home", "/contact", "/services").permitAll()
-                        .requestMatchers("/perfil").authenticated() // ← ✅ LÍNEA AGREGADA
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -39,7 +38,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutSuccessUrl("/")
                         .permitAll()
                 );
 

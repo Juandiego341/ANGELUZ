@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+        <html lang="en" xmlns:th="http://www.thymeleaf.org">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Formulario de Mascotas</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+        </head>
+        <body class="bg-gray-100">
+        <!-- Navbar -->
+        <nav th:replace="fragments/headerModerator :: navbarModerator"></nav>
+
+        <!-- Contenido principal -->
+        <div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Formulario de Mascotas</h1>
+            <form th:action="@{/moderador/mascotas}" method="post" th:object="${entryForm}" class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Información de las Mascotas</h2>
+                <div th:each="mascota, iterStat : *{mascotas}">
+                    <!-- Campo para el nombre de la mascota -->
+                    <div class="mb-4">
+                        <label th:for="'nombreMascota_' + ${iterStat.index}" class="block text-sm font-medium text-gray-700">Nombre de la Mascota</label>
+                        <input type="text" th:id="'nombreMascota_' + ${iterStat.index}" th:name="'mascotas[' + ${iterStat.index} + '].nombre'" th:value="*{nombre}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+                    <!-- Campo para el tipo de mascota -->
+                    <div class="mb-4">
+                        <label th:for="'tipoMascota_' + ${iterStat.index}" class="block text-sm font-medium text-gray-700">Tipo de Mascota</label>
+                        <select th:id="'tipoMascota_' + ${iterStat.index}" th:name="'mascotas[' + ${iterStat.index} + '].tipo'" th:value="*{tipo}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="" disabled selected>Seleccione un tipo</option>
+                            <option value="Gato">Gato</option>
+                            <option value="Perro">Perro</option>
+                        </select>
+                    </div>
+                    <!-- Campo para la edad de la mascota -->
+                    <div class="mb-4">
+                        <label th:for="'edadMascota_' + ${iterStat.index}" class="block text-sm font-medium text-gray-700">Edad de la Mascota</label>
+                        <input type="number" th:id="'edadMascota_' + ${iterStat.index}" th:name="'mascotas[' + ${iterStat.index} + '].edad'" th:value="*{edad}" min="0" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+                </div>
+                <!-- Botón para enviar el formulario -->
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Guardar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <footer th:replace="fragments/footer :: footer"></footer>
+        </body>
+        </html>
