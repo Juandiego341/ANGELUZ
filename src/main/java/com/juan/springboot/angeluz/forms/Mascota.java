@@ -3,15 +3,15 @@ package com.juan.springboot.angeluz.forms;
 import jakarta.persistence.*;
 
 @Entity
-public class Pet {
+public class Mascota {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nombre;
-    private int edad;
     private String tipoAnimal;
+    private int edad;
 
     @ManyToOne
     @JoinColumn(name = "entry_form_id")
@@ -34,20 +34,20 @@ public class Pet {
         this.nombre = nombre;
     }
 
-    public int getEdad() {
-        return edad;
-    }
-
-    public void setEdad(int edad) {
-        this.edad = edad;
-    }
-
     public String getTipoAnimal() {
         return tipoAnimal;
     }
 
     public void setTipoAnimal(String tipoAnimal) {
         this.tipoAnimal = tipoAnimal;
+    }
+
+    public int getEdad() {
+        return edad;
+    }
+
+    public void setEdad(int edad) {
+        this.edad = edad;
     }
 
     public EntryForm getEntryForm() {

@@ -9,6 +9,7 @@ public class ModeratorController {
     public String moderatorHome() {
         return "moderador/home"; // El nombre del archivo de la vista para el moderador
     }
+
     @GetMapping("/moderador/entradasysalidas")
     public String entradasysalidas() {
         return "moderador/EntradasYSalidas"; // El nombre del archivo de la vista para el moderador
