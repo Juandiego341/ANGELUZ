@@ -4,10 +4,13 @@ package com.juan.springboot.angeluz.forms.Controller;
         import com.juan.springboot.angeluz.forms.EntryFormRepository;
         import com.juan.springboot.angeluz.forms.Mascota;
         import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.format.annotation.DateTimeFormat;
         import org.springframework.stereotype.Controller;
         import org.springframework.ui.Model;
         import org.springframework.web.bind.annotation.*;
 
+        import java.time.LocalDate;
+        import java.util.ArrayList;
         import java.util.List;
         import java.util.Optional;
 
@@ -51,7 +54,8 @@ package com.juan.springboot.angeluz.forms.Controller;
                 }
 
                 if (entryForm.getMascotas() == null || entryForm.getMascotas().isEmpty()) {
-                    entryForm.setMascotas(List.of(new Mascota())); // Inicializa la lista de mascotas
+                    entryForm.setMascotas(new ArrayList<>());
+                    entryForm.getMascotas().add(new Mascota());
                 }
 
                 model.addAttribute("entryForm", entryForm);
@@ -60,14 +64,13 @@ package com.juan.springboot.angeluz.forms.Controller;
 
             // Guardar formulario completo
             @PostMapping("/moderador/mascotas")
-            public String guardarFormularioCompleto(@ModelAttribute("entryForm") EntryForm entryForm, Model model) {
+            public String guardarFormularioCompleto(@ModelAttribute("entryForm") EntryForm entryForm) {
                 if (entryForm.getMascotas() != null) {
                     for (Mascota mascota : entryForm.getMascotas()) {
-                        mascota.setEntryForm(entryForm); // Asigna el EntryForm a cada Mascota
+                        mascota.setEntryForm(entryForm); // Asocia cada mascota con el EntryForm
                     }
                 }
-
-                entryFormRepository.save(entryForm);
+                entryFormRepository.save(entryForm); // Guarda el EntryForm y las mascotas asociadas
                 return "redirect:/moderador/entradasysalidas";
             }
 
@@ -123,5 +126,18 @@ package com.juan.springboot.angeluz.forms.Controller;
             public String eliminarRegistro(@PathVariable("id") Long id) {
                 entryFormRepository.deleteById(id);
                 return "redirect:/moderador/EntradasYSalidas";
+            }
+
+
+            @GetMapping("/moderador/EntradasYSalidas/filtrar")
+            public String filtrarPorFecha(
+                    @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                    @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                    Model model) {
+                List<EntryForm> registrosConFecha = entryFormRepository.findByFechaBetween(startDate, endDate);
+                List<EntryForm> registrosSinFecha = entryFormRepository.findByFechaInicioIsNullOrFechaFinIsNull();
+                model.addAttribute("registrosConFecha", registrosConFecha);
+                model.addAttribute("registrosSinFecha", registrosSinFecha);
+                return "moderador/EntradasYSalidas";
             }
         }
