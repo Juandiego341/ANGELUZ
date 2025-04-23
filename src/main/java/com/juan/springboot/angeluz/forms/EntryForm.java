@@ -1,5 +1,6 @@
 package com.juan.springboot.angeluz.forms;
 
+import com.juan.springboot.angeluz.authorization.AutorizacionForm;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,9 +21,21 @@ public class EntryForm {
     private String correo;
     private String celular;
     private String queVaASer;
+    private String direccion;
 
     private LocalDate fechaInicio; // Fecha de inicio del alojamiento
     private LocalDate fechaFin;    // Fecha de fin del alojamiento
+
+    @OneToOne(mappedBy = "entryForm", cascade = CascadeType.ALL, orphanRemoval = true)
+    private AutorizacionForm autorizacionForm;
+
+    public AutorizacionForm getAutorizacionForm() {
+        return autorizacionForm;
+    }
+
+    public void setAutorizacionForm(AutorizacionForm autorizacionForm) {
+        this.autorizacionForm = autorizacionForm;
+    }
 
     @OneToMany(mappedBy = "entryForm", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Mascota> mascotas = new ArrayList<>();
@@ -75,7 +88,23 @@ public class EntryForm {
                         this.queVaASer = queVaASer;
                     }
 
-                    public LocalDate getFechaInicio() {
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public LocalDate getFechaInicio() {
                         return fechaInicio;
                     }
 

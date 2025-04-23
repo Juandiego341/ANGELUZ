@@ -1,59 +1,186 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Registro</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // --- JS para gestionar dinámicamente la lista de razas
+        const razasPorTipo = {
+            Perro: ["Labrador","Golden Retriever","Poodle","Bulldog","Chihuahua"],
+            Gato:  ["Siames","Persa","Maine Coon","Bengalí","Esfinge"]
+        };
+        function actualizarRazas(sel) {
+            const card = sel.closest('.mascota-card');
+            const razaSel = card.querySelector('.raza-select');
+            const prev = razaSel.getAttribute('data-selected') || '';
+            razaSel.innerHTML = '<option value="">Seleccione</option>';
+            (razasPorTipo[sel.value]||[]).forEach(r=>{
+                const o = document.createElement('option');
+                o.value = r; o.text = r;
+                if(r===prev) o.selected = true;
+                razaSel.appendChild(o);
+            });
+        }
+        document.addEventListener('DOMContentLoaded',()=>{
+            document.querySelectorAll('.tipo-animal-select').forEach(s=>{
+                actualizarRazas(s);
+                s.addEventListener('change',()=>actualizarRazas(s));
+            });
+        });
+    </script>
 </head>
-<body class="bg-gray-100">
-    <!-- Navbar -->
-    <nav th:replace="fragments/headerModerator :: navbarModerator"></nav>
+<body class="bg-gray-50 text-gray-800">
+<nav th:replace="fragments/headerModerator :: navbarModerator"></nav>
+<div class="max-w-7xl mx-auto py-16 px-4 sm:px-7 lg:px-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">Editar Registro de Cliente y Mascotas</h1>
+    <form th:action="@{/moderador/EntradasYSalidas/editar/{id}(id=${registro.id})}"
+          th:object="${registro}" method="post" class="space-y-8">
 
-    <div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Editar Registro</h1>
-
-        <!-- Verificar si el registro está presente -->
-        <div th:if="${registro != null}">
-            <form th:action="@{/moderador/EntradasYSalidas/editar/{id}(id=${registro.id})}" th:object="${registro}" method="post" class="bg-white p-6 rounded-lg shadow-md">
-                <!-- Campo: Nombre del Propietario -->
-                <div class="mb-4">
-                    <label for="nombrePropietario" class="block text-sm font-medium text-gray-700">Nombre del Propietario</label>
-                    <input type="text" id="nombrePropietario" th:field="*{nombrePropietario}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
+        <!-- === Datos del propietario === -->
+        <section class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">Datos del Propietario</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block mb-1 font-medium">Nombre</label>
+                    <input type="text" th:field="*{nombrePropietario}" class="w-full border rounded px-3 py-2"/>
                 </div>
-
-                <!-- Campo: Correo -->
-                <div class="mb-4">
-                    <label for="correo" class="block text-sm font-medium text-gray-700">Correo</label>
-                    <input type="email" id="correo" th:field="*{correo}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
+                <div>
+                    <label class="block mb-1 font-medium">Cédula</label>
+                    <input type="text" th:field="*{cedulaCiudadania}" class="w-full border rounded px-3 py-2"/>
                 </div>
-
-                <!-- Campo: Celular -->
-                <div class="mb-4">
-                    <label for="celular" class="block text-sm font-medium text-gray-700">Celular</label>
-                    <input type="text" id="celular" th:field="*{celular}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
+                <div>
+                    <label class="block mb-1 font-medium">Correo</label>
+                    <input type="email" th:field="*{correo}" class="w-full border rounded px-3 py-2"/>
                 </div>
-
-                <!-- Campo: Qué va a ser -->
-                <div class="mb-4">
-                    <label for="queVaASer" class="block text-sm font-medium text-gray-700">¿Qué va a ser?</label>
-                    <input type="text" id="queVaASer" th:field="*{queVaASer}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
+                <div>
+                    <label class="block mb-1 font-medium">Celular</label>
+                    <input type="text" th:field="*{celular}" class="w-full border rounded px-3 py-2"/>
                 </div>
-
-                <!-- Botón para guardar cambios -->
-                <div class="flex justify-end">
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Guardar Cambios</button>
+                <div class="md:col-span-2">
+                    <label class="block mb-1 font-medium">Servicio (¿Qué va a ser?)</label>
+                    <input type="text" th:field="*{queVaASer}" class="w-full border rounded px-3 py-2"/>
                 </div>
-            </form>
+            </div>
+        </section>
+
+        <!-- === Mascotas === -->
+        <section class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">Mascotas</h2>
+            <div id="mascotas-container" class="space-y-6">
+                <div th:each="mascota,iterStat : *{mascotas}" class="mascota-card border p-4 rounded-lg bg-gray-50">
+                    <input type="hidden" th:field="*{mascotas[__${iterStat.index}__].id}"/>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block mb-1 font-medium">Nombre</label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].nombre}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Tipo de Animal</label>
+                            <select th:field="*{mascotas[__${iterStat.index}__].tipoAnimal}"
+                                    class="tipo-animal-select w-full border rounded px-2 py-1">
+                                <option value="">Seleccione</option>
+                                <option value="Perro">Perro</option>
+                                <option value="Gato">Gato</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Raza</label>
+                            <select th:field="*{mascotas[__${iterStat.index}__].raza}"
+                                    class="raza-select w-full border rounded px-2 py-1"
+                                    th:attr="data-selected=${mascota.raza}">
+                                <option value="">Seleccione</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Raza específica</label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].raza}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Edad (años)</label>
+                            <input type="number" th:field="*{mascotas[__${iterStat.index}__].edad}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Peso (kg)</label>
+                            <input type="number" step="0.01" th:field="*{mascotas[__${iterStat.index}__].peso}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Sexo</label>
+                            <select th:field="*{mascotas[__${iterStat.index}__].sexo}" class="w-full border rounded px-2 py-1">
+                                <option value="">Seleccione</option>
+                                <option value="Macho">Macho</option>
+                                <option value="Hembra">Hembra</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Microchip</label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].numeroMicrochip}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Color y Marcas</label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].colorYMarcas}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                    </div>
+
+                    <!-- Sección de cuidados especiales -->
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-1 font-medium">Necesidades especiales</label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].necesidadesEspeciales}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Alimentación</label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].alimentacion}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Medicamentos</label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].medicamentos}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Condiciones médicas</label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].condicionesMedicas}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                    </div>
+
+                    <!-- Sección salud e instrucciones -->
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-1 font-medium">Historial vacunación</label>
+                            <textarea th:field="*{mascotas[__${iterStat.index}__].historialVacunacion}" class="w-full border rounded px-2 py-1"></textarea>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Pulgas/Garrapatas</label>
+                            <textarea th:field="*{mascotas[__${iterStat.index}__].informacionPulgasGarrapatas}" class="w-full border rounded px-2 py-1"></textarea>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Veterinario</label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].nombreVeterinario}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Teléfono vet.</label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].telefonoVeterinario}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Alergias</label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].alergiasConocidas}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                        <div>
+                            <label class="block mb-1 font-medium">Med. actuales</label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].medicamentosActuales}" class="w-full border rounded px-2 py-1"/>
+                        </div>
+                    </div>
+
+                    <!-- botón eliminar mascota -->
+
+                </div>
+            </div>
+        </section>
+
+        <!-- submit -->
+        <div class="text-right">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Guardar Cambios</button>
         </div>
-
-        <!-- Mensaje de error si el registro no está presente -->
-        <div th:if="${registro == null}" class="text-red-600">
-            <p>No se encontró el registro para editar.</p>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer th:replace="fragments/footer :: footer"></footer>
+    </form>
+</div>
 </body>
 </html>

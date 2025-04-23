@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,79 +7,87 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         function toggleFechaFields() {
-            var queVaASer = document.getElementById("queVaASer").value;
-            var fechaFields = document.getElementById("fechaFields");
-
-            if (queVaASer === "Alojamiento") {
-                fechaFields.style.display = "block"; // Muestra los campos de fecha
-            } else {
-                fechaFields.style.display = "none"; // Oculta los campos de fecha
-            }
+            const tipo = document.getElementById("queVaASer").value;
+            document.getElementById("fechaFields").classList.toggle("hidden", tipo !== "Alojamiento");
         }
-
-        // Llamar a la función de inmediato para que se actualice si ya se seleccionó algo
-        window.onload = function() {
-            toggleFechaFields();
-        };
+        window.addEventListener("DOMContentLoaded", toggleFechaFields);
     </script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen flex flex-col">
+
 <!-- Navbar -->
-<nav th:replace="fragments/headerModerator :: navbarModerator"></nav>
+<nav th:replace="fragments/headerModerator :: navbarModerator" class="mb-12"></nav>
 
-<div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6">Formulario de Checkout</h1>
+<main class="max-w-7xl mx-auto py-16 px-4 sm:px-7 lg:px-8">
+    <section class="bg-white shadow-2xl rounded-2xl p-8 max-w-3xl w-full">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Checkout</h1>
+        <form th:action="@{/moderador/checkout}" th:object="${entryForm}" method="post" class="space-y-8">
 
-    <!-- Formulario de Checkout -->
-    <form th:action="@{/moderador/checkout}" method="post" th:object="${entryForm}" class="bg-white p-6 rounded-lg shadow-md">
-        <div class="mb-4">
-            <label for="nombrePropietario" class="block text-sm font-medium text-gray-700">Nombre del Propietario</label>
-            <input type="text" id="nombrePropietario" th:field="*{nombrePropietario}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
-        </div>
-
-        <div class="mb-4">
-            <label for="cedulaCiudadania" class="block text-sm font-medium text-gray-700">Cédula de Ciudadanía</label>
-            <input type="text" id="cedulaCiudadania" th:field="*{cedulaCiudadania}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
-        </div>
-
-        <div class="mb-4">
-            <label for="correo" class="block text-sm font-medium text-gray-700">Correo</label>
-            <input type="email" id="correo" th:field="*{correo}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
-        </div>
-
-        <div class="mb-4">
-            <label for="celular" class="block text-sm font-medium text-gray-700">Celular</label>
-            <input type="text" id="celular" th:field="*{celular}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
-        </div>
-
-        <div class="mb-4">
-            <label for="queVaASer" class="block text-sm font-medium text-gray-700">¿Qué va a ser?</label>
-            <select id="queVaASer" th:field="*{queVaASer}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required onchange="toggleFechaFields()">
-                <option value="" disabled selected>Seleccione una opción</option>
-                <option value="Alojamiento">Alojamiento</option>
-                <option value="Peluquería">Peluquería</option>
-            </select>
-        </div>
-
-        <!-- Campos de fechas (solo visibles si Alojamiento es seleccionado) -->
-        <div id="fechaFields" style="display: none;">
-            <div class="mb-4">
-                <label for="fechaInicio" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
-                <input type="date" id="fechaInicio" th:field="*{fechaInicio}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+            <!-- GRID: Datos del propietario -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="nombrePropietario" class="block text-sm font-medium text-gray-700">Nombre del Propietario</label>
+                    <input id="nombrePropietario" type="text" th:field="*{nombrePropietario}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                <div>
+                    <label for="cedulaCiudadania" class="block text-sm font-medium text-gray-700">Cédula de Ciudadanía</label>
+                    <input id="cedulaCiudadania" type="text" th:field="*{cedulaCiudadania}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                <div>
+                    <label for="correo" class="block text-sm font-medium text-gray-700">Correo</label>
+                    <input id="correo" type="email" th:field="*{correo}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                <div>
+                    <label for="celular" class="block text-sm font-medium text-gray-700">Celular</label>
+                    <input id="celular" type="tel" th:field="*{celular}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección</label>
+                    <input id="direccion" type="text" th:field="*{direccion}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
+                </div>
             </div>
 
-            <div class="mb-4">
-                <label for="fechaFin" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
-                <input type="date" id="fechaFin" th:field="*{fechaFin}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+            <!-- Selección de servicio -->
+            <div>
+                <label for="queVaASer" class="block text-sm font-medium text-gray-700">¿Qué servicio desea?</label>
+                <select id="queVaASer" th:field="*{queVaASer}" onchange="toggleFechaFields()"
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
+                    <option value="" disabled selected>Seleccione...</option>
+                    <option value="Alojamiento">Alojamiento</option>
+                    <option value="Peluquería">Peluquería</option>
+                </select>
             </div>
-        </div>
 
-        <div class="flex justify-end">
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Siguiente</button>
-        </div>
-    </form>
-</div>
+            <!-- Fechas (solo para Alojamiento) -->
+            <div id="fechaFields" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+                <div>
+                    <label for="fechaInicio" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
+                    <input id="fechaInicio" type="date" th:field="*{fechaInicio}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400">
+                </div>
+                <div>
+                    <label for="fechaFin" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
+                    <input id="fechaFin" type="date" th:field="*{fechaFin}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400">
+                </div>
+            </div>
 
-<footer th:replace="fragments/footer :: footer"></footer>
+            <!-- Botón -->
+            <div class="text-right">
+                <button type="submit"
+                        class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Continuar
+                </button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="fragments/footer :: footer" class="mt-12"></footer>
 </body>
 </html>

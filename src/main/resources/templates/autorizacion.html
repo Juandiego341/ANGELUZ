@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Autorización y Términos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<nav th:replace="fragments/headerModerator :: navbarModerator"></nav>
+<div class="max-w-xl mx-auto py-12">
+  <h1 class="text-3xl font-bold mb-6">Autorizaciones y Términos</h1>
+  <form th:action="@{/moderador/autorizacion}" th:object="${autorizacionForm}" method="post" class="bg-white p-6 rounded-lg shadow space-y-4">
+    <div class="space-y-2">
+      <label><input type="checkbox" th:field="*{autorizacionContactoVeterinario}"/> Autorizo contacto a veterinario en emergencia</label><br/>
+      <label><input type="checkbox" th:field="*{consentimientoPrimerosAuxilios}"/> Consentimiento para primeros auxilios básicos</label><br/>
+      <label><input type="checkbox" th:field="*{autorizacionUsoImagen}"/> Autorizo uso de imagen en redes (opcional)</label><br/>
+      <label><input type="checkbox" th:field="*{declaracionResponsabilidad}"/> Declaro responsabilidad por daños a terceros</label><br/>
+      <label><input type="checkbox" th:field="*{autorizoCuidado}"/> Autorizo cuidado de mi mascota</label><br/>
+      <label><input type="checkbox" th:field="*{autorizoDecisionesMedicas}"/> Autorizo decisiones médicas en emergencia</label>
+    </div>
+    <div>
+      <label class="block font-medium">Horarios de entrada y salida</label>
+      <input type="text" th:field="*{horariosEntradaSalida}" class="w-full border rounded px-3 py-2"/>
+    </div>
+    <div>
+      <label class="block font-medium">Tarifas y políticas de pago</label>
+      <textarea th:field="*{tarifasYPago}" class="w-full border rounded px-3 py-2"></textarea>
+    </div>
+    <div>
+      <label class="block font-medium">Políticas de cancelación</label>
+      <textarea th:field="*{politicasCancelacion}" class="w-full border rounded px-3 py-2"></textarea>
+    </div>
+    <div>
+      <label class="block font-medium">Reglamento interno</label>
+      <textarea th:field="*{reglamentoInterno}" class="w-full border rounded px-3 py-2"></textarea>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block font-medium">Firma del propietario</label>
+        <input type="text" th:field="*{firmaPropietario}" class="w-full border rounded px-3 py-2"/>
+      </div>
+      <div>
+        <label class="block font-medium">Fecha</label>
+        <input type="date" th:field="*{fechaFirma}" class="w-full border rounded px-3 py-2"/>
+      </div>
+    </div>
+    <div class="text-right">
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Enviar</button>
+    </div>
+  </form>
+</div>
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

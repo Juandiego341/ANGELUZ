@@ -1,5 +1,7 @@
 package com.juan.springboot.angeluz.forms.Controller;
 
+        import com.juan.springboot.angeluz.authorization.AutorizacionForm;
+        import com.juan.springboot.angeluz.authorization.AutorizacionFormRepository;
         import com.juan.springboot.angeluz.forms.EntryForm;
         import com.juan.springboot.angeluz.forms.EntryFormRepository;
         import com.juan.springboot.angeluz.forms.Mascota;
@@ -8,15 +10,18 @@ package com.juan.springboot.angeluz.forms.Controller;
         import org.springframework.stereotype.Controller;
         import org.springframework.ui.Model;
         import org.springframework.web.bind.annotation.*;
+        import org.springframework.web.bind.support.SessionStatus;
 
         import java.time.LocalDate;
         import java.util.ArrayList;
         import java.util.List;
         import java.util.Optional;
 
-        @Controller
-        @SessionAttributes("entryForm")
+@Controller
+@SessionAttributes("entryForm")
         public class EntryFormController {
+            @Autowired
+            private AutorizacionFormRepository autorizacionRepo;
 
             @Autowired
             private EntryFormRepository entryFormRepository;
@@ -64,15 +69,18 @@ package com.juan.springboot.angeluz.forms.Controller;
 
             // Guardar formulario completo
             @PostMapping("/moderador/mascotas")
-            public String guardarFormularioCompleto(@ModelAttribute("entryForm") EntryForm entryForm) {
-                if (entryForm.getMascotas() != null) {
-                    for (Mascota mascota : entryForm.getMascotas()) {
-                        mascota.setEntryForm(entryForm); // Asocia cada mascota con el EntryForm
-                    }
-                }
-                entryFormRepository.save(entryForm); // Guarda el EntryForm y las mascotas asociadas
-                return "redirect:/moderador/entradasysalidas";
+            public String guardarFormularioCompleto(
+                    @ModelAttribute("entryForm") EntryForm entryForm,
+                    SessionStatus sessionStatus) {
+
+                // … guardas entryForm y mascotas …
+                entryFormRepository.save(entryForm);
+
+
+                // ahora iba a EntradasYSalidas, cámbialo:
+                return "redirect:/moderador/autorizacion";
             }
+
 
             // Listar registros
             @GetMapping("/moderador/EntradasYSalidas")
@@ -107,7 +115,8 @@ package com.juan.springboot.angeluz.forms.Controller;
                 }
             }
 
-            // Procesar edición de registro
+
+    // Procesar edición de registro
             @PostMapping("/moderador/EntradasYSalidas/editar/{id}")
             public String procesarEdicion(@PathVariable("id") Long id, @ModelAttribute EntryForm registroActualizado) {
                 Optional<EntryForm> registro = entryFormRepository.findById(id);
@@ -130,14 +139,56 @@ package com.juan.springboot.angeluz.forms.Controller;
 
 
             @GetMapping("/moderador/EntradasYSalidas/filtrar")
-            public String filtrarPorFecha(
-                    @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                    @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            public String filtrarPorFechaYBusqueda(
+                    @RequestParam(value = "startDate", required = false)
+                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                    @RequestParam(value = "endDate", required = false)
+                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                    @RequestParam(value = "search", required = false) String search,
                     Model model) {
-                List<EntryForm> registrosConFecha = entryFormRepository.findByFechaBetween(startDate, endDate);
-                List<EntryForm> registrosSinFecha = entryFormRepository.findByFechaInicioIsNullOrFechaFinIsNull();
+
+                // 1. Obtener todos los registros
+                List<EntryForm> todos = entryFormRepository.findAll();
+
+                // 2. Filtrar por rango de fechas si ambos están presentes
+                List<EntryForm> filtradosPorFecha = todos.stream()
+                        .filter(r -> {
+                            if (startDate != null && endDate != null && r.getFechaInicio() != null && r.getFechaFin() != null) {
+                                return !r.getFechaInicio().isAfter(endDate) && !r.getFechaFin().isBefore(startDate);
+                            }
+                            return true; // si no hay fechas, dejamos pasar todo
+                        })
+                        .toList();
+
+                // 3. Filtrar por el término de búsqueda si se proporcionó
+                List<EntryForm> filtrados = filtradosPorFecha.stream()
+                        .filter(r -> {
+                            if (search == null || search.isBlank()) return true;
+                            String s = search.toLowerCase();
+                            return String.valueOf(r.getId()).contains(s)
+                                    || (r.getNombrePropietario() != null && r.getNombrePropietario().toLowerCase().contains(s))
+                                    || (r.getCorreo() != null && r.getCorreo().toLowerCase().contains(s));
+
+                        })
+                        .toList();
+
+                // 4. Separar en “con fecha” y “sin fecha”
+                List<EntryForm> registrosConFecha = filtrados.stream()
+                        .filter(r -> r.getFechaInicio() != null && r.getFechaFin() != null)
+                        .toList();
+                List<EntryForm> registrosSinFecha = filtrados.stream()
+                        .filter(r -> r.getFechaInicio() == null || r.getFechaFin() == null)
+                        .toList();
+
+                // 5. Pasar al modelo
                 model.addAttribute("registrosConFecha", registrosConFecha);
                 model.addAttribute("registrosSinFecha", registrosSinFecha);
+                // También devolvemos el propio término de búsqueda
+                model.addAttribute("search", search);
+                model.addAttribute("startDate", startDate);
+                model.addAttribute("endDate", endDate);
+
                 return "moderador/EntradasYSalidas";
             }
+
         }
