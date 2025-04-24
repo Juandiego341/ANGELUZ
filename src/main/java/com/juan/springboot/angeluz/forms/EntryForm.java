@@ -37,56 +37,56 @@ public class EntryForm {
         this.autorizacionForm = autorizacionForm;
     }
 
-    @OneToMany(mappedBy = "entryForm", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Mascota> mascotas = new ArrayList<>();
+    @OneToMany(mappedBy = "entryForm", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Mascota> mascotas;
 
-                    public Long getId() {
-                        return id;
-                    }
+    public Long getId() {
+        return id;
+    }
 
-                    public void setId(Long id) {
-                        this.id = id;
-                    }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-                    public String getNombrePropietario() {
-                        return nombrePropietario;
-                    }
+    public String getNombrePropietario() {
+        return nombrePropietario;
+    }
 
-                    public void setNombrePropietario(String nombrePropietario) {
-                        this.nombrePropietario = nombrePropietario;
-                    }
+    public void setNombrePropietario(String nombrePropietario) {
+        this.nombrePropietario = nombrePropietario;
+    }
 
-                    public String getCedulaCiudadania() {
-                        return cedulaCiudadania;
-                    }
+    public String getCedulaCiudadania() {
+        return cedulaCiudadania;
+    }
 
-                    public void setCedulaCiudadania(String cedulaCiudadania) {
-                        this.cedulaCiudadania = cedulaCiudadania;
-                    }
+    public void setCedulaCiudadania(String cedulaCiudadania) {
+        this.cedulaCiudadania = cedulaCiudadania;
+    }
 
-                    public String getCorreo() {
-                        return correo;
-                    }
+    public String getCorreo() {
+        return correo;
+    }
 
-                    public void setCorreo(String correo) {
-                        this.correo = correo;
-                    }
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
 
-                    public String getCelular() {
-                        return celular;
-                    }
+    public String getCelular() {
+        return celular;
+    }
 
-                    public void setCelular(String celular) {
-                        this.celular = celular;
-                    }
+    public void setCelular(String celular) {
+        this.celular = celular;
+    }
 
-                    public String getQueVaASer() {
-                        return queVaASer;
-                    }
+    public String getQueVaASer() {
+        return queVaASer;
+    }
 
-                    public void setQueVaASer(String queVaASer) {
-                        this.queVaASer = queVaASer;
-                    }
+    public void setQueVaASer(String queVaASer) {
+        this.queVaASer = queVaASer;
+    }
 
     public Integer getVersion() {
         return version;
@@ -105,26 +105,26 @@ public class EntryForm {
     }
 
     public LocalDate getFechaInicio() {
-                        return fechaInicio;
-                    }
+        return fechaInicio;
+    }
 
-                    public void setFechaInicio(LocalDate fechaInicio) {
-                        this.fechaInicio = fechaInicio;
-                    }
+    public void setFechaInicio(LocalDate fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
 
-                    public LocalDate getFechaFin() {
-                        return fechaFin;
-                    }
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
 
-                    public void setFechaFin(LocalDate fechaFin) {
-                        this.fechaFin = fechaFin;
-                    }
+    public void setFechaFin(LocalDate fechaFin) {
+        this.fechaFin = fechaFin;
+    }
 
-                    public List<Mascota> getMascotas() {
-                        return mascotas;
-                    }
+    public List<Mascota> getMascotas() {
+        return mascotas;
+    }
 
-                    public void setMascotas(List<Mascota> mascotas) {
-                        this.mascotas = mascotas;
-                    }
-                }
+    public void setMascotas(List<Mascota> mascotas) {
+        this.mascotas = mascotas;
+    }
+}

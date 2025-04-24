@@ -34,8 +34,7 @@
 <nav th:replace="fragments/headerModerator :: navbarModerator"></nav>
 <div class="max-w-7xl mx-auto py-16 px-4 sm:px-7 lg:px-8">
     <h1 class="text-4xl font-bold text-gray-900 mb-4">Editar Registro de Cliente y Mascotas</h1>
-    <form th:action="@{/moderador/EntradasYSalidas/editar/{id}(id=${registro.id})}"
-          th:object="${registro}" method="post" class="space-y-8">
+    <form th:action="@{/moderador/EntradasYSalidas/editar/{id}(id=${entryForm.id})}" method="post" th:object="${entryForm}">
 
         <!-- === Datos del propietario === -->
         <section class="bg-white p-6 rounded-lg shadow">

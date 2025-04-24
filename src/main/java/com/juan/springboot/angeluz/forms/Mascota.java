@@ -19,9 +19,7 @@ public class Mascota {
     private String colorYMarcas;
     private String numeroMicrochip;
 
-    @ManyToOne
-    @JoinColumn(name = "entry_form_id")
-    private EntryForm entryForm;
+
 
     // Necesidades especiales
     private String alimentacion;
@@ -44,6 +42,19 @@ public class Mascota {
     private String medicamentosActuales;
     private String informacionPulgasGarrapatas;
     // Getters y Setters
+
+    @ManyToOne
+    @JoinColumn(name = "entry_form_id") // Asegúrate de que este sea el nombre correcto de la columna en tu tabla 'mascota'
+    private EntryForm entryForm;
+
+    // Getter y Setter para entryForm
+    public EntryForm getEntryForm() {
+        return entryForm;
+    }
+
+    public void setEntryForm(EntryForm entryForm) {
+        this.entryForm = entryForm;
+    }
     public Long getId() {
         return id;
     }
@@ -108,9 +119,7 @@ public class Mascota {
         this.esterilizado = esterilizado;
     }
 
-    public EntryForm getEntryForm() {
-        return entryForm;
-    }
+
 
     public String getInformacionPulgasGarrapatas() {
         return informacionPulgasGarrapatas;
@@ -248,7 +257,4 @@ public class Mascota {
         this.colorYMarcas = colorYMarcas;
     }
 
-    public void setEntryForm(EntryForm entryForm) {
-        this.entryForm = entryForm;
-    }
 }
