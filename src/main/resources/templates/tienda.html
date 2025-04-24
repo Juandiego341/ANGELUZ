@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tienda Angeluz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-900">
+
+<!-- Navbar -->
+<nav th:replace="fragments/header :: navbar"></nav>
+
+<!-- Main -->
+<main class="max-w-7xl mx-auto px-6 py-16">
+    <h1 class="text-4xl sm:text-5xl font-bold text-center mb-12">Nuestra Tienda</h1>
+
+    <!-- Buscador -->
+    <div class="mb-12 flex flex-col sm:flex-row justify-center gap-4">
+        <input type="text" name="query" placeholder="Buscar productos..."
+               class="w-full sm:w-1/2 px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="submit"
+                class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+            Buscar
+        </button>
+    </div>
+
+    <!-- Productos -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+        <article th:each="producto : ${productos}" class="border border-gray-200 rounded-2xl overflow-hidden shadow hover:shadow-md transition bg-white">
+            <div class="h-52 overflow-hidden">
+                <img th:src="@{${producto.imagenUrl}}" alt="Imagen producto"
+                     class="object-cover w-full h-full transition-transform duration-300 hover:scale-105">
+            </div>
+            <div class="p-5 flex flex-col gap-2">
+                <h2 class="text-xl font-semibold" th:text="${producto.nombre}">Nombre del producto</h2>
+                <p class="text-sm text-gray-500" th:text="${producto.descripcion}">Descripción</p>
+                <div class="text-sm text-blue-600 font-medium" th:text="'Categoría: ' + ${producto.categoria}">Categoría</div>
+                <div class="mt-2 text-2xl font-bold text-green-600" th:text="'$' + ${producto.precio}">Precio</div>
+                <form th:action="@{/carrito/agregar}" method="post" class="mt-4">
+                    <input type="hidden" name="productoId" th:value="${producto.id}">
+                    <button type="submit"
+                            class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                        Añadir al carrito
+                    </button>
+                </form>
+            </div>
+        </article>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

@@ -11,7 +11,7 @@ public class AutorizacionForm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relación One-to-One con EntryForm
+
     @OneToOne
     @JoinColumn(name = "entry_form_id")
     private EntryForm entryForm;

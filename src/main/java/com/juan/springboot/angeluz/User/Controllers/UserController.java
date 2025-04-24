@@ -2,12 +2,13 @@ package com.juan.springboot.angeluz.User.Controllers;
 
 import com.juan.springboot.angeluz.User.User;
 import com.juan.springboot.angeluz.User.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 import java.util.Optional;
 
@@ -46,7 +47,11 @@ public class UserController {
 
     // Procesar edición
     @PostMapping("/editar")
-    public String actualizarPerfil(@ModelAttribute("user") User user, Authentication authentication) {
+    public String actualizarPerfil(@Valid @ModelAttribute("user") User user, BindingResult result, Authentication authentication) {
+        if (result.hasErrors()) {
+            return "editarPerfil";  // Regresa a la página de edición si hay errores
+        }
+
         String username = authentication.getName();
         User existingUser = userService.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));

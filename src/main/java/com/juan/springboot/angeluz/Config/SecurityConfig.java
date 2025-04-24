@@ -26,7 +26,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login", "/css/**", "/js/**", "/images/**", "/", "/home", "/contact", "/services","about").permitAll() // Rutas públicas
+                        .requestMatchers("/register", "/login", "/css/**", "/js/**", "/images/**", "/", "/home", "/contact", "/services","/about","/tienda").permitAll() // Rutas públicas
                         .requestMatchers("/agendar-cita").authenticated() // Requiere autenticación
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/moderador/**").hasRole("MODERATOR")

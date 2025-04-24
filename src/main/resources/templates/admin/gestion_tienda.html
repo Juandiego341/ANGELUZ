@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+        <html xmlns:th="http://www.thymeleaf.org" lang="es">
+        <head th:replace="fragments/headerAdmin :: headerAdmin">
+            <title>Gestión de Tienda</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+        </head>
+        <body class="bg-gradient-to-b from-gray-100 to-gray-300 min-h-screen">
+
+        <nav th:replace="fragments/headerAdmin :: navbarAdmin"></nav>
+
+        <main class="max-w-7xl mx-auto py-16 px-6 sm:px-8 lg:px-10">
+            <h1 class="text-5xl font-extrabold text-gray-800 mb-16 text-center">Gestión de Tienda</h1>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+                <!-- Agregar -->
+                <a href="/admin/nuevo_producto"
+                   class="group block p-10 bg-blue-500 text-white rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:scale-105">
+                    <div class="flex items-center justify-center mb-4">
+                        <i class="fas fa-plus-circle text-5xl group-hover:text-gray-100"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2 group-hover:text-gray-100">Agregar Producto</h2>
+                    <p class="text-sm group-hover:text-gray-200">Registrar un nuevo producto en la tienda.</p>
+                </a>
+
+                <!-- Listar -->
+                <a href="/admin/productos"
+                   class="group block p-10 bg-green-500 text-white rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:scale-105">
+                    <div class="flex items-center justify-center mb-4">
+                        <i class="fas fa-list text-5xl group-hover:text-gray-100"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2 group-hover:text-gray-100">Listar Productos</h2>
+                    <p class="text-sm group-hover:text-gray-200">Ver todos los productos registrados.</p>
+                </a>
+
+            </div>
+        </main>
+
+        <footer th:replace="fragments/footer :: footer"></footer>
+        </body>
+        </html>

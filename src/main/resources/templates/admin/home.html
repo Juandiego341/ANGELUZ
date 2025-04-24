@@ -1,4 +1,3 @@
-<!-- templates/admin/home.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head th:replace="fragments/headerAdmin :: headerAdmin">
@@ -12,16 +11,21 @@
     <p class="text-lg text-gray-600 mb-8">Gestión completa del sistema Angeluz</p>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <a href="/admin/usuarios" class="bg-white shadow-lg rounded-xl p-6 hover:bg-blue-50 transition">
-            <i class="fas fa-users text-3xl text-blue-600 mb-4"></i>
-            <h2 class="text-xl font-semibold text-gray-800">Usuarios</h2>
-            <p class="text-gray-600 text-sm">Ver y gestionar usuarios registrados.</p>
-        </a>
+        <!-- Mascotas -->
         <a href="/admin/mascotas" class="bg-white shadow-lg rounded-xl p-6 hover:bg-blue-50 transition">
             <i class="fas fa-dog text-3xl text-blue-600 mb-4"></i>
             <h2 class="text-xl font-semibold text-gray-800">Mascotas</h2>
             <p class="text-gray-600 text-sm">Ver fichas, historial y servicios.</p>
         </a>
+
+        <!-- Tienda -->
+        <a href="/admin/tienda" class="bg-white shadow-lg rounded-xl p-6 hover:bg-green-50 transition">
+            <i class="fas fa-store text-3xl text-green-600 mb-4"></i>
+            <h2 class="text-xl font-semibold text-gray-800">Gestionar Tienda</h2>
+            <p class="text-gray-600 text-sm">Agregar y editar productos de la tienda.</p>
+        </a>
+
+        <!-- Reportes -->
         <a href="/admin/reportes" class="bg-white shadow-lg rounded-xl p-6 hover:bg-blue-50 transition">
             <i class="fas fa-file-alt text-3xl text-blue-600 mb-4"></i>
             <h2 class="text-xl font-semibold text-gray-800">Reportes</h2>
