@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -78,7 +79,8 @@ public class EntryFormController {
     @PostMapping("/moderador/mascotas")
     public String guardarFormularioCompleto(
             @ModelAttribute("entryForm") EntryForm entryForm,
-            SessionStatus sessionStatus) {
+            // Elimina SessionStatus sessionStatus como parámetro si no lo necesitas aquí
+            RedirectAttributes redirectAttributes) {
 
         // Establecer la relación (asegurándose de que cada mascota sepa a qué EntryForm pertenece)
         for (Mascota mascota : entryForm.getMascotas()) {
@@ -88,7 +90,12 @@ public class EntryFormController {
         // Guardar el EntryForm. Gracias a la configuración de cascada, las mascotas también se guardarán.
         entryFormRepository.save(entryForm);
 
-        sessionStatus.setComplete();
+        // Ya no limpiamos la sesión aquí si necesitamos 'entryForm' en la siguiente petición
+        // sessionStatus.setComplete();
+
+        // Podemos pasar el ID del EntryForm como atributo flash si lo necesitamos en la página de autorización
+        redirectAttributes.addAttribute("entryFormId", entryForm.getId());
+
         return "redirect:/moderador/autorizacion";
     }
 
