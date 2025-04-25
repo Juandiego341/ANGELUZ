@@ -1,40 +1,50 @@
 <!DOCTYPE html>
-        <html xmlns:th="http://www.thymeleaf.org" lang="es">
-        <head th:replace="fragments/headerAdmin :: headerAdmin">
-            <title>Gestión de Tienda</title>
-            <script src="https://cdn.tailwindcss.com"></script>
-        </head>
-        <body class="bg-gradient-to-b from-gray-100 to-gray-300 min-h-screen">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="fragments/headerAdmin :: headerAdmin">
+    <title>Gestión de Tienda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="bg-gradient-to-br from-green-100 to-yellow-100 min-h-screen flex flex-col">
 
-        <nav th:replace="fragments/headerAdmin :: navbarAdmin"></nav>
+<nav th:replace="fragments/headerAdmin :: navbarAdmin"></nav>
 
-        <main class="max-w-7xl mx-auto py-16 px-6 sm:px-8 lg:px-10">
-            <h1 class="text-5xl font-extrabold text-gray-800 mb-16 text-center">Gestión de Tienda</h1>
+<main class="container mx-auto py-12 flex-grow">
+    <div class="bg-white shadow-xl rounded-lg p-8 md:p-12 mx-4 md:mx-auto max-w-xl">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">
+            <i class="fas fa-store text-green-500 mr-2"></i> Gestión de Tienda
+        </h1>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-                <!-- Agregar -->
-                <a href="/admin/nuevo_producto"
-                   class="group block p-10 bg-blue-500 text-white rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:scale-105">
-                    <div class="flex items-center justify-center mb-4">
-                        <i class="fas fa-plus-circle text-5xl group-hover:text-gray-100"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold mb-2 group-hover:text-gray-100">Agregar Producto</h2>
-                    <p class="text-sm group-hover:text-gray-200">Registrar un nuevo producto en la tienda.</p>
-                </a>
+        <div class="grid grid-cols-1 gap-6">
+            <a th:href="@{/admin/nuevo_producto}" class="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg p-6 flex items-center transition duration-300 ease-in-out">
+                <div class="bg-blue-200 text-blue-700 rounded-md p-3 mr-4">
+                    <i class="fas fa-plus-circle fa-lg"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold text-blue-700">Agregar Producto</h2>
+                    <p class="text-gray-600 text-sm">Registrar un nuevo producto en la tienda.</p>
+                </div>
+                <span class="ml-auto text-gray-400">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+            </a>
 
-                <!-- Listar -->
-                <a href="/admin/productos"
-                   class="group block p-10 bg-green-500 text-white rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:scale-105">
-                    <div class="flex items-center justify-center mb-4">
-                        <i class="fas fa-list text-5xl group-hover:text-gray-100"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold mb-2 group-hover:text-gray-100">Listar Productos</h2>
-                    <p class="text-sm group-hover:text-gray-200">Ver todos los productos registrados.</p>
-                </a>
+            <a th:href="@{/admin/productos}" class="bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg p-6 flex items-center transition duration-300 ease-in-out">
+                <div class="bg-green-200 text-green-700 rounded-md p-3 mr-4">
+                    <i class="fas fa-list fa-lg"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold text-green-700">Listar Productos</h2>
+                    <p class="text-gray-600 text-sm">Ver todos los productos registrados.</p>
+                </div>
+                <span class="ml-auto text-gray-400">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+            </a>
+        </div>
+    </div>
+</main>
 
-            </div>
-        </main>
-
-        <footer th:replace="fragments/footer :: footer"></footer>
-        </body>
-        </html>
+<footer th:replace="fragments/footer :: footer" class="bg-gray-200 text-gray-600 py-4 text-center mt-8"></footer>
+</body>
+</html>

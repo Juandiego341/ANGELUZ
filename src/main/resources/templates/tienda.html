@@ -4,17 +4,92 @@
     <meta charset="UTF-8">
     <title>Tienda Angeluz</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-white text-gray-900">
+    <style>
+        .product-card {
+            border-radius: 0.75rem; /* rounded-xl */
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
 
-<!-- Navbar -->
+        .product-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+        }
+
+        .image-container {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .product-image {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .details-container {
+            padding: 1.5rem;
+            background-color: white;
+            position: relative; /* Para el botón absoluto */
+        }
+
+        .product-name {
+            font-size: 1.25rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
+            color: #2d3748; /* gray-800 */
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            font-size: 0.875rem; /* text-sm */
+            color: #718096; /* gray-500 */
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .product-category {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem; /* rounded-md */
+            background-color: #e0f2fe; /* blue-100 */
+            color: #1e40af; /* blue-700 */
+            font-size: 0.75rem; /* text-xs */
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem; /* text-xl */
+            font-weight: bold;
+            color: #38a169; /* green-500 */
+            margin-bottom: 1.5rem;
+        }
+
+        .add-to-cart-button {
+            background-color: #48bb78; /* green-500 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .add-to-cart-button:hover {
+            background-color: #38a169; /* green-700 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
 <nav th:replace="fragments/header :: navbar"></nav>
 
-<!-- Main -->
 <main class="max-w-7xl mx-auto px-6 py-16">
     <h1 class="text-4xl sm:text-5xl font-bold text-center mb-12">Nuestra Tienda</h1>
 
-    <!-- Buscador -->
     <div class="mb-12 flex flex-col sm:flex-row justify-center gap-4">
         <input type="text" name="query" placeholder="Buscar productos..."
                class="w-full sm:w-1/2 px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -24,31 +99,25 @@
         </button>
     </div>
 
-    <!-- Productos -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-        <article th:each="producto : ${productos}" class="border border-gray-200 rounded-2xl overflow-hidden shadow hover:shadow-md transition bg-white">
-            <div class="h-52 overflow-hidden">
-                <img th:src="@{${producto.imagenUrl}}" alt="Imagen producto"
-                     class="object-cover w-full h-full transition-transform duration-300 hover:scale-105">
+    <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <article th:each="producto : ${productos}" class="product-card">
+            <div class="image-container">
+                <img th:src="@{${producto.imagenUrl}}" alt="${producto.nombre}" class="product-image">
             </div>
-            <div class="p-5 flex flex-col gap-2">
-                <h2 class="text-xl font-semibold" th:text="${producto.nombre}">Nombre del producto</h2>
-                <p class="text-sm text-gray-500" th:text="${producto.descripcion}">Descripción</p>
-                <div class="text-sm text-blue-600 font-medium" th:text="'Categoría: ' + ${producto.categoria}">Categoría</div>
-                <div class="mt-2 text-2xl font-bold text-green-600" th:text="'$' + ${producto.precio}">Precio</div>
-                <form th:action="@{/carrito/agregar}" method="post" class="mt-4">
+            <div class="details-container">
+                <h2 class="product-name" th:text="${producto.nombre}"></h2>
+                <p class="product-description" th:text="${producto.descripcion}"></p>
+                <span class="product-category" th:text="'Categoría: ' + ${producto.categoria}"></span>
+                <p class="product-price" th:text="'$' + ${producto.precio}"></p>
+                <form th:action="@{/carrito/agregar}" method="post">
                     <input type="hidden" name="productoId" th:value="${producto.id}">
-                    <button type="submit"
-                            class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
-                        Añadir al carrito
-                    </button>
+                    <button type="submit" class="add-to-cart-button w-full">Añadir al carrito</button>
                 </form>
             </div>
         </article>
     </section>
 </main>
 
-<!-- Footer -->
 <footer th:replace="fragments/footer :: footer"></footer>
 </body>
 </html>

@@ -8,4 +8,8 @@ public class AdminController {
     public String adminHome() {
         return "admin/home"; // El nombre del archivo de la vista para el administrador
     }
+    @GetMapping("/admin/mascotas")
+    public String adminMascotas(){
+        return "admin/mascotas_admin";
+    }
 }

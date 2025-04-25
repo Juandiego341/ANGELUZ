@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="fragments/headerAdmin :: headerAdmin">
+    <title>Fichas Técnicas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="bg-gray-100">
+<nav th:replace="fragments/headerAdmin :: navbarAdmin"></nav>
+
+<div class="container mx-auto py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">
+        <i class="fas fa-file-alt text-blue-500 mr-2"></i> Fichas Técnicas de Mascotas
+    </h1>
+
+    <div class="mb-4 bg-white shadow-sm rounded-lg p-4 flex items-center space-x-4">
+        <form th:action="@{/admin/mascotas/fichas}" method="get" class="flex items-center space-x-4">
+            <label for="raza" class="text-sm font-medium text-gray-700">Filtrar:</label>
+            <div class="relative">
+                <select id="raza" name="raza" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm pl-8 pr-4 py-2">
+                    <option value="">Todas las Razas</option>
+                    <option th:each="raza : ${razas}" th:value="${raza}" th:text="${raza}" th:selected="${raza == filtroRaza}"></option>
+                </select>
+                <div class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-gray-500">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-blue-500 rounded-md shadow-sm text-sm font-medium text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Buscar
+            </button>
+            <div th:if="${filtroRaza}">
+                <a th:href="@{/admin/mascotas/fichas}" class="inline-flex items-center px-3 py-2 text-sm text-gray-700 hover:text-gray-900">
+                    <i class="fas fa-times mr-2"></i> Limpiar
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${mascotas.isEmpty()}">
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md">
+            <p><i class="fas fa-exclamation-triangle mr-2"></i> No hay fichas técnicas disponibles.</p>
+        </div>
+    </div>
+
+    <ul th:unless="${mascotas.isEmpty()}" class="bg-white shadow-md rounded-lg overflow-hidden">
+        <li th:each="mascota : ${mascotas}" class="px-6 py-4 border-b border-gray-200 hover:bg-gray-50 flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-blue-100 text-blue-500 mr-4">
+                    <i th:if="${mascota.raza == 'Gato'}" class="fas fa-cat fa-lg"></i>
+                    <i th:unless="${mascota.raza == 'Gato'}" class="fas fa-paw fa-lg"></i>
+                </div>
+                <div>
+                    <h2 th:text="${mascota.nombre}" class="text-lg font-semibold text-gray-800"></h2>
+                    <p class="text-gray-600 text-sm">Raza: <span th:text="${mascota.raza}"></span></p>
+                    <p class="text-gray-600 text-sm">Edad: <span th:text="${mascota.edad != null ? mascota.edad + ' años' : 'No especificada'}"></span></p>
+                </div>
+            </div>
+            <a th:href="@{/admin/mascotas/fichas/{id}(id=${mascota.id})}" class="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm transition duration-300">
+                <i class="fas fa-eye mr-2"></i> Ver Ficha
+            </a>
+        </li>
+    </ul>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="fragments/headerAdmin :: headerAdmin">
+    <title th:text="${mascota.nombre} + ' - Ficha Técnica'"></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-indigo-100">
+<nav th:replace="fragments/headerAdmin :: navbarAdmin"></nav>
+
+<div class="container mx-auto py-8">
+    <div class="bg-white shadow-xl rounded-lg p-8 md:p-12 mx-4 md:mx-auto max-w-xl">
+        <h1 th:text="${mascota.nombre} + ' - Ficha Técnica'" class="text-3xl font-bold text-gray-800 mb-6 text-center">
+            <i class="fas fa-paw text-blue-500 mr-2"></i> Ficha Técnica
+        </h1>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold text-blue-700 mb-2"><i class="fas fa-info-circle mr-2"></i> Información General</h2>
+            <div class="border rounded-md p-4 bg-blue-50">
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Nombre:</span> <span th:text="${mascota.nombre}"></span></p>
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Tipo de Animal:</span> <span th:text="${mascota.tipoAnimal}"></span></p>
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Raza:</span> <span th:text="${mascota.raza}"></span></p>
+                <p class="text-gray-700"><span class="font-semibold">Sexo:</span> <span th:text="${mascota.sexo}"></span></p>
+            </div>
+        </section>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold text-green-700 mb-2"><i class="fas fa-ruler mr-2"></i> Detalles Físicos</h2>
+            <div class="border rounded-md p-4 bg-green-50">
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Edad:</span> <span th:text="${mascota.edad != null ? mascota.edad + ' años' : 'No especificada'}"></span></p>
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Peso:</span> <span th:text="${mascota.peso != null ? mascota.peso + ' kg' : 'No especificado'}"></span></p>
+                <p class="text-gray-700"><span class="font-semibold">Color y Marcas:</span> <span th:text="${mascota.colorYMarcas != null ? mascota.colorYMarcas : 'No especificado'}"></span></p>
+            </div>
+        </section>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold text-indigo-700 mb-2"><i class="fas fa-heartbeat mr-2"></i> Estado de Salud</h2>
+            <div class="border rounded-md p-4 bg-indigo-50">
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Esterilizado:</span> <span th:text="${mascota.esterilizado ? 'Sí' : 'No'}"></span></p>
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Número de Microchip:</span> <span th:text="${mascota.numeroMicrochip != null ? mascota.numeroMicrochip : 'No tiene'}"></span></p>
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Alergias Conocidas:</span> <span th:text="${mascota.alergiasConocidas != null ? mascota.alergiasConocidas : 'Ninguna'}"></span></p>
+                <p class="text-gray-700"><span class="font-semibold">Condiciones Médicas Preexistentes:</span> <span th:text="${mascota.condicionesMedicasPreexistentes != null ? mascota.condicionesMedicasPreexistentes : 'Ninguna'}"></span></p>
+            </div>
+        </section>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold text-yellow-700 mb-2"><i class="fas fa-notes-medical mr-2"></i> Necesidades y Cuidados</h2>
+            <div class="border rounded-md p-4 bg-yellow-50">
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Alimentación:</span> <span th:text="${mascota.alimentacion != null ? mascota.alimentacion : 'No especificada'}"></span></p>
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Medicamentos:</span> <span th:text="${mascota.medicamentos != null ? mascota.medicamentos : 'Ninguno'}"></span></p>
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Condiciones Médicas:</span> <span th:text="${mascota.condicionesMedicas != null ? mascota.condicionesMedicas : 'Ninguna'}"></span></p>
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Necesidades Especiales:</span> <span th:text="${mascota.necesidadesEspeciales != null ? mascota.necesidadesEspeciales : 'Ninguna'}"></span></p>
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Horarios de Alimentación:</span> <span th:text="${mascota.horariosAlimentacion != null ? mascota.horariosAlimentacion : 'No especificados'}"></span></p>
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Paseos:</span> <span th:text="${mascota.paseos != null ? mascota.paseos : 'No especificados'}"></span></p>
+                <p class="text-gray-700"><span class="font-semibold">Actividades:</span> <span th:text="${mascota.actividades != null ? mascota.actividades : 'Ninguna'}"></span></p>
+            </div>
+        </section>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold text-purple-700 mb-2"><i class="fas fa-user-nurse mr-2"></i> Registro de Salud</h2>
+            <div class="border rounded-md p-4 bg-purple-50">
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Nombre del Veterinario:</span> <span th:text="${mascota.nombreVeterinario != null ? mascota.nombreVeterinario : 'No registrado'}"></span></p>
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Teléfono del Veterinario:</span> <span th:text="${mascota.telefonoVeterinario != null ? mascota.telefonoVeterinario : 'No registrado'}"></span></p>
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Historial de Vacunación:</span> <span th:text="${mascota.historialVacunacion != null ? mascota.historialVacunacion : 'No registrado'}"></span></p>
+                <p class="text-gray-700"><span class="font-semibold">Información Pulgas y Garrapatas:</span> <span th:text="${mascota.informacionPulgasGarrapatas != null ? mascota.informacionPulgasGarrapatas : 'No registrada'}"></span></p>
+            </div>
+        </section>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold text-red-700 mb-2"><i class="fas fa-phone-alt mr-2"></i> Contacto de Emergencia</h2>
+            <div class="border rounded-md p-4 bg-red-50">
+                <p class="text-gray-700"><span class="font-semibold">Contacto de Emergencia:</span> <span th:text="${mascota.contactoEmergencia != null ? mascota.contactoEmergencia : 'No especificado'}"></span></p>
+            </div>
+        </section>
+
+        <div class="text-center mt-8">
+            <a th:href="@{/admin/mascotas/fichas}" class="inline-flex items-center bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full text-sm transition duration-300">
+                <i class="fas fa-arrow-left mr-2"></i> Volver a la Lista
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer" class="bg-gray-200 text-gray-600 py-4 text-center mt-8"></footer>
+</body>
+</html>
