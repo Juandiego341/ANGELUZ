@@ -27,6 +27,7 @@ public class AutorizacionController {
         if (!model.containsAttribute("entryForm")) {
             return "redirect:/moderador/checkout";
         }
+        model.addAttribute("autorizacionForm", new AutorizacionForm()); // Agregar esta línea
         return "autorizacion";
     }
 
@@ -36,13 +37,9 @@ public class AutorizacionController {
             @ModelAttribute("autorizacionForm") AutorizacionForm auth,
             SessionStatus status) {
 
-        // asociar con el entryForm
         auth.setEntryForm(entryForm);
         autorizacionRepo.save(auth);
-
-        // limpiar sesión
         status.setComplete();
-
         return "redirect:/moderador/confirmacion";
     }
 

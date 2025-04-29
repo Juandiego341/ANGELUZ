@@ -38,6 +38,11 @@ public class MainController {
         return "contact";
     }
 
+    @GetMapping ("/guarderia")
+    public String guarderia(){
+        return "guarderia";
+    }
+
 
 
 }

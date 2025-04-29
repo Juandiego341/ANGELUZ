@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Solicitar Servicio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function toggleFechaFields() {
+            const tipo = document.getElementById("queVaASer").value;
+            document.getElementById("fechaFields").classList.toggle("hidden", tipo !== "Alojamiento");
+        }
+        window.addEventListener("DOMContentLoaded", toggleFechaFields);
+    </script>
+    <style>
+        body {
+            /* Asegurándonos de que la ruta es correcta y el tipo de archivo es .jpeg */
+            background-image: url('https://img.huffingtonpost.es/files/image_1200_720/uploads/2024/10/30/feliz-sentado-y-jadeando-perro-golden-retriever-y-gato-maine-coon-azul-mirando-la-camara-aislado-en-amarillo.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            margin: 0;
+            display: flex; /* Añadimos flexbox al body para centrar el contenido */
+            flex-direction: column; /* Aseguramos que los elementos se apilen verticalmente */
+        }
+
+        .formulario-transparente {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .formulario-transparente h1,
+        .formulario-transparente label,
+        .formulario-transparente input,
+        .formulario-transparente select,
+        .formulario-transparente button {
+            color: #1f2937;
+        }
+
+        .formulario-transparente input,
+        .formulario-transparente select {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-color: rgba(209, 213, 219, 0.7);
+        }
+
+        .formulario-transparente input:focus,
+        .formulario-transparente select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+            outline: none;
+        }
+
+        main {
+            flex-grow: 1; /* main ocupa el espacio restante */
+            display: flex;
+            justify-content: center; /* Centra horizontalmente */
+            align-items: center; /* Centra verticalmente */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen flex flex-col" style="background-image: url('https://img.huffingtonpost.es/files/image_1200_720/uploads/2024/10/30/feliz-sentado-y-jadeando-perro-golden-retriever-y-gato-maine-coon-azul-mirando-la-camara-aislado-en-amarillo.jpeg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+
+<nav th:replace="fragments/header :: navbar" class="mb-12"></nav>
+
+<main class="max-w-7xl mx-auto py-16 px-4 sm:px-7 lg:px-8">
+    <section class="formulario-transparente">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Solicitar Servicio</h1>
+        <form th:action="@{/usuario/checkout}" th:object="${entryForm}" method="post" class="space-y-8">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="nombrePropietario" class="block text-sm font-medium text-gray-700">Tu Nombre</label>
+                    <input id="nombrePropietario" type="text" th:field="*{nombrePropietario}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                <div>
+                    <label for="correo" class="block text-sm font-medium text-gray-700">Tu Correo</label>
+                    <input id="correo" type="email" th:field="*{correo}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                <div>
+                    <label for="celular" class="block text-sm font-medium text-gray-700">Tu Celular</label>
+                    <input id="celular" type="tel" th:field="*{celular}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label for="direccion" class="block text-sm font-medium text-gray-700">Tu Dirección</label>
+                    <input id="direccion" type="text" th:field="*{direccion}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
+                </div>
+            </div>
+
+            <div>
+                <label for="queVaASer" class="block text-sm font-medium text-gray-700">¿Qué servicio desea?</label>
+                <select id="queVaASer" th:field="*{queVaASer}" onchange="toggleFechaFields()"
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
+                    <option value="" disabled selected>Seleccione...</option>
+                    <option value="Alojamiento">Alojamiento</option>
+                    <option value="Peluquería">Peluquería</option>
+                </select>
+            </div>
+
+            <div id="fechaFields" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+                <div>
+                    <label for="fechaInicio" class="block text-sm font-medium text-gray-700">Fecha de Inicio (Alojamiento)</label>
+                    <input id="fechaInicio" type="date" th:field="*{fechaInicio}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400">
+                </div>
+                <div>
+                    <label for="fechaFin" class="block text-sm font-medium text-gray-700">Fecha de Fin (Alojamiento)</label>
+                    <input id="fechaFin" type="date" th:field="*{fechaFin}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400">
+                </div>
+            </div>
+
+            <div class="text-right">
+                <button type="submit"
+                        class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    Continuar al Registro de Mascotas
+                </button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="fragments/footer :: footer" class="mt-12"></footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información de la Guardería Angeluz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .feature-item {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-indigo-50">
+<nav th:replace="fragments/header :: navbar"></nav>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="md:grid md:grid-cols-2">
+        <div class="relative">
+            <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cGV0JTIwcGFyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="Imagen de la Guardería" class="rounded-l-xl md:rounded-none md:rounded-tl-xl md:rounded-bl-xl w-full h-full object-cover">
+            <div class="absolute inset-0 bg-indigo-700 opacity-20"></div>
+        </div>
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:px-7 lg:px-8">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-8">Un Hogar Lejos de Casa para tu Mascota</h2>
+            <p class="text-lg text-gray-700 mb-6">
+                En Guardería Angeluz, creamos una experiencia enriquecedora y segura para tu compañero peludo. Nuestro compromiso es brindar cuidado con amor y profesionalismo, asegurando que cada mascota disfrute de su tiempo con nosotros.
+            </p>
+
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="feature-item p-4 rounded-md bg-indigo-50 hover:bg-indigo-100 border border-indigo-200">
+                    <i class="fas fa-paw text-2xl text-indigo-600 mb-2"></i>
+                    <h3 class="text-lg font-semibold text-indigo-700">Cuidado Personalizado</h3>
+                    <p class="text-gray-600 text-sm">Atención individualizada según las necesidades de cada mascota.</p>
+                </div>
+                <div class="feature-item p-4 rounded-md bg-indigo-50 hover:bg-indigo-100 border border-indigo-200">
+                    <i class="fas fa-play text-2xl text-indigo-600 mb-2"></i>
+                    <h3 class="text-lg font-semibold text-indigo-700">Actividades Divertidas</h3>
+                    <p class="text-gray-600 text-sm">Juegos, socialización y ejercicio en espacios seguros.</p>
+                </div>
+                <div class="feature-item p-4 rounded-md bg-indigo-50 hover:bg-indigo-100 border border-indigo-200">
+                    <i class="fas fa-heartbeat text-2xl text-indigo-600 mb-2"></i>
+                    <h3 class="text-lg font-semibold text-indigo-700">Bienestar y Seguridad</h3>
+                    <p class="text-gray-600 text-sm">Supervisión constante y protocolos de seguridad rigurosos.</p>
+                </div>
+                <div class="feature-item p-4 rounded-md bg-indigo-50 hover:bg-indigo-100 border border-indigo-200">
+                    <i class="fas fa-utensils text-2xl text-indigo-600 mb-2"></i>
+                    <h3 class="text-lg font-semibold text-indigo-700">Alimentación Adecuada</h3>
+                    <p class="text-gray-600 text-sm">Seguimiento de dietas y horarios de comida.</p>
+                </div>
+            </div>
+
+            <div class="mt-10">
+                <h2 class="text-xl font-semibold text-indigo-700 mb-4">Nuestras Instalaciones</h2>
+                <p class="text-gray-700 mb-4">
+                    Contamos con amplias áreas de juego interiores y exteriores, diseñadas para la comodidad y seguridad de nuestros huéspedes.
+                </p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Espacios separados por tamaño y temperamento.</li>
+                    <li>Áreas de descanso confortables y limpias.</li>
+                    <li>Zonas de juego al aire libre con supervisión.</li>
+                </ul>
+            </div>
+
+            <div class="mt-8">
+                <a th:href="@{/usuario/reserva}" class="bg-indigo-500 text-white py-3 px-6 rounded-full hover:bg-indigo-600 transition duration-300 font-semibold">
+                    Reservar un Espacio
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

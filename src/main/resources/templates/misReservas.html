@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Reservas</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center py-10">
+
+<h1 class="text-3xl font-bold mb-8">Mis Reservas</h1>
+
+<div class="w-full max-w-5xl bg-white p-8 rounded-xl shadow-md">
+    <div th:if="${#lists.isEmpty(reservasUsuario)}" class="text-center text-gray-600">
+        <p class="text-lg mb-4">No tienes reservas aún.</p>
+        <a th:href="@{/usuario/registro}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+            Hacer una registro
+        </a>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(reservasUsuario)}">
+        <table class="w-full table-auto">
+            <thead class="bg-gray-200">
+            <tr>
+                <th class="px-4 py-2">ID</th>
+                <th class="px-4 py-2">Nombre del Propietario</th>
+                <th class="px-4 py-2">Correo</th>
+                <th class="px-4 py-2">Fecha de Inicio</th>
+                <th class="px-4 py-2">Fecha de Fin</th>
+                <th class="px-4 py-2">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="registro : ${entryForm}" class="text-center border-b">
+                <td class="px-4 py-2" th:text="${registro.id}"></td>
+                <td class="px-4 py-2" th:text="${registro.nombrePropietario}"></td>
+                <td class="px-4 py-2" th:text="${registro.correo}"></td>
+                <td class="px-4 py-2" th:text="${registro.fechaInicio != null ? registro.fechaInicio : 'No asignada'}"></td>
+                <td class="px-4 py-2" th:text="${registro.fechaFin != null ? registro.fechaFin : 'No asignada'}"></td>
+                <td class="px-4 py-2">
+                    <a th:href="@{/usuario/registro/detalle/{id}(id=${registro.id})}" class="text-blue-500 hover:underline">
+                        Ver Detalle
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

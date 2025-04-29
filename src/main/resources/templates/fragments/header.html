@@ -20,9 +20,11 @@
             font-family: 'Poppins', sans-serif;
         }
     </style>
+
 </head>
 
 <body>
+<nav th:replace="fragments/header :: navbar"></nav>
 
 <nav th:fragment="navbar" class="bg-white shadow-lg fixed w-full z-50">
     <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
@@ -38,8 +40,8 @@
                     <a th:href="@{/}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Inicio</a>
                     <a th:href="@{/about}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Acerca de</a>
                     <a th:href="@{/services}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Servicios</a>
-                    <a th:href="@{/contact}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Contacto</a>
                     <a th:href="@{/tienda}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Tienda</a>
+                    <a th:href="@{/contact}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Contacto</a>
                 </div>
             </div>
 

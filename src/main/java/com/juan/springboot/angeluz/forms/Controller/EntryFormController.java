@@ -1,6 +1,5 @@
 package com.juan.springboot.angeluz.forms.Controller;
 
-import com.juan.springboot.angeluz.authorization.AutorizacionForm;
 import com.juan.springboot.angeluz.authorization.AutorizacionFormRepository;
 import com.juan.springboot.angeluz.forms.EntryForm;
 import com.juan.springboot.angeluz.forms.EntryFormRepository;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -192,5 +192,7 @@ public class EntryFormController {
 
         return "moderador/EntradasYSalidas";
     }
+
+
 
 }

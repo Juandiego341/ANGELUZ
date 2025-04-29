@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Mascotas</title>
+    <script defer>
+        function agregarMascota() {
+            const container = document.getElementById('mascotas-container');
+            const total = container.children.length;
+            const primeraMascota = container.children[0];
+            const nuevaMascota = primeraMascota.cloneNode(true);
+
+            // Limpiar los campos del formulario clonado
+            nuevaMascota.querySelectorAll('input, textarea, select').forEach(el => {
+                if (el.type === 'checkbox' || el.type === 'radio') {
+                    el.checked = false;
+                } else {
+                    el.value = '';
+                }
+            });
+
+            // Actualizar los índices de los campos del formulario clonado
+            nuevaMascota.innerHTML = nuevaMascota.innerHTML.replace(/\[\d+\]/g, `[${total}]`);
+            nuevaMascota.innerHTML = nuevaMascota.innerHTML.replace(/__\d+__/g, `__${total}__`);
+
+            // Asignar nuevos IDs a los elementos clonados
+            nuevaMascota.querySelectorAll('[id]').forEach(el => {
+                const nuevoId = el.id.replace(/\d+/, total);
+                el.id = nuevoId;
+            });
+
+            container.appendChild(nuevaMascota);
+
+            // Asignar eventos a los selects de tipo de animal recién clonados
+            const tipoSelect = nuevaMascota.querySelector('.tipo-animal-select');
+            if (tipoSelect) {
+                tipoSelect.addEventListener('change', function () {
+                    actualizarRazas(this);
+                });
+            }
+
+            // Limpiar el select de razas
+            const razaSelect = nuevaMascota.querySelector('.raza-select');
+            if (razaSelect) {
+                razaSelect.innerHTML = '<option value="">Seleccione</option>';
+            }
+        }
+
+        function eliminarMascota(boton) {
+            const container = document.getElementById('mascotas-container');
+            if (container.children.length > 1) {
+                boton.closest('.mascota-form').remove();
+            } else {
+                alert("Debe haber al menos una mascota.");
+            }
+        }
+
+        const razasPorTipo = {
+            Perro: ["Labrador", "Golden Retriever", "Poodle", "Bulldog", "Chihuahua"],
+            Gato: ["Siames", "Persa", "Maine Coon", "Bengalí", "Esfinge"]
+        };
+
+        function actualizarRazas(selectTipo) {
+            const container = selectTipo.closest('.mascota-form');
+            const razaSelect = container.querySelector('.raza-select');
+            const tipoSeleccionado = selectTipo.value;
+
+            // Limpiar opciones actuales
+            razaSelect.innerHTML = '<option value="">Seleccione</option>';
+
+            // Agregar razas según el tipo seleccionado
+            if (razasPorTipo[tipoSeleccionado]) {
+                razasPorTipo[tipoSeleccionado].forEach(raza => {
+                    const option = document.createElement('option');
+                    option.value = raza;
+                    option.text = raza;
+                    razaSelect.appendChild(option);
+                });
+            }
+        }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<nav th:replace="fragments/header :: navbar"></nav>
+
+<div class="max-w-7xl mx-auto py-16 px-4 sm:px-7 lg:px-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">Registro de Mascotas</h1>
+
+    <form th:action="@{/usuario/mascotas}" method="post" th:object="${entryForm}">
+        <div id="mascotas-container">
+            <div th:each="mascota, iterStat : ${entryForm.mascotas}" class="mascota-form border p-6 mb-8 bg-gray-50 rounded-lg shadow-sm">
+                <input type="hidden" th:field="*{mascotas[__${iterStat.index}__].id}" />
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label class="font-semibold">Nombre</label>
+                        <input type="text" th:field="*{mascotas[__${iterStat.index}__].nombre}" class="w-full border rounded px-3 py-2 mt-1" required /></div>
+
+                    <div>
+                        <label class="block font-medium">Tipo de Animal</label>
+                        <select th:field="*{mascotas[__${iterStat.index}__].tipoAnimal}"
+                                class="w-full border rounded px-3 py-2 mt-1 tipo-animal-select"
+                                onchange="actualizarRazas(this)">
+                            <option value="">Seleccione</option>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-medium">Raza</label>
+                        <select th:field="*{mascotas[__${iterStat.index}__].raza}"
+                                class="w-full border rounded px-3 py-2 mt-1 raza-select">
+                            <option value="">Seleccione</option>
+                        </select>
+                    </div>
+
+                    <div><label class="font-semibold">Color y Marcas</label>
+                        <label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].colorYMarcas}" class="w-full border rounded px-3 py-2 mt-1" required />
+                        </label></div>
+
+                    <div><label class="font-semibold">Edad</label>
+                        <label>
+                            <input type="number" th:field="*{mascotas[__${iterStat.index}__].edad}" class="w-full border rounded px-3 py-2 mt-1" required/>
+                        </label></div>
+
+                    <div><label class="font-semibold">Peso</label>
+                        <label>
+                            <input type="number" step="0.01" th:field="*{mascotas[__${iterStat.index}__].peso}" class="w-full border rounded px-3 py-2 mt-1" />
+                        </label></div>
+
+                    <div><label class="font-semibold">Sexo</label>
+                        <label>
+                            <select  th:field="*{mascotas[__${iterStat.index}__].sexo}" class="w-full border rounded px-3 py-2 mt-1" >
+                                <option value="">Seleccione</option>
+                                <option value="Macho">Macho</option>
+                                <option value="Hembra">Hembra</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div><label class="font-semibold">Número Microchip</label>
+                        <label>
+                            <input type="text" th:field="*{mascotas[__${iterStat.index}__].numeroMicrochip}" class="w-full border rounded px-3 py-2 mt-1" />
+                        </label></div>
+                </div>
+
+                <div class="mt-6">
+                    <h2 class="text-lg font-bold mb-4 text-indigo-600">Cuidados Especiales</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label class="font-semibold">Necesidades especiales</label>
+                            <label>
+                                <input type="text" th:field="*{mascotas[__${iterStat.index}__].necesidadesEspeciales}" class="w-full border rounded px-3 py-2 mt-1" required />
+                            </label></div>
+
+                        <div><label class="font-semibold">Medicamentos</label>
+                            <label>
+                                <input type="text" th:field="*{mascotas[__${iterStat.index}__].medicamentos}" class="w-full border rounded px-3 py-2 mt-1" />
+                            </label></div>
+
+                        <div><label class="font-semibold">Alergias conocidas</label>
+                            <label>
+                                <input type="text" th:field="*{mascotas[__${iterStat.index}__].alergiasConocidas}" class="w-full border rounded px-3 py-2 mt-1" />
+                            </label></div>
+
+                        <div><label class="font-semibold">Condiciones médicas preexistentes</label>
+                            <label>
+                                <input type="text" th:field="*{mascotas[__${iterStat.index}__].condicionesMedicasPreexistentes}" class="w-full border rounded px-3 py-2 mt-1" />
+                            </label></div>
+
+                        <div><label class="font-semibold">Medicamentos actuales</label>
+                            <label>
+                                <input type="text" th:field="*{mascotas[__${iterStat.index}__].medicamentosActuales}" class="w-full border rounded px-3 py-2 mt-1" />
+                            </label></div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h2 class="text-lg font-bold mb-4 text-indigo-600">Historial de Salud</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label class="font-semibold">Historial de vacunación</label>
+                            <label>
+                                <textarea th:field="*{mascotas[__${iterStat.index}__].historialVacunacion}" class="w-full border rounded px-3 py-2 mt-1"></textarea>
+                            </label></div>
+
+                        <div><label class="font-semibold">Información sobre pulgas/garrapatas</label>
+                            <label>
+                                <textarea th:field="*{mascotas[__${iterStat.index}__].informacionPulgasGarrapatas}" class="w-full border rounded px-3 py-2 mt-1"></textarea>
+                            </label></div>
+
+                        <div><label class="font-semibold">Nombre del veterinario</label>
+                            <label>
+
+                                <input type="text" th:field="*{mascotas[__${iterStat.index}__].nombreVeterinario}" class="w-full border rounded px-3 py-2 mt-1" />
+                            </label></div>
+
+                        <div><label class="font-semibold">Teléfono del veterinario</label>
+                            <label>
+                                <input type="text" th:field="*{mascotas[__${iterStat.index}__].telefonoVeterinario}" class="w-full border rounded px-3 py-2 mt-1" />
+                            </label></div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h2 class="text-lg font-bold mb-4 text-indigo-600">Instrucciones de Cuidado</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label class="font-semibold">Horarios de alimentación</label>
+                            <label>
+                                <input type="text" th:field="*{mascotas[__${iterStat.index}__].horariosAlimentacion}" class="w-full border rounded px-3 py-2 mt-1" />
+                            </label></div>
+
+                        <div><label class="font-semibold">Paseos</label>
+                            <label>
+                                <input type="text" th:field="*{mascotas[__${iterStat.index}__].paseos}" class="w-full border rounded px-3 py-2 mt-1" />
+                            </label></div>
+
+                        <div><label class="font-semibold">Actividades favoritas</label>
+                            <label>
+                                <input type="text" th:field="*{mascotas[__${iterStat.index}__].actividades}" class="w-full border rounded px-3 py-2 mt-1" />
+                            </label></div>
+
+                        <div><label class="font-semibold">Contacto de emergencia</label>
+                            <label>
+                                <input type="text" th:field="*{mascotas[__${iterStat.index}__].contactoEmergencia}" class="w-full border rounded px-3 py-2 mt-1" />
+                            </label></div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button type="button" onclick="eliminarMascota(this)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                        Eliminar Mascota
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-8">
+            <button type="button" onclick="agregarMascota()" class="bg-green-500 text-white px-5 py-2 rounded hover:bg-green-600">
+                + Agregar otra mascota
+            </button>
+            <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
+                Continuar a Autorizaciones
+            </button>
+        </div>
+    </form>
+</div>
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>
