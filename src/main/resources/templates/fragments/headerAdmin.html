@@ -1,4 +1,3 @@
-<!-- templates/fragments/headerAdmin.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
@@ -19,41 +18,96 @@
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Poppins', sans-serif;
         }
+        .navbar-gradient {
+            background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 50%, #1e3a8a 100%); /* Deep to bright blue */
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: #facc15; /* Yellow accent */
+            transition: width 0.3s ease-in-out;
+        }
+        .nav-link:hover:after {
+            width: 100%;
+        }
     </style>
 </head>
 
 <body>
 
-<nav th:fragment="navbarAdmin" class="bg-white shadow-lg fixed w-full z-50">
+<nav th:fragment="navbarAdmin" class="navbar-gradient shadow-md fixed w-full z-50">
     <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
-        <div class="flex h-18 items-center justify-between">
+        <div class="flex h-16 items-center justify-between">
             <div class="flex-shrink-0">
-                <a th:href="@{/admin/home}">
-                    <img src="/images/Angeluz.png" alt="Angeluz Logo" class="h-16 w-20">
+                <a th:href="@{/admin/home}" class="flex items-center">
+                    <img src="/images/Angeluz.png" alt="Angeluz Logo" class="h-10 w-auto mr-2">
+                    <span class="font-bold text-xl text-white">Panel Admin</span>
                 </a>
             </div>
 
-            <div class="flex-1 flex justify-center">
-                <div class="hidden md:flex items-center space-x-8">
-                    <a th:href="@{/admin/home}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Inicio</a>
-                    <a th:href="@{/admin/tienda}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Gestion de tienda</a>
-                    <a th:href="@{/admin/mascotas}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Mascotas</a>
-                    <a th:href="@{/admin/reportes}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Reportes</a>
-                </div>
+            <div class="hidden md:flex items-center space-x-6">
+                <a th:href="@{/admin/home}" class="nav-link text-gray-100 hover:text-yellow-300 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Inicio</a>
+                <a th:href="@{/admin/tienda}" class="nav-link text-gray-100 hover:text-yellow-300 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Gestión de tienda</a>
+                <a th:href="@{/admin/mascotas}" class="nav-link text-gray-100 hover:text-yellow-300 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Mascotas</a>
+                <a th:href="@{/admin/reportes}" class="nav-link text-gray-100 hover:text-yellow-300 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Reportes</a>
             </div>
 
             <div class="flex items-center space-x-4">
                 <div sec:authorize="isAuthenticated()">
-                    <a th:href="@{/perfil}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Perfil</a>
+                    <a th:href="@{/perfil}" class="nav-link text-gray-100 hover:text-yellow-300 px-3 py-2 rounded-md text-sm font-medium transition duration-300">
+                        <i class="fas fa-user mr-1"></i> Perfil
+                    </a>
                     <form th:action="@{/logout}" method="post" style="display: inline;">
-                        <button type="submit" class="text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">
-                            Cerrar sesión
+                        <button type="submit" class="nav-link text-gray-100 hover:text-red-400 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none">
+                            <i class="fas fa-sign-out-alt mr-1"></i> Cerrar sesión
                         </button>
                     </form>
+                </div>
+
+                <div class="md:hidden">
+                    <button id="mobile-menu-button-admin" class="text-gray-100 hover:text-yellow-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-expanded="false">
+                        <span class="sr-only">Abrir menú móvil</span>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="md:hidden" id="mobile-menu-admin">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a th:href="@{/admin/home}" class="bg-blue-700 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Inicio</a>
+            <a th:href="@{/admin/tienda}" class="text-gray-100 hover:bg-blue-700 hover:text-yellow-300 block px-3 py-2 rounded-md text-base font-medium">Gestión de tienda</a>
+            <a th:href="@{/admin/mascotas}" class="text-gray-100 hover:bg-blue-700 hover:text-yellow-300 block px-3 py-2 rounded-md text-base font-medium">Mascotas</a>
+            <a th:href="@{/admin/reportes}" class="text-gray-100 hover:bg-blue-700 hover:text-yellow-300 block px-3 py-2 rounded-md text-base font-medium">Reportes</a>
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/perfil}" class="text-gray-100 hover:bg-blue-700 hover:text-yellow-300 block px-3 py-2 rounded-md text-base font-medium"><i class="fas fa-user mr-1"></i> Perfil</a>
+                <form th:action="@{/logout}" method="post" class="block">
+                    <button type="submit" class="text-gray-100 hover:bg-red-700 hover:text-yellow-300 block px-3 py-2 rounded-md text-base font-medium focus:outline-none"><i class="fas fa-sign-out-alt mr-1"></i> Cerrar sesión</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mobileMenuButtonAdmin = document.getElementById('mobile-menu-button-admin');
+        const mobileMenuAdmin = document.getElementById('mobile-menu-admin');
+
+        if (mobileMenuButtonAdmin && mobileMenuAdmin) {
+            mobileMenuButtonAdmin.addEventListener('click', () => {
+                const expanded = mobileMenuButtonAdmin.getAttribute('aria-expanded') === 'true' || false;
+                mobileMenuButtonAdmin.setAttribute('aria-expanded', !expanded);
+                mobileMenuAdmin.classList.toggle('hidden');
+            });
+        }
+    </script>
 </nav>
 
 </body>

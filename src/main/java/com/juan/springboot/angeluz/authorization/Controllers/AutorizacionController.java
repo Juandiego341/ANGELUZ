@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import java.util.Optional; // Importa la clase Optional
 
 @Controller
 @RequestMapping("/moderador")
@@ -27,7 +28,7 @@ public class AutorizacionController {
         if (!model.containsAttribute("entryForm")) {
             return "redirect:/moderador/checkout";
         }
-        model.addAttribute("autorizacionForm", new AutorizacionForm()); // Agregar esta línea
+        model.addAttribute("autorizacionForm", new AutorizacionForm());
         return "autorizacion";
     }
 
@@ -37,8 +38,28 @@ public class AutorizacionController {
             @ModelAttribute("autorizacionForm") AutorizacionForm auth,
             SessionStatus status) {
 
-        auth.setEntryForm(entryForm);
-        autorizacionRepo.save(auth);
+        Optional<AutorizacionForm> existingAuth = autorizacionRepo.findByEntryForm(entryForm);
+        if (existingAuth.isPresent()) {
+            // Si ya existe una autorización para este EntryForm, actualízala
+            AutorizacionForm authToUpdate = existingAuth.get();
+            authToUpdate.setAutorizacionContactoVeterinario(auth.isAutorizacionContactoVeterinario());
+            authToUpdate.setConsentimientoPrimerosAuxilios(auth.isConsentimientoPrimerosAuxilios());
+            authToUpdate.setAutorizacionUsoImagen(auth.isAutorizacionUsoImagen());
+            authToUpdate.setDeclaracionResponsabilidad(auth.isDeclaracionResponsabilidad());
+            authToUpdate.setAutorizoCuidado(auth.isAutorizoCuidado());
+            authToUpdate.setAutorizoDecisionesMedicas(auth.isAutorizoDecisionesMedicas());
+            authToUpdate.setHorariosEntradaSalida(auth.getHorariosEntradaSalida());
+            authToUpdate.setTarifasYPago(auth.getTarifasYPago());
+            authToUpdate.setPoliticasCancelacion(auth.getPoliticasCancelacion());
+            authToUpdate.setReglamentoInterno(auth.getReglamentoInterno());
+            authToUpdate.setFirmaPropietario(auth.getFirmaPropietario());
+            authToUpdate.setFechaFirma(auth.getFechaFirma());
+            autorizacionRepo.save(authToUpdate);
+        } else {
+            // Si no existe, guarda la nueva autorización
+            auth.setEntryForm(entryForm);
+            autorizacionRepo.save(auth);
+        }
         status.setComplete();
         return "redirect:/moderador/confirmacion";
     }

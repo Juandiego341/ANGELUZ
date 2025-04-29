@@ -6,6 +6,7 @@ import com.juan.springboot.angeluz.forms.EntryForm;
 import com.juan.springboot.angeluz.forms.EntryFormRepository;
 import com.juan.springboot.angeluz.forms.Mascota;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/usuario")
@@ -36,13 +38,36 @@ public class UsuarioController {
     public String procesarAutorizacion(
             @ModelAttribute("entryForm") EntryForm entryForm,
             @ModelAttribute("autorizacionForm") AutorizacionForm auth,
+            Principal principal,
             SessionStatus status) {
-        // Asegúrate de que el EntryForm se guarde primero.
-        if (entryForm.getId() == null) { // Check if EntryForm is new
-            entryFormRepository.save(entryForm); // Save EntryForm
+        if (entryForm.getId() == null) {
+            String correoUsuario = principal.getName();
+            entryForm.setCorreo(correoUsuario);
+            entryFormRepository.save(entryForm);
         }
-        auth.setEntryForm(entryForm);
-        autorizacionRepo.save(auth);
+
+        Optional<AutorizacionForm> existingAuth = autorizacionRepo.findByEntryForm(entryForm);
+        if (existingAuth.isPresent()) {
+            // Si ya existe una autorización para este EntryForm, actualízala
+            AutorizacionForm authToUpdate = existingAuth.get();
+            authToUpdate.setAutorizacionContactoVeterinario(auth.isAutorizacionContactoVeterinario());
+            authToUpdate.setConsentimientoPrimerosAuxilios(auth.isConsentimientoPrimerosAuxilios());
+            authToUpdate.setAutorizacionUsoImagen(auth.isAutorizacionUsoImagen());
+            authToUpdate.setDeclaracionResponsabilidad(auth.isDeclaracionResponsabilidad());
+            authToUpdate.setAutorizoCuidado(auth.isAutorizoCuidado());
+            authToUpdate.setAutorizoDecisionesMedicas(auth.isAutorizoDecisionesMedicas());
+            authToUpdate.setHorariosEntradaSalida(auth.getHorariosEntradaSalida());
+            authToUpdate.setTarifasYPago(auth.getTarifasYPago());
+            authToUpdate.setPoliticasCancelacion(auth.getPoliticasCancelacion());
+            authToUpdate.setReglamentoInterno(auth.getReglamentoInterno());
+            authToUpdate.setFirmaPropietario(auth.getFirmaPropietario());
+            authToUpdate.setFechaFirma(auth.getFechaFirma());
+            autorizacionRepo.save(authToUpdate);
+        } else {
+            // Si no existe, guarda la nueva autorización
+            auth.setEntryForm(entryForm);
+            autorizacionRepo.save(auth);
+        }
         status.setComplete();
         return "redirect:/usuario/confirmacion";
     }
@@ -114,7 +139,12 @@ public class UsuarioController {
     @PostMapping("/autorizacion")
     public String guardarFormularioAutorizacionUsuario(
             @ModelAttribute("entryForm") EntryForm entryForm,
+            Principal principal, // Inyecta el objeto Principal
             SessionStatus sessionStatus) {
+        if (entryForm.getCorreo() == null || entryForm.getCorreo().isEmpty()) {
+            String correoUsuario = principal.getName();
+            entryForm.setCorreo(correoUsuario);
+        }
         entryFormRepository.save(entryForm);
         sessionStatus.setComplete();
         return "redirect:/usuario/reserva-confirmada";
@@ -133,7 +163,7 @@ public class UsuarioController {
         model.addAttribute("autorizacionForm", new AutorizacionForm());
         return "autorizacion_Usuario";
     }
-    @GetMapping("/usuario/mis-reservas")
+    @GetMapping("/misReservas")
     public String verMisReservas(Model model, Principal principal) {
         String correoUsuario = principal.getName(); // El correo del usuario logueado
         List<EntryForm> reservas = entryFormRepository.findByCorreo(correoUsuario);
@@ -141,5 +171,20 @@ public class UsuarioController {
         model.addAttribute("reservasUsuario", reservas);
         return "misReservas";
     }
+    @GetMapping("/registro/detalle/{id}")
+    public String mostrarDetallesRegistro(@PathVariable Long id, Model model, Authentication authentication) {
+        String correoUsuario = authentication.getName();
+        Optional<EntryForm> registro = entryFormRepository.findByIdWithMascotas(id);
 
+        if (registro.isPresent()) {
+            EntryForm entryForm = registro.get();
+            if (entryForm.getCorreo().equals(correoUsuario)) {
+                model.addAttribute("registro", entryForm);
+                return "detallesDeReserva"; // Asegúrate que este nombre coincida con tu archivo HTML
+            }
+        }
+
+        return "redirect:/usuario/mis-reservas"; // Corregido para coincidir con tu mapping existente
+    }
 }
+

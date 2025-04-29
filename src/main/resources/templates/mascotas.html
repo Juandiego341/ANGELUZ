@@ -1,86 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-
+<head th:replace="fragments/headerModerator :: headerModerator">
     <meta charset="UTF-8">
     <title>Registro de Mascotas</title>
-    <script defer>
-        function agregarMascota() {
-            const container = document.getElementById('mascotas-container');
-            const total = container.children.length;
-            const primeraMascota = container.children[0];
-            const nuevaMascota = primeraMascota.cloneNode(true);
-
-            // Limpiar los campos del formulario clonado
-            nuevaMascota.querySelectorAll('input, textarea, select').forEach(el => {
-                if (el.type === 'checkbox' || el.type === 'radio') {
-                    el.checked = false;
-                } else {
-                    el.value = '';
-                }
-            });
-
-            // Actualizar los índices de los campos del formulario clonado
-            nuevaMascota.innerHTML = nuevaMascota.innerHTML.replace(/\[\d+\]/g, `[${total}]`);
-            nuevaMascota.innerHTML = nuevaMascota.innerHTML.replace(/__\d+__/g, `__${total}__`);
-
-            // Asignar nuevos IDs a los elementos clonados
-            nuevaMascota.querySelectorAll('[id]').forEach(el => {
-                const nuevoId = el.id.replace(/\d+/, total);
-                el.id = nuevoId;
-            });
-
-            container.appendChild(nuevaMascota);
-
-            // Asignar eventos a los selects de tipo de animal recién clonados
-            const tipoSelect = nuevaMascota.querySelector('.tipo-animal-select');
-            if (tipoSelect) {
-                tipoSelect.addEventListener('change', function () {
-                    actualizarRazas(this);
-                });
-            }
-
-            // Limpiar el select de razas
-            const razaSelect = nuevaMascota.querySelector('.raza-select');
-            if (razaSelect) {
-                razaSelect.innerHTML = '<option value="">Seleccione</option>';
-            }
-        }
-
-        function eliminarMascota(boton) {
-            const container = document.getElementById('mascotas-container');
-            if (container.children.length > 1) {
-                boton.closest('.mascota-form').remove();
-            } else {
-                alert("Debe haber al menos una mascota.");
-            }
-        }
-
-        const razasPorTipo = {
-            Perro: ["Labrador", "Golden Retriever", "Poodle", "Bulldog", "Chihuahua"],
-            Gato: ["Siames", "Persa", "Maine Coon", "Bengalí", "Esfinge"]
-        };
-
-        function actualizarRazas(selectTipo) {
-            const container = selectTipo.closest('.mascota-form');
-            const razaSelect = container.querySelector('.raza-select');
-            const tipoSeleccionado = selectTipo.value;
-
-            // Limpiar opciones actuales
-            razaSelect.innerHTML = '<option value="">Seleccione</option>';
-
-            // Agregar razas según el tipo seleccionado
-            if (razasPorTipo[tipoSeleccionado]) {
-                razasPorTipo[tipoSeleccionado].forEach(raza => {
-                    const option = document.createElement('option');
-                    option.value = raza;
-                    option.text = raza;
-                    razaSelect.appendChild(option);
-                });
-            }
-        }
-    </script>
-
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
@@ -95,11 +17,9 @@
                 <input type="hidden" th:field="*{mascotas[__${iterStat.index}__].id}" />
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Información básica -->
                     <div><label class="font-semibold">Nombre</label>
                         <input type="text" th:field="*{mascotas[__${iterStat.index}__].nombre}" class="w-full border rounded px-3 py-2 mt-1" required /></div>
 
-                    <!-- Tipo de Animal -->
                     <div>
                         <label class="block font-medium">Tipo de Animal</label>
                         <select th:field="*{mascotas[__${iterStat.index}__].tipoAnimal}"
@@ -111,7 +31,6 @@
                         </select>
                     </div>
 
-                    <!-- Raza -->
                     <div>
                         <label class="block font-medium">Raza</label>
                         <select th:field="*{mascotas[__${iterStat.index}__].raza}"
@@ -151,7 +70,6 @@
                         </label></div>
                 </div>
 
-                <!-- Necesidades y cuidados especiales -->
                 <div class="mt-6">
                     <h2 class="text-lg font-bold mb-4 text-indigo-600">Cuidados Especiales</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -182,7 +100,6 @@
                     </div>
                 </div>
 
-                <!-- Salud -->
                 <div class="mt-6">
                     <h2 class="text-lg font-bold mb-4 text-indigo-600">Historial de Salud</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -208,7 +125,6 @@
                     </div>
                 </div>
 
-                <!-- Instrucciones de cuidado -->
                 <div class="mt-6">
                     <h2 class="text-lg font-bold mb-4 text-indigo-600">Instrucciones de Cuidado</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -234,7 +150,6 @@
                     </div>
                 </div>
 
-                <!-- Botón para eliminar -->
                 <div class="mt-6 flex justify-end">
                     <button type="button" onclick="eliminarMascota(this)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
                         Eliminar Mascota
@@ -243,7 +158,6 @@
             </div>
         </div>
 
-        <!-- Agregar / Guardar -->
         <div class="flex justify-between items-center mt-8">
             <button type="button" onclick="agregarMascota()" class="bg-green-500 text-white px-5 py-2 rounded hover:bg-green-600">
                 + Agregar otra mascota
@@ -254,5 +168,82 @@
         </div>
     </form>
 </div>
+
+<script>
+    function agregarMascota() {
+        const container = document.getElementById('mascotas-container');
+        const total = container.children.length;
+        const primeraMascota = container.children[0];
+        const nuevaMascota = primeraMascota.cloneNode(true);
+
+        // Limpiar los campos del formulario clonado
+        nuevaMascota.querySelectorAll('input, textarea, select').forEach(el => {
+            if (el.type === 'checkbox' || el.type === 'radio') {
+                el.checked = false;
+            } else {
+                el.value = '';
+            }
+        });
+
+        // Actualizar los índices de los campos del formulario clonado
+        nuevaMascota.innerHTML = nuevaMascota.innerHTML.replace(/\[\d+\]/g, `[${total}]`);
+        nuevaMascota.innerHTML = nuevaMascota.innerHTML.replace(/__\d+__/g, `__${total}__`);
+
+        // Asignar nuevos IDs a los elementos clonados
+        nuevaMascota.querySelectorAll('[id]').forEach(el => {
+            const nuevoId = el.id.replace(/\d+/, total);
+            el.id = nuevoId;
+        });
+
+        container.appendChild(nuevaMascota);
+
+        // Asignar eventos a los selects de tipo de animal recién clonados
+        const tipoSelect = nuevaMascota.querySelector('.tipo-animal-select');
+        if (tipoSelect) {
+            tipoSelect.addEventListener('change', function () {
+                actualizarRazas(this);
+            });
+        }
+
+        // Limpiar el select de razas
+        const razaSelect = nuevaMascota.querySelector('.raza-select');
+        if (razaSelect) {
+            razaSelect.innerHTML = '<option value="">Seleccione</option>';
+        }
+    }
+
+    function eliminarMascota(boton) {
+        const container = document.getElementById('mascotas-container');
+        if (container.children.length > 1) {
+            boton.closest('.mascota-form').remove();
+        } else {
+            alert("Debe haber al menos una mascota.");
+        }
+    }
+
+    const razasPorTipo = {
+        Perro: ["Labrador", "Golden Retriever", "Poodle", "Bulldog", "Chihuahua"],
+        Gato: ["Siames", "Persa", "Maine Coon", "Bengalí", "Esfinge"]
+    };
+
+    function actualizarRazas(selectTipo) {
+        const container = selectTipo.closest('.mascota-form');
+        const razaSelect = container.querySelector('.raza-select');
+        const tipoSeleccionado = selectTipo.value;
+
+        // Limpiar opciones actuales
+        razaSelect.innerHTML = '<option value="">Seleccione</option>';
+
+        // Agregar razas según el tipo seleccionado
+        if (razasPorTipo[tipoSeleccionado]) {
+            razasPorTipo[tipoSeleccionado].forEach(raza => {
+                const option = document.createElement('option');
+                option.value = raza;
+                option.text = raza;
+                razaSelect.appendChild(option);
+            });
+        }
+    }
+</script>
 </body>
 </html>

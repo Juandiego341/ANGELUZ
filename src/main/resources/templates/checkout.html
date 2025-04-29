@@ -1,21 +1,14 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/headerModerator :: headerModerator">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Checkout</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        function toggleFechaFields() {
-            const tipo = document.getElementById("queVaASer").value;
-            document.getElementById("fechaFields").classList.toggle("hidden", tipo !== "Alojamiento");
-        }
-        window.addEventListener("DOMContentLoaded", toggleFechaFields);
-    </script>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen flex flex-col">
 
-<!-- Navbar -->
 <nav th:replace="fragments/headerModerator :: navbarModerator" class="mb-12"></nav>
 
 <main class="max-w-7xl mx-auto py-16 px-4 sm:px-7 lg:px-8">
@@ -23,7 +16,6 @@
         <h1 class="text-4xl font-bold text-gray-900 mb-4">Checkout</h1>
         <form th:action="@{/moderador/checkout}" th:object="${entryForm}" method="post" class="space-y-8">
 
-            <!-- GRID: Datos del propietario -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="nombrePropietario" class="block text-sm font-medium text-gray-700">Nombre del Propietario</label>
@@ -52,7 +44,6 @@
                 </div>
             </div>
 
-            <!-- Selección de servicio -->
             <div>
                 <label for="queVaASer" class="block text-sm font-medium text-gray-700">¿Qué servicio desea?</label>
                 <select id="queVaASer" th:field="*{queVaASer}" onchange="toggleFechaFields()"
@@ -63,8 +54,8 @@
                 </select>
             </div>
 
-            <!-- Fechas (solo para Alojamiento) -->
-            <div id="fechaFields" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+            <div id="fechaFields" class="grid grid-cols-1 md:grid-cols-2 gap-6"
+                 th:classappend="${entryForm.queVaASer != 'Alojamiento'} ? 'hidden'">
                 <div>
                     <label for="fechaInicio" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
                     <input id="fechaInicio" type="date" th:field="*{fechaInicio}"
@@ -77,7 +68,6 @@
                 </div>
             </div>
 
-            <!-- Botón -->
             <div class="text-right">
                 <button type="submit"
                         class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -89,5 +79,15 @@
 </main>
 
 <footer th:replace="fragments/footer :: footer" class="mt-12"></footer>
+
+<script>
+    function toggleFechaFields() {
+        const tipo = document.getElementById("queVaASer").value;
+        document.getElementById("fechaFields").classList.toggle("hidden", tipo !== "Alojamiento");
+    }
+
+    window.addEventListener("DOMContentLoaded", toggleFechaFields);
+</script>
+
 </body>
 </html>

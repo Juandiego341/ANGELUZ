@@ -5,40 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.2); /* White with slight transparency */
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(7.7px);
+            -webkit-backdrop-filter: blur(7.7px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .accent-button {
+            background-color: #6366F1; /* Blue-500 from index */
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .accent-button:hover {
+            background-color: #4F46E5; /* Blue-600 from index */
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen flex items-center justify-center">
-<div class="bg-white rounded-lg shadow-xl p-10 w-full max-w-md">
-    <div class="text-center mb-8">
-        <img src="/images/Angeluz.png" alt="Angeluz Logo" class="h-16 w-20 mx-auto">
+<body class="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 min-h-screen flex items-center justify-center">
+<div class="glassmorphism rounded-xl shadow-lg p-12 w-full max-w-md">
+    <div class="text-center mb-10">
+        <img th:src="@{/images/Angeluz.png}" alt="Angeluz Logo" class="h-20 w-auto mx-auto mb-4">
         <h2 class="text-3xl font-bold text-gray-800">Crear una cuenta</h2>
         <p class="text-gray-600">Por favor, completa el formulario</p>
     </div>
     <form th:action="@{/register}" method="post">
-        <div class="mb-4">
-            <label for="nombre" class="block text-gray-700 font-medium mb-2">Nombre completo</label>
-            <input type="text" id="nombre" name="nombre" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-        </div>
-        <div class="mb-4">
-            <label for="username" class="block text-gray-700 font-medium mb-2">Usuario</label>
-            <input type="text" id="username" name="username" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-        </div>
-        <div class="mb-4">
-            <label for="email" class="block text-gray-700 font-medium mb-2">Correo electrónico</label>
-            <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-        </div>
-        <div class="mb-4">
-            <label for="password" class="block text-gray-700 font-medium mb-2">Contraseña</label>
-            <input type="password" id="password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        <div class="mb-6">
+            <label for="nombre" class="block text-gray-700 font-semibold mb-2">Nombre completo</label>
+            <input type="text" id="nombre" name="nombre" class="w-full px-4 py-3 rounded-md bg-white bg-opacity-75 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
         </div>
         <div class="mb-6">
-            <label for="confirmPassword" class="block text-gray-700 font-medium mb-2">Confirmar contraseña</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <label for="username" class="block text-gray-700 font-semibold mb-2">Usuario</label>
+            <input type="text" id="username" name="username" class="w-full px-4 py-3 rounded-md bg-white bg-opacity-75 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
         </div>
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-colors duration-300">
+        <div class="mb-6">
+            <label for="email" class="block text-gray-700 font-semibold mb-2">Correo electrónico</label>
+            <input type="email" id="email" name="email" class="w-full px-4 py-3 rounded-md bg-white bg-opacity-75 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div class="mb-6">
+            <label for="password" class="block text-gray-700 font-semibold mb-2">Contraseña</label>
+            <input type="password" id="password" name="password" class="w-full px-4 py-3 rounded-md bg-white bg-opacity-75 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <button type="submit" class="accent-button w-full text-white font-bold py-3 rounded-md shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             Registrarse
         </button>
     </form>
-    <div class="text-center mt-4">
+    <div class="text-center mt-6">
         <p class="text-gray-600">¿Ya tienes una cuenta?
             <a href="/login" class="text-blue-600 hover:underline">Inicia sesión</a>
         </p>
