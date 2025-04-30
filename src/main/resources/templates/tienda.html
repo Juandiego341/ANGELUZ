@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 
-    <head th:replace="fragments/header :: header">
+<head>
     <meta charset="UTF-8">
     <title>Tienda Angeluz</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -85,7 +85,7 @@
     </style>
 </head>
 <body class="bg-gray-100 text-gray-900">
-
+<head th:replace="fragments/header :: header"></head>
 <nav th:replace="fragments/header :: navbar"></nav>
 
 <main class="max-w-7xl mx-auto px-6 py-16">

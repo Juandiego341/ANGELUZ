@@ -1,22 +1,23 @@
-package com.juan.springboot.angeluz.shop;
+package com.juan.springboot.angeluz.Admin.servicios;
 
 import jakarta.persistence.*;
 
 @Entity
-public class Producto {
+public class Servicio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nombre;
+
     private String descripcion;
+
     private Double precio;
-    private String categoria; // Ej: "juguete", "comida", etc.
-    @Lob
-    @Column(name = "imagen_url", columnDefinition = "TEXT")
-    private String imagenUrl;
-    private Long stock;
+
+    private String tipo; // Alojamiento, Peluquería, Producto, etc.
+
+    // Getters y Setters
 
     public Long getId() {
         return id;
@@ -50,27 +51,11 @@ public class Producto {
         this.precio = precio;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    public String getImagenUrl() {
-        return imagenUrl;
-    }
-
-    public void setImagenUrl(String imagenUrl) {
-        this.imagenUrl = imagenUrl;
-    }
-
-    public Long getStock() {
-        return stock;
-    }
-
-    public void setStock(Long stock) {
-        this.stock = stock;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

@@ -186,5 +186,30 @@ public class UsuarioController {
 
         return "redirect:/usuario/mis-reservas"; // Corregido para coincidir con tu mapping existente
     }
+    @PostMapping("/registro/eliminar/{id}")
+    public String eliminarRegistro(@PathVariable Long id, RedirectAttributes redirectAttributes, Principal principal) {
+        String correoUsuario = principal.getName();
+        Optional<EntryForm> registroAEliminar = entryFormRepository.findById(id);
+
+        if (registroAEliminar.isPresent()) {
+            EntryForm entryForm = registroAEliminar.get();
+            if (entryForm.getCorreo().equals(correoUsuario)) {
+                try {
+                    entryFormRepository.delete(entryForm);
+                    redirectAttributes.addFlashAttribute("mensaje", "La reserva se ha eliminado correctamente.");
+                } catch (Exception e) {
+                    redirectAttributes.addFlashAttribute("error", "Hubo un error al eliminar la reserva.");
+                    // Opcional: Log the error
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("error", "No tienes permiso para eliminar esta reserva.");
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "La reserva que intentas eliminar no existe.");
+        }
+
+        return "redirect:/usuario/misReservas";
+    }
+
 }
 

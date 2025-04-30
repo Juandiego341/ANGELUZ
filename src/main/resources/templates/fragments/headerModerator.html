@@ -55,7 +55,7 @@
       <div class="hidden md:flex items-center space-x-6">
         <a th:href="@{/moderador/home}" class="nav-link text-gray-100 hover:text-yellow-300 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Inicio</a>
         <a th:href="@{/moderador/consultas}" class="nav-link text-gray-100 hover:text-yellow-300 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Consultas</a>
-        <a th:href="@{/moderador/mascotas}" class="nav-link text-gray-100 hover:text-yellow-300 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Citas</a>
+        <a th:href="@{/moderador/mascota}" class="nav-link text-gray-100 hover:text-yellow-300 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Mascotas</a>
         <a th:href="@{/moderador/entradasysalidas}" class="nav-link text-gray-100 hover:text-yellow-300 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Entradas y Salidas</a>
       </div>
 
@@ -85,7 +85,7 @@
     <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
       <a th:href="@{/moderador/home}" class="bg-blue-700 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Inicio</a>
       <a th:href="@{/moderador/consultas}" class="text-gray-100 hover:bg-blue-700 hover:text-yellow-300 block px-3 py-2 rounded-md text-base font-medium">Consultas</a>
-      <a th:href="@{/moderador/mascotas}" class="text-gray-100 hover:bg-blue-700 hover:text-yellow-300 block px-3 py-2 rounded-md text-base font-medium">Citas</a>
+      <a th:href="@{/moderador/mascota}" class="text-gray-100 hover:bg-blue-700 hover:text-yellow-300 block px-3 py-2 rounded-md text-base font-medium">Mascotas</a>
       <a th:href="@{/moderador/entradasysalidas}" class="text-gray-100 hover:bg-blue-700 hover:text-yellow-300 block px-3 py-2 rounded-md text-base font-medium">Entradas y Salidas</a>
       <div sec:authorize="isAuthenticated()">
         <a th:href="@{/perfil}" class="text-gray-100 hover:bg-blue-700 hover:text-yellow-300 block px-3 py-2 rounded-md text-base font-medium"><i class="fas fa-user mr-1"></i> Perfil</a>

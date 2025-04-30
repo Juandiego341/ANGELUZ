@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="fragments/headerAdmin :: headerAdmin">
+    <meta charset="UTF-8">
+    <title>Servicios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+<nav th:replace="fragments/headerAdmin :: navbarAdmin"></nav>
+
+<div class="container mx-auto px-4 py-10 flex-grow">
+    <div class="bg-white p-8 rounded shadow-md">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">Lista de Servicios</h1>
+            <a href="/admin/servicios/nuevo" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                + Nuevo Servicio
+            </a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-left text-sm text-gray-700">
+                <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="px-4 py-2">Nombre</th>
+                    <th class="px-4 py-2">Descripción</th>
+                    <th class="px-4 py-2">Precio</th>
+                    <th class="px-4 py-2">Tipo</th>
+                    <th class="px-4 py-2 text-center">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="servicio : ${servicios}" class="border-b hover:bg-gray-50">
+                    <td class="px-4 py-2" th:text="${servicio.nombre}"></td>
+                    <td class="px-4 py-2" th:text="${servicio.descripcion}"></td>
+                    <td class="px-4 py-2" th:text="${#numbers.formatDecimal(servicio.precio, 1, 'POINT', 2, 'NONE')} + ' $'"></td>
+                    <td class="px-4 py-2" th:text="${servicio.tipo}"></td>
+                    <td class="px-4 py-2 text-center space-x-2">
+                        <a th:href="@{'/admin/servicios/editar/' + ${servicio.id}}" class="text-blue-600 hover:underline">
+                            Editar
+                        </a>
+                        <a th:href="@{'/admin/servicios/eliminar/' + ${servicio.id}}" class="text-red-600 hover:underline"
+                           onclick="return confirm('¿Estás seguro de que deseas eliminar este servicio?');">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(servicios)}">
+                    <td colspan="5" class="px-4 py-4 text-center text-gray-500">No hay servicios registrados.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

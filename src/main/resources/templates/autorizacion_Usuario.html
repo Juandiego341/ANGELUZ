@@ -3,52 +3,143 @@
 <head th:replace="fragments/header :: header">
     <meta charset="UTF-8">
     <title>Autorizaciones y Términos</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Estilos personalizados muy específicos si son necesarios */
+    </style>
 </head>
 <body class="bg-gray-100">
 <nav th:replace="fragments/header :: navbar"></nav>
-<div class="max-w-xl mx-auto py-12">
-    <h1 class="text-3xl font-bold mb-6">Autorizaciones y Términos</h1>
-    <form th:action="@{/usuario/autorizaciones}" th:object="${autorizacionForm}" method="post" class="bg-white p-6 rounded-lg shadow space-y-4">
-        <div class="space-y-2">
-            <label for="autorizacionContactoVeterinario"><input type="checkbox" id="autorizacionContactoVeterinario" th:field="*{autorizacionContactoVeterinario}"/> Autorizo contacto a veterinario en emergencia</label><br/>
-            <label for="consentimientoPrimerosAuxilios"><input type="checkbox"  id="consentimientoPrimerosAuxilios" th:field="*{consentimientoPrimerosAuxilios}"/> Consentimiento para primeros auxilios básicos</label><br/>
-            <label for="autorizacionUsoImagen"><input type="checkbox" id="autorizacionUsoImagen" th:field="*{autorizacionUsoImagen}"/> Autorizo uso de imagen en redes (opcional)</label><br/>
-            <label for="declaracionResponsabilidad"><input type="checkbox" id="declaracionResponsabilidad" th:field="*{declaracionResponsabilidad}"/> Declaro responsabilidad por daños a terceros</label><br/>
-            <label for="autorizoCuidado"><input type="checkbox" id="autorizoCuidado" th:field="*{autorizoCuidado}"/> Autorizo cuidado de mi mascota</label><br/>
-            <label for="autorizoDecisionesMedicas"><input type="checkbox" id="autorizoDecisionesMedicas" th:field="*{autorizoDecisionesMedicas}"/> Autorizo decisiones médicas en emergencia</label>
+<div class="max-w-2xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+        <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">
+                Autorizaciones y Términos
+            </h2>
+            <p class="mt-1 text-sm text-gray-500">
+                Por favor, revisa y acepta los siguientes términos y autorizaciones.
+            </p>
         </div>
-        <div>
-            <label  for="horariosEntradaSalida" class="block font-medium">Horarios de entrada y salida acordados:</label>
-            <input type="text" id="horariosEntradaSalida" th:field="*{horariosEntradaSalida}" class="w-full border rounded px-3 py-2"/>
-        </div>
-        <div>
-            <label for="tarifasYPago" class="block font-medium">Tarifas y políticas de pago aceptadas:</label>
-            <textarea id="tarifasYPago" th:field="*{tarifasYPago}" class="w-full border rounded px-3 py-2"></textarea>
-        </div>
-        <div>
-            <label for="politicasCancelacion" class="block font-medium">Políticas de cancelación aceptadas:</label>
-            <textarea  id="politicasCancelacion" th:field="*{politicasCancelacion}" class="w-full border rounded px-3 py-2"></textarea>
-        </div>
-        <div>
-            <label for="reglamentoInterno" class="block font-medium">Reglamento interno aceptado:</label>
-            <textarea id="reglamentoInterno" th:field="*{reglamentoInterno}" class="w-full border rounded px-3 py-2"></textarea>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <label for="firmaPropietario" class="block font-medium">Firma del propietario</label>
-                <input type="text" id="firmaPropietario" th:field="*{firmaPropietario}" class="w-full border rounded px-3 py-2"/>
-            </div>
-            <div>
-                <label class="block font-medium">Fecha</label>
-                <input type="date" th:field="*{fechaFirma}" class="w-full border rounded px-3 py-2"/>
+        <div class="px-4 py-5 sm:p-6">
+            <form th:action="@{/usuario/autorizaciones}" th:object="${autorizacionForm}" method="post" class="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+                <div class="sm:col-span-2">
+                    <p class="block text-sm font-medium text-gray-700">Autorizaciones:</p>
+                    <div class="mt-2 space-y-2">
+                        <div class="relative flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="autorizacionContactoVeterinario" th:field="*{autorizacionContactoVeterinario}" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="autorizacionContactoVeterinario" class="font-medium text-gray-700">Autorizo contacto a veterinario en emergencia</label>
+                            </div>
+                        </div>
+                        <div class="relative flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="consentimientoPrimerosAuxilios" th:field="*{consentimientoPrimerosAuxilios}" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="consentimientoPrimerosAuxilios" class="font-medium text-gray-700">Consentimiento para primeros auxilios básicos</label>
+                            </div>
+                        </div>
+                        <div class="relative flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="autorizacionUsoImagen" th:field="*{autorizacionUsoImagen}" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="autorizacionUsoImagen" class="font-medium text-gray-700">Autorizo uso de imagen en redes (opcional)</label>
+                            </div>
+                        </div>
+                        <div class="relative flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="declaracionResponsabilidad" th:field="*{declaracionResponsabilidad}" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="declaracionResponsabilidad" class="font-medium text-gray-700">Declaro responsabilidad por daños a terceros</label>
+                            </div>
+                        </div>
+                        <div class="relative flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="autorizoCuidado" th:field="*{autorizoCuidado}" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="autorizoCuidado" class="font-medium text-gray-700">Autorizo cuidado de mi mascota</label>
+                            </div>
+                        </div>
+                        <div class="relative flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="autorizoDecisionesMedicas" th:field="*{autorizoDecisionesMedicas}" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="autorizoDecisionesMedicas" class="font-medium text-gray-700">Autorizo decisiones médicas en emergencia</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            </div>
+                <div class="sm:col-span-2">
+                    <label for="horariosEntradaSalida" class="block text-sm font-medium text-gray-700">
+                        Horarios de entrada y salida acordados:
+                    </label>
+                    <div class="mt-1">
+                        <input type="text" id="horariosEntradaSalida" th:field="*{horariosEntradaSalida}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                    </div>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label for="tarifasYPago" class="block text-sm font-medium text-gray-700">
+                        Tarifas y políticas de pago aceptadas:
+                    </label>
+                    <div class="mt-1">
+                        <textarea id="tarifasYPago" th:field="*{tarifasYPago}" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"></textarea>
+                    </div>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label for="politicasCancelacion" class="block text-sm font-medium text-gray-700">
+                        Políticas de cancelación aceptadas:
+                    </label>
+                    <div class="mt-1">
+                        <textarea id="politicasCancelacion" th:field="*{politicasCancelacion}" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"></textarea>
+                    </div>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label for="reglamentoInterno" class="block text-sm font-medium text-gray-700">
+                        Reglamento interno aceptado:
+                    </label>
+                    <div class="mt-1">
+                        <textarea id="reglamentoInterno" th:field="*{reglamentoInterno}" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"></textarea>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="firmaPropietario" class="block text-sm font-medium text-gray-700">
+                        Firma del propietario
+                    </label>
+                    <div class="mt-1">
+                        <input type="text" id="firmaPropietario" th:field="*{firmaPropietario}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="fechaFirma" class="block text-sm font-medium text-gray-700">
+                        Fecha
+                    </label>
+                    <div class="mt-1">
+                        <input type="date" id="fechaFirma" th:field="*{fechaFirma}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                    </div>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <div class="flex justify-end">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Finalizar y Guardar
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="text-right">
-            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Finalizar y Guardar</button>
-        </div>
-    </form>
+    </div>
 </div>
 <footer th:replace="fragments/footer :: footer"></footer>
 </body>

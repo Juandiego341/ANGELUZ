@@ -4,6 +4,65 @@
     <meta charset="UTF-8">
     <title>Mis Reservas</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .reservas-container {
+            display: flex;
+            overflow-x: auto; /* Permite el desplazamiento horizontal si hay muchas tarjetas */
+            gap: 1rem; /* Espacio entre las tarjetas */
+            padding-bottom: 2rem; /* Espacio para la sombra si es visible */
+        }
+
+        .card-container {
+            position: relative;
+            min-width: 300px; /* Ancho mínimo para cada tarjeta */
+            flex: 0 0 auto; /* No permitir que se encojan o crezcan demasiado */
+        }
+
+        .actions-menu {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+            z-index: 20; /* Asegura que esté por encima de otras tarjetas */
+        }
+
+        .card-container:hover .actions-menu,
+        .card-container.active .actions-menu {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .actions-menu a,
+        .actions-menu button {
+            display: block;
+            padding: 0.5rem 0.75rem;
+
+            border-radius: 0.25rem;
+            text-align: left;
+            width: 100%;
+        }
+
+        .actions-menu a:hover,
+        .actions-menu button:hover {
+            background-color: #f2f2f2;
+        }
+
+        .actions-menu form {
+            margin-bottom: 0;
+        }
+    </style>
+    <script>
+        function toggleActions(elementId) {
+            const cardContainer = document.getElementById(`card-${elementId}`);
+            cardContainer.classList.toggle('active');
+        }
+    </script>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
 
@@ -15,56 +74,43 @@
 
     <div th:if="${#lists.isEmpty(reservasUsuario)}" class="bg-white shadow rounded-lg p-6 text-center text-gray-500">
         <p class="text-lg mb-4">Aún no has realizado ningúna reserva.</p>
-        <a th:href="@{/usuario/reserva}" class="inline-flex items-center px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+        <a th:href="@{/usuario/reserva}"
+           class="inline-flex items-center px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
+            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
             Nuevo Registro
         </a>
     </div>
 
-    <div th:if="${!#lists.isEmpty(reservasUsuario)}">
-        <div th:if="${#lists.size(reservasUsuario) < 5}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div th:each="registro : ${reservasUsuario}" class="bg-white shadow rounded-lg overflow-hidden border border-gray-200">
-                <div class="p-6">
-                    <h3 class="text-lg font-semibold text-blue-600 mb-2">Registro #<span th:text="${registro.getId()}"></span></h3>
-                    <p class="text-gray-600 mb-1"><strong class="font-semibold text-blue-700">Propietario:</strong> <span th:text="${registro.getNombrePropietario()}"></span></p>
-                    <p class="text-gray-600 mb-1"><strong class="font-semibold text-blue-700">Correo:</strong> <span th:text="${registro.getCorreo()}"></span></p>
-                    <p class="text-gray-600 mb-1"><strong class="font-semibold text-blue-700">Inicio:</strong> <span th:text="${registro.getFechaInicio() != null ? #temporals.format(registro.getFechaInicio(), 'dd/MM/yyyy') : 'No asignada'}"></span></p>
-                    <p class="text-gray-600 mb-3"><strong class="font-semibold text-blue-700">Fin:</strong> <span th:text="${registro.getFechaFin() != null ? #temporals.format(registro.getFechaFin(), 'dd/MM/yyyy') : 'No asignada'}"></span></p>
-                    <div class="text-right">
-                        <a th:href="@{/usuario/registro/detalle/{id}(id=${registro.getId()})}" class="inline-flex items-center px-3 py-2 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
-                            Ver Detalles
-                            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div th:if="${!#lists.isEmpty(reservasUsuario)}" class="reservas-container">
+        <div th:each="registro : ${reservasUsuario}"
+             th:id="'card-' + ${registro.getId()}"
+             class="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200 p-6 card-container">
+            <h3 class="text-xl font-semibold text-blue-700 mb-2">Registro #<span
+                    th:text="${registro.getId()}"></span></h3>
+            <p class="text-gray-600 mb-1"><strong class="font-semibold text-blue-600">Propietario:</strong> <span
+                    th:text="${registro.getNombrePropietario()}"></span></p>
+            <p class="text-gray-600 mb-1"><strong class="font-semibold text-blue-600">Inicio:</strong> <span
+                    th:text="${registro.getFechaInicio() != null ? #temporals.format(registro.getFechaInicio(), 'dd/MM/yyyy') : 'No asignada'}"></span>
+            </p>
+            <p class="text-gray-600 mb-3"><strong class="font-semibold text-blue-600">Fin:</strong> <span
+                    th:text="${registro.getFechaFin() != null ? #temporals.format(registro.getFechaFin(), 'dd/MM/yyyy') : 'No asignada'}"></span>
+            </p>
 
-        <div th:if="${#lists.size(reservasUsuario) >= 5}" class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-blue-500 uppercase tracking-wider">Propietario</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-blue-500 uppercase tracking-wider">Correo</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-blue-500 uppercase tracking-wider">Inicio</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-blue-500 uppercase tracking-wider">Fin</th>
-                    <th scope="col" class="relative px-6 py-3">
-                        <span class="sr-only">Detalles</span>
-                    </th>
-                </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                <tr th:each="registro : ${reservasUsuario}" class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-700" th:text="${registro.getNombrePropietario()}"></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600" th:text="${registro.getCorreo()}"></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-700" th:text="${registro.getFechaInicio() != null ? #temporals.format(registro.getFechaInicio(), 'dd/MM/yyyy') : 'No asignada'}"></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-700" th:text="${registro.getFechaFin() != null ? #temporals.format(registro.getFechaFin(), 'dd/MM/yyyy') : 'No asignada'}"></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a th:href="@{/usuario/registro/detalle/{id}(id=${registro.getId()})}" class="text-blue-600 hover:text-blue-800">Ver Detalles</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="actions-menu">
+                <a th:href="@{/usuario/registro/detalle/{id}(id=${registro.getId()})}"
+                   class="text-blue-600 hover:bg-blue-100">
+                    Ver Detalles
+                </a>
+                <form th:action="@{/usuario/registro/eliminar/{id}(id=${registro.getId()})}" method="post">
+                    <button type="submit" class="text-red-500 hover:bg-red-100 focus:outline-none"
+                            onclick="return confirm('¿Estás seguro de que deseas eliminar esta reserva?')">
+                        Eliminar
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

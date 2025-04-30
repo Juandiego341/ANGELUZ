@@ -18,8 +18,7 @@ import java.util.Optional;
 public class AdminMascotasController {
 
     @Autowired
-    private MascotaRepository mascotaRepository; // Asegúrate de tener el repositorio correcto
-
+    private MascotaRepository mascotaRepository;
     @GetMapping("/fichas")
     public String listarFichasTecnicas(@RequestParam(value = "raza", required = false) String filtroRaza, Model model) {
         List<Mascota> mascotas;
