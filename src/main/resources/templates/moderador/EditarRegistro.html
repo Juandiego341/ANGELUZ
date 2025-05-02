@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head th:replace="fragments/headerModerator :: headerModerator">
-
     <meta charset="UTF-8">
     <title>Editar Registro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // --- JS para gestionar dinámicamente la lista de razas
+        // JS para razas dinámicas
         const razasPorTipo = {
             Perro: ["Labrador","Golden Retriever","Poodle","Bulldog","Chihuahua"],
             Gato:  ["Siames","Persa","Maine Coon","Bengalí","Esfinge"]
@@ -36,9 +35,8 @@
 <div class="max-w-7xl mx-auto py-16 px-4 sm:px-7 lg:px-8">
     <h1 class="text-4xl font-bold text-gray-900 mb-4">Editar Registro de Cliente y Mascotas</h1>
     <form th:action="@{/moderador/EntradasYSalidas/editar/{id}(id=${entryForm.id})}" method="post" th:object="${entryForm}">
-
         <!-- === Datos del propietario === -->
-        <section class="bg-white p-6 rounded-lg shadow">
+        <section class="bg-white p-6 rounded-lg shadow mb-8">
             <h2 class="text-2xl font-semibold mb-4">Datos del Propietario</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -65,7 +63,7 @@
         </section>
 
         <!-- === Mascotas === -->
-        <section class="bg-white p-6 rounded-lg shadow">
+        <section class="bg-white p-6 rounded-lg shadow mb-8">
             <h2 class="text-2xl font-semibold mb-4">Mascotas</h2>
             <div id="mascotas-container" class="space-y-6">
                 <div th:each="mascota,iterStat : *{mascotas}" class="mascota-card border p-4 rounded-lg bg-gray-50">
@@ -121,8 +119,6 @@
                             <input type="text" th:field="*{mascotas[__${iterStat.index}__].colorYMarcas}" class="w-full border rounded px-2 py-1"/>
                         </div>
                     </div>
-
-                    <!-- Sección de cuidados especiales -->
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block mb-1 font-medium">Necesidades especiales</label>
@@ -141,8 +137,6 @@
                             <input type="text" th:field="*{mascotas[__${iterStat.index}__].condicionesMedicas}" class="w-full border rounded px-2 py-1"/>
                         </div>
                     </div>
-
-                    <!-- Sección salud e instrucciones -->
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block mb-1 font-medium">Historial vacunación</label>
@@ -169,16 +163,87 @@
                             <input type="text" th:field="*{mascotas[__${iterStat.index}__].medicamentosActuales}" class="w-full border rounded px-2 py-1"/>
                         </div>
                     </div>
-
-                    <!-- botón eliminar mascota -->
-
                 </div>
             </div>
         </section>
 
-        <!-- submit -->
-        <div class="text-right">
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Guardar Cambios</button>
+        <!-- === Autorizaciones === -->
+        <section class="bg-white p-6 rounded-lg shadow mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Autorizaciones</h2>
+            <div th:if="${entryForm?.autorizacionForm != null}" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block mb-1 font-medium">Autoriza Contacto Veterinario</label>
+                    <input type="checkbox" th:field="*{autorizacionForm.autorizacionContactoVeterinario}" class="form-checkbox h-5 w-5 text-blue-600 rounded"/>
+                </div>
+                <div>
+                    <label class="block mb-1 font-medium">Consentimiento Primeros Auxilios</label>
+                    <input type="checkbox" th:field="*{autorizacionForm.consentimientoPrimerosAuxilios}" class="form-checkbox h-5 w-5 text-blue-600 rounded"/>
+                </div>
+                <div>
+                    <label class="block mb-1 font-medium">Autoriza Uso de Imagen</label>
+                    <input type="checkbox" th:field="*{autorizacionForm.autorizacionUsoImagen}" class="form-checkbox h-5 w-5 text-blue-600 rounded"/>
+                </div>
+                <div>
+                    <label class="block mb-1 font-medium">Declaración de Responsabilidad</label>
+                    <input type="checkbox" th:field="*{autorizacionForm.declaracionResponsabilidad}" class="form-checkbox h-5 w-5 text-blue-600 rounded"/>
+                </div>
+                <div>
+                    <label class="block mb-1 font-medium">Autorizo Cuidado</label>
+                    <input type="checkbox" th:field="*{autorizacionForm.autorizoCuidado}" class="form-checkbox h-5 w-5 text-blue-600 rounded"/>
+                </div>
+                <div>
+                    <label class="block mb-1 font-medium">Autorizo Decisiones Médicas</label>
+                    <input type="checkbox" th:field="*{autorizacionForm.autorizoDecisionesMedicas}" class="form-checkbox h-5 w-5 text-blue-600 rounded"/>
+                </div>
+                <div>
+                    <label class="block mb-1 font-medium">Horarios de Entrada y Salida</label>
+                    <input type="text" th:field="*{autorizacionForm.horariosEntradaSalida}" class="w-full border rounded px-3 py-2"/>
+                </div>
+                <div>
+                    <label class="block mb-1 font-medium">Tarifas y Pago</label>
+                    <input type="text" th:field="*{autorizacionForm.tarifasYPago}" class="w-full border rounded px-3 py-2"/>
+                </div>
+                <div>
+                    <label class="block mb-1 font-medium">Fecha de Firma</label>
+                    <input type="date" th:field="*{autorizacionForm.fechaFirma}" class="w-full border rounded px-3 py-2"/>
+                </div>
+            </div>
+            <div th:if="${entryForm?.autorizacionForm == null}">
+                <p class="text-gray-600">No se encontraron datos de autorización para este registro.</p>
+            </div>
+        </section>
+
+        <!-- === Servicios y productos seleccionados === -->
+        <section class="bg-white p-6 rounded-lg shadow mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Servicios y Productos Seleccionados</h2>
+            <ul th:if="${not #lists.isEmpty(entryForm.productosSeleccionados)}" class="list-disc pl-5 text-gray-600 mb-4">
+                <li th:each="producto : ${entryForm.productosSeleccionados}">
+                    <span th:text="${producto.nombre}"></span> -
+                    <span th:text="'$' + ${#numbers.formatDecimal(producto.precio, 0, 2)}"></span>
+                    <form th:action="@{/moderador/EntradasYSalidas/editar/{id}/eliminar-producto(id=${entryForm.id})}" method="post" style="display:inline;">
+                        <input type="hidden" name="productoId" th:value="${producto.id}" />
+                        <button type="submit" class="text-red-600 ml-2">Eliminar</button>
+                    </form>
+                </li>
+            </ul>
+            <h3 class="text-xl font-semibold mb-2">Agregar Servicio/Producto</h3>
+            <form th:action="@{/moderador/EntradasYSalidas/editar/{id}/agregar-servicio(id=${entryForm.id})}" method="post" class="flex items-center">
+                <select name="servicioId" class="mr-4">
+                    <option value="">-- Seleccionar --</option>
+                    <option th:each="servicio : ${serviciosDisponibles}" th:value="${servicio.id}"
+                            th:text="${servicio.nombre} + ' - $' + ${#numbers.formatDecimal(servicio.precio, 0, 2)}"></option>
+                </select>
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded">Agregar</button>
+            </form>
+            <div class="mt-4 text-xl">
+                Total: $<span th:text="${#numbers.formatDecimal(total, 0, 2)}">0.00</span>
+            </div>
+        </section>
+
+        <div class="text-right mt-8">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                Guardar Cambios
+            </button>
         </div>
     </form>
 </div>

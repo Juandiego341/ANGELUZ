@@ -1,5 +1,7 @@
 package com.juan.springboot.angeluz.forms.Controller;
 
+import com.juan.springboot.angeluz.Admin.servicios.Servicio;
+import com.juan.springboot.angeluz.Admin.servicios.ServicioRepositorio;
 import com.juan.springboot.angeluz.authorization.AutorizacionForm;
 import com.juan.springboot.angeluz.authorization.AutorizacionFormRepository;
 import com.juan.springboot.angeluz.forms.EntryForm;
@@ -26,7 +28,8 @@ public class UsuarioController {
     private AutorizacionFormRepository autorizacionRepo;
     @Autowired
     private EntryFormRepository entryFormRepository;
-
+    @Autowired
+    private ServicioRepositorio servicioRepository;
     @ModelAttribute("autorizacionForm")
     public AutorizacionForm setupAutorizacionForm() {
         return new AutorizacionForm();
@@ -94,7 +97,12 @@ public class UsuarioController {
             entryForm.setMascotas(new ArrayList<>());
             model.addAttribute("entryForm", entryForm);
         }
-        return "reserva";
+
+        // Agrega los servicios disponibles desde la base de datos
+        List<Servicio> servicios = servicioRepository.findAll();
+        model.addAttribute("servicios", servicios);
+
+        return "reserva"; // Esta es tu vista reserva.html o reservaUsuarios.html
     }
 
     @PostMapping("/checkout")

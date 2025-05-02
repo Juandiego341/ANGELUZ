@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="fragments/headerModerator :: headerModerator">
+  <meta charset="UTF-8">
+  <title>Resumen Total</title>
+  <link href="https://cdn.tailwindcss.com" rel="stylesheet" />
+</head>
+<body class="bg-gray-100">
+
+<nav th:replace="fragments/headerModerator :: navbarModerator" class="mb-12"></nav>
+
+<div class="max-w-3xl mx-auto py-16 px-6 sm:px-8 lg:px-12">
+
+  <h1 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">Resumen Total del Registro</h1>
+
+  <section class="bg-white shadow-md rounded-lg p-8 mb-8">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Información del Propietario</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+      <div><strong>Nombre:</strong> <span th:text="${entryForm?.nombrePropietario}" class="text-gray-600">-</span></div>
+      <div><strong>Correo Electrónico:</strong> <span th:text="${entryForm?.correo}" class="text-gray-600">-</span></div>
+      <div><strong>¿Qué va a hacer?:</strong> <span th:text="${entryForm?.queVaASer}" class="text-gray-600">-</span></div>
+    </div>
+  </section>
+
+  <section th:if="${not #lists.isEmpty(entryForm?.mascotas)}" th:each="mascota, iterStat : ${entryForm?.mascotas}"
+           class="bg-white shadow-md rounded-lg p-8 mb-8">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4" th:text="'Información de la Mascota #' + ${iterStat.index + 1}"></h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+      <div><strong>Nombre:</strong> <span th:text="${mascota?.nombre}" class="text-gray-600">-</span></div>
+      <div><strong>Tipo de Animal:</strong> <span th:text="${mascota?.tipoAnimal}" class="text-gray-600">-</span></div>
+      <div><strong>Raza:</strong> <span th:text="${mascota?.raza}" class="text-gray-600">-</span></div>
+      <div>
+        <strong>Edad:</strong>
+        <span th:if="${mascota?.edad != null}" th:text="${mascota.edad} + ' años'" class="text-gray-600"></span>
+        <span th:if="${mascota?.edad == null}" class="text-gray-600">No especificada</span>
+      </div>
+      <div>
+        <strong>Peso:</strong>
+        <span th:if="${mascota?.peso != null}" th:text="${#numbers.formatDecimal(mascota.peso, 0, 2)} + ' kg'" class="text-gray-600"></span>
+        <span th:if="${mascota?.peso == null}" class="text-gray-600">No especificada</span>
+      </div>
+      <div>
+        <strong>Necesidades Especiales:</strong>
+        <span th:if="${not #strings.isEmpty(mascota?.necesidadesEspeciales)}" th:text="${mascota?.necesidadesEspeciales}" class="text-gray-600"></span>
+        <span th:if="${#strings.isEmpty(mascota?.necesidadesEspeciales)}" class="text-gray-600">Ninguna</span>
+      </div>
+    </div>
+  </section>
+
+ <section class="bg-white shadow-md rounded-lg p-8 mb-8">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Autorizaciones</h2>
+    <div th:if="${entryForm?.autorizacionForm != null}" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+        <div><strong>Autoriza Contacto Veterinario:</strong> <span th:text="${entryForm.autorizacionForm.autorizacionContactoVeterinario ? 'Sí' : 'No'}" class="text-gray-600"></span></div>
+        <div><strong>Consentimiento Primeros Auxilios:</strong> <span th:text="${entryForm.autorizacionForm.consentimientoPrimerosAuxilios ? 'Sí' : 'No'}" class="text-gray-600"></span></div>
+        <div><strong>Autoriza Uso de Imagen:</strong> <span th:text="${entryForm.autorizacionForm.autorizacionUsoImagen ? 'Sí' : 'No'}" class="text-gray-600"></span></div>
+        <div><strong>Declaración de Responsabilidad:</strong> <span th:text="${entryForm.autorizacionForm.declaracionResponsabilidad ? 'Sí' : 'No'}" class="text-gray-600"></span></div>
+        <div><strong>Autorizo Cuidado:</strong> <span th:text="${entryForm.autorizacionForm.autorizoCuidado ? 'Sí' : 'No'}" class="text-gray-600"></span></div>
+        <div><strong>Autorizo Decisiones Médicas:</strong> <span th:text="${entryForm.autorizacionForm.autorizoDecisionesMedicas ? 'Sí' : 'No'}" class="text-gray-600"></span></div>
+        <div>
+            <strong>Horarios de Entrada y Salida:</strong>
+            <span th:if="${not #strings.isEmpty(entryForm.autorizacionForm.horariosEntradaSalida)}" th:text="${entryForm.autorizacionForm.horariosEntradaSalida}" class="text-gray-600"></span>
+            <span th:if="${#strings.isEmpty(entryForm.autorizacionForm.horariosEntradaSalida)}" class="text-gray-600">No especificado</span>
+        </div>
+        <div>
+            <strong>Tarifas y Pago:</strong>
+            <span th:if="${not #strings.isEmpty(entryForm.autorizacionForm.tarifasYPago)}" th:text="${entryForm.autorizacionForm.tarifasYPago}" class="text-gray-600"></span>
+            <span th:if="${#strings.isEmpty(entryForm.autorizacionForm.tarifasYPago)}" class="text-gray-600">No especificado</span>
+        </div>
+        <div>
+            <strong>Fecha de Firma:</strong>
+            <span th:if="${entryForm.autorizacionForm.fechaFirma != null}" th:text="${#temporals.format(entryForm.autorizacionForm.fechaFirma, 'dd/MM/yyyy')}" class="text-gray-600"></span>
+            <span th:if="${entryForm.autorizacionForm.fechaFirma == null}" class="text-gray-600">No especificada</span>
+        </div>
+    </div>
+    <div th:if="${entryForm?.autorizacionForm == null}">
+        <p class="text-gray-600">No se encontraron datos de autorización.</p>
+    </div>
+</section>
+  <section class="bg-white shadow-md rounded-lg p-8 mb-8">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Productos Seleccionados</h2>
+    <ul th:if="${not #lists.isEmpty(entryForm?.productosSeleccionados)}" class="list-disc pl-5 text-gray-600">
+      <li th:each="producto, index : ${entryForm?.productosSeleccionados}" class="flex items-center justify-between py-2">
+        <span>
+          <strong th:text="${producto?.nombre}"></strong> -
+          <span th:text="'$' + ${#numbers.formatDecimal(producto?.precio, 0, 2)}"></span>
+        </span>
+        <form th:action="@{/moderador/eliminar-producto-por-id}" method="post">
+          <input type="hidden" name="productoId" th:value="${producto.id}" />
+          <button type="submit" class="...">Eliminar</button>
+        </form>
+
+      </li>
+    </ul>
+    <p th:unless="${not #lists.isEmpty(entryForm?.productosSeleccionados)}" class="text-gray-600">No se han seleccionado productos.</p>
+
+    <div class="mt-6 pt-4 border-t border-gray-200">
+      <h2 class="text-xl font-semibold text-gray-800 mb-2">Total</h2>
+      <p class="text-lg text-gray-700">
+        Total: $<span th:text="${total != null ? #numbers.formatDecimal(total, 0, 2) : '0.00'}" class="font-semibold">0.00</span>
+      </p>
+    </div>
+  </section>
+  <section class="bg-white shadow-md rounded-lg p-8 mt-8">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Agregar Servicio Adicional</h2>
+    <form th:action="@{/moderador/agregar-servicio}" method="post" class="flex items-center">
+      <div class="mr-4">
+        <label for="servicioId" class="block text-gray-700 text-sm font-bold mb-2">Seleccionar Servicio:</label>
+        <select id="servicioId" name="servicioId" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <option value="">-- Seleccionar --</option>
+          <option th:each="servicio : ${serviciosDisponibles}" th:value="${servicio.id}" th:text="${servicio.nombre} + ' - $' + ${#numbers.formatDecimal(servicio.precio, 0, 2)}"></option>
+        </select>
+      </div>
+      <button type="submit" class="inline-flex items-center rounded-md border border-indigo-600 bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1">
+        Agregar Servicio
+        <svg class="-mr-1 ml-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </form>
+  </section>
+  <section class="bg-white shadow-md rounded-lg p-8 mt-8">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">¿Desea agregar más productos?</h2>
+    <a th:href="@{/moderador/seleccionar-productos}" class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
+      Seleccionar Productos
+      <svg class="-mr-1 ml-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+      </svg>
+    </a>
+  </section>
+
+  <form th:action="@{/resumen-total}" method="post" class="flex justify-center mt-8">
+    <button type="submit" class="inline-flex items-center rounded-md border border-indigo-600 bg-indigo-600 px-6 py-3 text-sm font-medium text-white shadow-sm hover:bg-indigo-700">
+      Confirmar Registro
+      <svg class="ml-2 -mr-1 h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.975 3.975 7.475-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+      </svg>
+    </button>
+  </form>
+
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

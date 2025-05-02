@@ -1,6 +1,7 @@
 package com.juan.springboot.angeluz.forms;
 
 import com.juan.springboot.angeluz.authorization.AutorizacionForm;
+import com.juan.springboot.angeluz.shop.Producto;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,9 +26,19 @@ public class EntryForm {
 
     private LocalDate fechaInicio; // Fecha de inicio del alojamiento
     private LocalDate fechaFin;    // Fecha de fin del alojamiento
+    private Double valorTotal;
+
+    @ManyToMany
+    @JoinTable(
+            name = "entryform_productos",
+            joinColumns = @JoinColumn(name = "entryform_id"),
+            inverseJoinColumns = @JoinColumn(name = "producto_id")
+    )
+    private List<Producto> productosSeleccionados = new ArrayList<>();
 
     @OneToOne(mappedBy = "entryForm", cascade = CascadeType.ALL, orphanRemoval = true)
     private AutorizacionForm autorizacionForm;
+
 
     public AutorizacionForm getAutorizacionForm() {
         return autorizacionForm;
@@ -126,5 +137,21 @@ public class EntryForm {
 
     public void setMascotas(List<Mascota> mascotas) {
         this.mascotas = mascotas;
+    }
+
+    public Double getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(Double valorTotal) {
+        this.valorTotal = valorTotal;
+    }
+
+    public List<Producto> getProductosSeleccionados() {
+        return productosSeleccionados;
+    }
+
+    public void setProductosSeleccionados(List<Producto> productosSeleccionados) {
+        this.productosSeleccionados = productosSeleccionados;
     }
 }

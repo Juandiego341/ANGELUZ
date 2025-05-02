@@ -147,10 +147,12 @@
             <div>
                 <label for="queVaASer" class="block text-sm font-medium text-gray-700">¿Qué servicio desea?</label>
                 <select id="queVaASer" th:field="*{queVaASer}" onchange="toggleFechaFields()"
-                        class="w-full border rounded px-3 py-2 mt-1" required>
-                    <option value="" disabled selected>Seleccione...</option>
-                    <option value="Alojamiento">Alojamiento</option>
-                    <option value="Peluquería">Peluquería</option>
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
+                    <option value="" disabled>Seleccione...</option>
+                    <option th:each="servicio : ${servicios}"
+                            th:value="${servicio.nombre}"
+                            th:text="${servicio.nombre}">
+                    </option>
                 </select>
             </div>
 

@@ -42,6 +42,10 @@ public class MainController {
     public String guarderia(){
         return "guarderia";
     }
+    @GetMapping("/index")
+    public String index() {
+        return "index";
+    }
 
 
 

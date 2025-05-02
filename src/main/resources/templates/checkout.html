@@ -45,12 +45,14 @@
             </div>
 
             <div>
-                <label for="queVaASer" class="block text-sm font-medium text-gray-700">¿Qué servicio desea?</label>
-                <select id="queVaASer" th:field="*{queVaASer}" onchange="toggleFechaFields()"
+                <label for="servicioSeleccionadoId" class="block text-sm font-medium text-gray-700">¿Qué servicio desea?</label>
+                <select id="servicioSeleccionadoId" name="servicioSeleccionadoId" onchange="toggleFechaFields()"
                         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
-                    <option value="" disabled selected>Seleccione...</option>
-                    <option value="Alojamiento">Alojamiento</option>
-                    <option value="Peluquería">Peluquería</option>
+                    <option value="" disabled selected>Seleccione un servicio...</option>
+                    <option th:each="servicio : ${servicios}"
+                            th:value="${servicio.id}"
+                            th:text="${servicio.nombre} + ' - $' + ${#numbers.formatDecimal(servicio.precio, 0, 2)}">
+                    </option>
                 </select>
             </div>
 
@@ -82,8 +84,21 @@
 
 <script>
     function toggleFechaFields() {
-        const tipo = document.getElementById("queVaASer").value;
-        document.getElementById("fechaFields").classList.toggle("hidden", tipo !== "Alojamiento");
+        const servicioId = document.getElementById("servicioSeleccionadoId").value;
+        const fechaFields = document.getElementById("fechaFields");
+
+
+        const alojamientoServicioId = 2;
+
+        if (servicioId === String(alojamientoServicioId)) {
+            fechaFields.classList.remove("hidden");
+            document.getElementById("fechaInicio").required = true;
+            document.getElementById("fechaFin").required = true;
+        } else {
+            fechaFields.classList.add("hidden");
+            document.getElementById("fechaInicio").required = false;
+            document.getElementById("fechaFin").required = false;
+        }
     }
 
     window.addEventListener("DOMContentLoaded", toggleFechaFields);
