@@ -3,6 +3,7 @@ package com.juan.springboot.angeluz.shop;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "producto")
 public class Producto {
 
     @Id

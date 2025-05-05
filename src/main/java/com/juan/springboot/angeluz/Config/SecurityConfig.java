@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 public class SecurityConfig {
@@ -24,10 +24,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login", "/css/**", "/js/**", "/images/**", "/", "/home", "/contact", "/services","/about","/tienda").permitAll() // Rutas públicas
-                        .requestMatchers("/agendar-cita").authenticated() // Requiere autenticación
+                        .requestMatchers("/register", "/login", "/css/**", "/js/**", "/images/**", "/", "/home", "/contact", "/services","/about","/tienda").permitAll()
+                        .requestMatchers("/agendar-cita").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/moderador/**").hasRole("MODERATOR")
                         .anyRequest().authenticated()

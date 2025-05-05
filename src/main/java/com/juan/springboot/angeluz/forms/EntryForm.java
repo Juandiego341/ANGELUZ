@@ -34,8 +34,7 @@ public class EntryForm {
             joinColumns = @JoinColumn(name = "entryform_id"),
             inverseJoinColumns = @JoinColumn(name = "producto_id")
     )
-    private List<Producto> productosSeleccionados = new ArrayList<>();
-
+    private List<Producto> productosSeleccionados;
     @OneToOne(mappedBy = "entryForm", cascade = CascadeType.ALL, orphanRemoval = true)
     private AutorizacionForm autorizacionForm;
 
