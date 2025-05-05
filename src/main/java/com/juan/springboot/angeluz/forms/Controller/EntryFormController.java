@@ -9,6 +9,8 @@ import com.juan.springboot.angeluz.forms.EntryFormRepository;
 import com.juan.springboot.angeluz.forms.Mascota;
 import com.juan.springboot.angeluz.shop.Producto;
 import com.juan.springboot.angeluz.shop.ProductoRepository;
+import com.juan.springboot.angeluz.shop.ProductoSeleccionado;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,19 +37,40 @@ public class EntryFormController {
     @Autowired
     private ProductoRepository productoRepository;
 
+
+
+
+    @Transactional
     @GetMapping("/moderador/EntradasYSalidas/editar/{id}")
     public String editarRegistro(@PathVariable Long id, Model model) {
         try {
             EntryForm entryForm = entryFormRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Registro no encontrado"));
 
+            // Cargar el servicio seleccionado si existe
+            if (entryForm.getServicioSeleccionado() != null) {
+                Servicio servicio = servicioRepository.findById(entryForm.getServicioSeleccionado().getId())
+                        .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+                entryForm.setServicioSeleccionado(servicio);
+                entryForm.setQueVaASer(servicio.getNombre());
+            }
+
+            // Calcular el total incluyendo servicio y productos
             double total = 0.0;
+
+            // Sumar el precio del servicio seleccionado
+            if (entryForm.getServicioSeleccionado() != null) {
+                total += entryForm.getServicioSeleccionado().getPrecio();
+            }
+
+            // Sumar los precios de los productos
             if (entryForm.getProductosSeleccionados() != null) {
-                total = entryForm.getProductosSeleccionados()
+                total += entryForm.getProductosSeleccionados()
                         .stream()
                         .mapToDouble(p -> p.getPrecio() != null ? p.getPrecio() : 0.0)
                         .sum();
             }
+
 
             if (entryForm.getMascotas() == null) {
                 entryForm.setMascotas(new ArrayList<>());
@@ -61,6 +84,7 @@ public class EntryFormController {
 
             model.addAttribute("entryForm", entryForm);
             model.addAttribute("serviciosDisponibles", servicioRepository.findAll());
+            model.addAttribute("productosDisponibles", productoRepository.findAll());
             model.addAttribute("total", total);
 
             return "moderador/EditarRegistro";
@@ -85,6 +109,12 @@ public class EntryFormController {
 
         List<Servicio> servicios = servicioRepository.findAll();
         model.addAttribute("servicios", servicios);
+        EntryForm nuevoForm = new EntryForm();
+        nuevoForm.setProductosSeleccionados(new ArrayList<>());
+        nuevoForm.setMascotas(new ArrayList<>());
+        nuevoForm.setAutorizacionForm(new AutorizacionForm());
+
+        model.addAttribute("entryForm", nuevoForm);
 
         return "checkout";
     }
@@ -97,37 +127,21 @@ public class EntryFormController {
             RedirectAttributes redirectAttributes) {
         try {
             if (servicioSeleccionadoId != null) {
+                // Obtener el servicio seleccionado
                 Servicio servicioSeleccionado = servicioRepository.findById(servicioSeleccionadoId)
                         .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
 
-                Producto productoServicio = productoRepository.findByNombre(servicioSeleccionado.getNombre())
-                        .orElseGet(() -> {
-                            Producto nuevo = new Producto();
-                            nuevo.setNombre(servicioSeleccionado.getNombre());
-                            nuevo.setPrecio(servicioSeleccionado.getPrecio());
-                            nuevo.setDescripcion("Servicio");
-                            nuevo.setCategoria("Servicio");
-                            return productoRepository.save(nuevo);
-                        });
+                // Establecer el servicio directamente en el entryForm
+                entryForm.setServicioSeleccionado(servicioSeleccionado);
+                entryForm.setQueVaASer(servicioSeleccionado.getNombre());
 
-                if (entryForm.getProductosSeleccionados() == null) {
-                    entryForm.setProductosSeleccionados(new ArrayList<>());
-                }
-
-                boolean exists = entryForm.getProductosSeleccionados().stream()
-                        .anyMatch(p -> p.getId().equals(productoServicio.getId()));
-
-                if (!exists) {
-                    entryForm.getProductosSeleccionados().add(productoServicio);
-                    entryForm.setQueVaASer(servicioSeleccionado.getNombre());
-                } else {
-                    redirectAttributes.addFlashAttribute("warningMessage",
-                            "Este servicio ya está agregado");
-                }
+                model.addAttribute("entryForm", entryForm);
+                return "redirect:/moderador/mascotas";
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage",
+                        "Debe seleccionar un servicio");
+                return "redirect:/moderador/checkout";
             }
-
-            model.addAttribute("entryForm", entryForm);
-            return "redirect:/moderador/mascotas";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage",
@@ -187,62 +201,6 @@ public class EntryFormController {
         return "moderador/EntradasYSalidas";
     }
 
-    @PostMapping("/moderador/EntradasYSalidas/editar/{id}")
-    @Transactional
-    public String guardarEdicion(
-            @PathVariable Long id,
-            @ModelAttribute("entryForm") EntryForm actualizado,
-            RedirectAttributes redirectAttributes) {
-        System.out.println("Datos recibidos: " + actualizado);
-        try {
-            EntryForm existente = entryFormRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Registro no encontrado"));
-
-            existente.setNombrePropietario(actualizado.getNombrePropietario());
-            existente.setCedulaCiudadania(actualizado.getCedulaCiudadania());
-            existente.setCorreo(actualizado.getCorreo());
-            existente.setCelular(actualizado.getCelular());
-            existente.setQueVaASer(actualizado.getQueVaASer());
-            existente.setFechaInicio(actualizado.getFechaInicio());
-            existente.setFechaFin(actualizado.getFechaFin());
-
-            if (existente.getProductosSeleccionados() == null) {
-                existente.setProductosSeleccionados(new ArrayList<>());
-            }
-
-            if (actualizado.getProductosSeleccionados() != null) {
-                List<Producto> productosActualizados = new ArrayList<>();
-                for (Producto producto : actualizado.getProductosSeleccionados()) {
-                    Producto productoCompleto = productoRepository.findById(producto.getId())
-                            .orElseThrow(() -> new RuntimeException("Producto no encontrado: " + producto.getId()));
-                    productosActualizados.add(productoCompleto);
-                }
-                existente.setProductosSeleccionados(productosActualizados);
-            }
-
-            if (actualizado.getAutorizacionForm() != null) {
-                if (existente.getAutorizacionForm() == null) {
-                    existente.setAutorizacionForm(actualizado.getAutorizacionForm());
-                }
-                AutorizacionForm autorizacion = existente.getAutorizacionForm();
-                autorizacion.setHorariosEntradaSalida(actualizado.getAutorizacionForm().getHorariosEntradaSalida());
-                autorizacion.setTarifasYPago(actualizado.getAutorizacionForm().getTarifasYPago());
-                autorizacion.setFechaFirma(actualizado.getAutorizacionForm().getFechaFirma());
-                autorizacion.setEntryForm(existente);
-            }
-
-            entryFormRepository.save(existente);
-
-            redirectAttributes.addFlashAttribute("successMessage",
-                    "Registro actualizado correctamente");
-            return "redirect:/moderador/EntradasYSalidas";
-
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Error al guardar los cambios: " + e.getMessage());
-            return "redirect:/moderador/EntradasYSalidas/editar/" + id;
-        }
-    }
 
 
 
@@ -335,8 +293,15 @@ public class EntryFormController {
         System.out.println("EntryForm: " + entryForm);
 
         double total = 0.0;
+
+        // Sumar el precio del servicio si existe
+        if (entryForm.getServicioSeleccionado() != null) {
+            total += entryForm.getServicioSeleccionado().getPrecio();
+        }
+
+        // Sumar los productos
         if (entryForm.getProductosSeleccionados() != null && !entryForm.getProductosSeleccionados().isEmpty()) {
-            total = entryForm.getProductosSeleccionados().stream()
+            total += entryForm.getProductosSeleccionados().stream()
                     .map(Producto::getPrecio)
                     .reduce(0.0, Double::sum);
         }
@@ -486,37 +451,80 @@ public class EntryFormController {
 
         return "redirect:/moderador/EntradasYSalidas/editar/" + id;
     }
-    @PostMapping("/moderador/EntradasYSalidas/editar/{id}/eliminar-producto")
-    public String eliminarProducto(
-            @PathVariable Long id,
-            @RequestParam("productoId") Long productoId,
-            RedirectAttributes redirectAttributes) {
+
+
+    @PostMapping("/moderador/EntradasYSalidas/editar/{id}")
+    @Transactional
+    public String guardarEdicion(@PathVariable Long id,
+                               @ModelAttribute("entryForm") EntryForm formData,
+                               RedirectAttributes redirectAttributes) {
         try {
+            // Obtener el registro existente
             EntryForm entryForm = entryFormRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Registro no encontrado"));
 
-            int index = -1;
-            List<Producto> productos = entryForm.getProductosSeleccionados();
+            // Actualizar los datos del propietario
+            entryForm.setNombrePropietario(formData.getNombrePropietario());
+            entryForm.setCedulaCiudadania(formData.getCedulaCiudadania());
+            entryForm.setCorreo(formData.getCorreo());
+            entryForm.setCelular(formData.getCelular());
+            entryForm.setQueVaASer(formData.getQueVaASer());
 
-            for (int i = 0; i < productos.size(); i++) {
-                if (productos.get(i).getId().equals(productoId)) {
-                    index = i;
-                    break;
-                }
+            // Actualizar mascotas
+            entryForm.setMascotas(formData.getMascotas());
+
+            // Actualizar autorizaciones
+            entryForm.setAutorizacionForm(formData.getAutorizacionForm());
+
+            // Mantener productos seleccionados
+            if (formData.getProductosSeleccionados() != null) {
+                entryForm.setProductosSeleccionados(formData.getProductosSeleccionados());
             }
 
-            if (index != -1) {
-                productos.remove(index);
-                entryFormRepository.save(entryForm);
-                redirectAttributes.addFlashAttribute("successMessage",
-                        "Producto eliminado correctamente");
-            }
+            // Guardar cambios
+            entryFormRepository.saveAndFlush(entryForm);
+
+            redirectAttributes.addFlashAttribute("successMessage",
+                "Cambios guardados correctamente");
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage",
-                    "Error al eliminar el producto: " + e.getMessage());
+                "Error al guardar los cambios: " + e.getMessage());
         }
+
         return "redirect:/moderador/EntradasYSalidas/editar/" + id;
     }
+   @PostMapping("/moderador/EntradasYSalidas/editar/{id}/eliminar-producto")
+    @Transactional
+    public String eliminarProducto(@PathVariable Long id,
+                                   @RequestParam Long productoId,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            // Obtener el registro existente
+            EntryForm entryForm = entryFormRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Registro no encontrado"));
+
+            if (entryForm.getProductosSeleccionados() != null) {
+                // Buscar y eliminar el producto por ID
+                boolean removed = entryForm.getProductosSeleccionados()
+                        .removeIf(producto -> producto.getId().equals(productoId));
+
+                if (removed) {
+                    // Guardar los cambios en la base de datos
+                    entryFormRepository.saveAndFlush(entryForm);
+                    redirectAttributes.addFlashAttribute("successMessage", "Producto eliminado correctamente.");
+                } else {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Producto no encontrado en la lista.");
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "No hay productos seleccionados para eliminar.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error al eliminar el producto: " + e.getMessage());
+        }
+
+        return "redirect:/moderador/EntradasYSalidas/editar/" + id;
+    }
+
 }
 

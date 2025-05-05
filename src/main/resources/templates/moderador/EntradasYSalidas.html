@@ -80,12 +80,11 @@
 
     <!-- Botón para agregar registro -->
     <div class="mt-6 text-center">
-        <a href="/moderador/checkout" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition">Agregar Registro</a>
+        <a th:href="@{/moderador/checkout}" class="inline-block bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition">
+            Agregar Registro
+        </a>
     </div>
 </div>
-
-<!-- Footer -->
-<footer th:replace="fragments/footer :: footer"></footer>
 
 </body>
 </html>

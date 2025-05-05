@@ -35,16 +35,27 @@ public class ModeratorController {
     @Autowired
     private MascotaRepository mascotaRepository;
     @GetMapping("/fichas")
-    public String listarFichasTecnicas(@RequestParam(value = "raza", required = false) String filtroRaza, Model model) {
+    public String listarFichasTecnicas(
+            @RequestParam(value = "nombre", required = false) String nombre,
+            @RequestParam(value = "raza", required = false) String filtroRaza,
+            Model model) {
+
         List<Mascota> mascotas;
-        if (filtroRaza != null && !filtroRaza.isEmpty()) {
-            mascotas = mascotaRepository.findByRaza(filtroRaza); // Asumiendo que tienes un método así en tu repositorio
+
+        if (nombre != null && !nombre.trim().isEmpty()) {
+            // Búsqueda por nombre
+            mascotas = mascotaRepository.findByNombreContainingIgnoreCase(nombre);
+        } else if (filtroRaza != null && !filtroRaza.isEmpty()) {
+            // Filtro por raza
+            mascotas = mascotaRepository.findByRaza(filtroRaza);
         } else {
+            // Sin filtros
             mascotas = mascotaRepository.findAll();
         }
+
         model.addAttribute("mascotas", mascotas);
-        model.addAttribute("filtroRaza", filtroRaza); // Pasar el filtro actual al modelo para mantener la selección
-        model.addAttribute("razas", mascotaRepository.findDistinctRazas()); // Necesitas un método para obtener todas las razas únicas
+        model.addAttribute("filtroRaza", filtroRaza);
+        model.addAttribute("razas", mascotaRepository.findDistinctRazas());
         return "moderador/mascotas/fichas_tecnicas";
     }
     @GetMapping("/fichas/{id}")

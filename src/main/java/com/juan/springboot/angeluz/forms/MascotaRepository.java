@@ -14,4 +14,6 @@ public interface MascotaRepository extends JpaRepository<Mascota, Long> {
     List<Mascota> findByRaza(String filtroRaza);
     @Query("SELECT DISTINCT m.raza FROM Mascota m ORDER BY m.raza")
     List<String> findDistinctRazas();
+
+    List<Mascota> findByNombreContainingIgnoreCase(String nombre);
 }

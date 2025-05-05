@@ -1,5 +1,6 @@
 package com.juan.springboot.angeluz.shop;
 
+import com.juan.springboot.angeluz.Admin.servicios.Servicio;
 import jakarta.persistence.*;
 
 @Entity
@@ -74,4 +75,6 @@ public class Producto {
     public void setStock(Long stock) {
         this.stock = stock;
     }
+
+
 }

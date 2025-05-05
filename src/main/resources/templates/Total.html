@@ -76,28 +76,45 @@
         <p class="text-gray-600">No se encontraron datos de autorización.</p>
     </div>
 </section>
-  <section class="bg-white shadow-md rounded-lg p-8 mb-8">
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">Productos Seleccionados</h2>
-    <ul th:if="${not #lists.isEmpty(entryForm?.productosSeleccionados)}" class="list-disc pl-5 text-gray-600">
-      <li th:each="producto, index : ${entryForm?.productosSeleccionados}" class="flex items-center justify-between py-2">
-        <span>
-          <strong th:text="${producto?.nombre}"></strong> -
-          <span th:text="'$' + ${#numbers.formatDecimal(producto?.precio, 0, 2)}"></span>
-        </span>
-        <form th:action="@{/moderador/eliminar-producto-por-id}" method="post">
-          <input type="hidden" name="productoId" th:value="${producto.id}" />
-          <button type="submit" class="...">Eliminar</button>
-        </form>
-
-      </li>
-    </ul>
-    <p th:unless="${not #lists.isEmpty(entryForm?.productosSeleccionados)}" class="text-gray-600">No se han seleccionado productos.</p>
-
+    <section>
     <div class="mt-6 pt-4 border-t border-gray-200">
-      <h2 class="text-xl font-semibold text-gray-800 mb-2">Total</h2>
-      <p class="text-lg text-gray-700">
-        Total: $<span th:text="${total != null ? #numbers.formatDecimal(total, 0, 2) : '0.00'}" class="font-semibold">0.00</span>
-      </p>
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Resumen del Total</h2>
+
+        <!-- Desglose del Servicio -->
+        <div class="mb-4">
+            <h3 class="text-lg font-medium text-gray-700 mb-2">Servicio:</h3>
+            <div th:if="${entryForm?.servicioSeleccionado != null}" class="flex justify-between px-4">
+                <span th:text="${entryForm.servicioSeleccionado.nombre}"></span>
+                <span>$<span th:text="${#numbers.formatDecimal(entryForm.servicioSeleccionado.precio, 0, 2)}"></span></span>
+            </div>
+            <div th:unless="${entryForm?.servicioSeleccionado != null}" class="text-gray-500 px-4">
+                Sin servicio seleccionado
+            </div>
+        </div>
+
+        <!-- Desglose de Productos -->
+        <div class="mb-4">
+            <h3 class="text-lg font-medium text-gray-700 mb-2">Productos:</h3>
+            <div th:if="${not #lists.isEmpty(entryForm?.productosSeleccionados)}">
+                <div th:each="producto : ${entryForm.productosSeleccionados}" class="flex justify-between px-4">
+                    <span th:text="${producto.nombre}"></span>
+                    <span>$<span th:text="${#numbers.formatDecimal(producto.precio, 0, 2)}"></span></span>
+                </div>
+            </div>
+            <div th:unless="${not #lists.isEmpty(entryForm?.productosSeleccionados)}" class="text-gray-500 px-4">
+                Sin productos seleccionados
+            </div>
+        </div>
+
+        <!-- Total Final -->
+        <div class="mt-4 pt-4 border-t border-gray-200">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800">Total Final:</h3>
+                <span class="text-xl font-bold text-gray-800">
+                $<span th:text="${total != null ? #numbers.formatDecimal(total, 0, 2) : '0.00'}"></span>
+            </span>
+            </div>
+        </div>
     </div>
   </section>
   <section class="bg-white shadow-md rounded-lg p-8 mt-8">

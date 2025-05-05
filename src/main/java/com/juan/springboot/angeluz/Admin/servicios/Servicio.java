@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 public class Servicio {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -13,7 +14,8 @@ public class Servicio {
 
     private String descripcion;
 
-    private Double precio;
+    @Column(nullable = false)
+    private Double precio = 0.0;
 
     private String tipo; // Alojamiento, Peluquería, Producto, etc.
 

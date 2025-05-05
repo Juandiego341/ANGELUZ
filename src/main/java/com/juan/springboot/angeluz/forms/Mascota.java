@@ -256,5 +256,21 @@ public class Mascota {
     public void setColorYMarcas(String colorYMarcas) {
         this.colorYMarcas = colorYMarcas;
     }
+    // En la clase Mascota
+    public void actualizarDatos(Mascota otra) {
+        this.setNombre(otra.getNombre());
+        this.setTipoAnimal(otra.getTipoAnimal());
+        this.setRaza(otra.getRaza());
+        this.setEdad(otra.getEdad());
+        this.setPeso(otra.getPeso());
+        this.setSexo(otra.getSexo());
+        this.setNumeroMicrochip(otra.getNumeroMicrochip());
+        this.setColorYMarcas(otra.getColorYMarcas());
+        this.setNecesidadesEspeciales(otra.getNecesidadesEspeciales());
+        this.setAlimentacion(otra.getAlimentacion());
+        this.setMedicamentos(otra.getMedicamentos());
+        this.setCondicionesMedicas(otra.getCondicionesMedicas());
+    }
+
 
 }

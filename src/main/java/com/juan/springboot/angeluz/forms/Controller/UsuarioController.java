@@ -7,6 +7,8 @@ import com.juan.springboot.angeluz.authorization.AutorizacionFormRepository;
 import com.juan.springboot.angeluz.forms.EntryForm;
 import com.juan.springboot.angeluz.forms.EntryFormRepository;
 import com.juan.springboot.angeluz.forms.Mascota;
+import com.juan.springboot.angeluz.shop.Producto;
+import com.juan.springboot.angeluz.shop.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,10 @@ public class UsuarioController {
     private EntryFormRepository entryFormRepository;
     @Autowired
     private ServicioRepositorio servicioRepository;
+
+    @Autowired
+    private ProductoRepository productoRepository;
+
     @ModelAttribute("autorizacionForm")
     public AutorizacionForm setupAutorizacionForm() {
         return new AutorizacionForm();
@@ -90,25 +96,38 @@ public class UsuarioController {
     }
 
     @GetMapping("/reserva")
-    public String mostrarFormularioCheckoutUsuario(Model model) {
+    public String mostrarFormularioReserva(Model model) {
         if (!model.containsAttribute("entryForm")) {
             EntryForm entryForm = new EntryForm();
             entryForm.setQueVaASer("");
-            entryForm.setMascotas(new ArrayList<>());
+            entryForm.setProductosSeleccionados(new ArrayList<>());
             model.addAttribute("entryForm", entryForm);
         }
 
-        // Agrega los servicios disponibles desde la base de datos
         List<Servicio> servicios = servicioRepository.findAll();
         model.addAttribute("servicios", servicios);
-
-        return "reserva"; // Esta es tu vista reserva.html o reservaUsuarios.html
+        return "reserva";
     }
 
-    @PostMapping("/checkout")
-    public String procesarFormularioCheckoutUsuario(@ModelAttribute("entryForm") EntryForm entryForm, Model model) {
-        model.addAttribute("entryForm", entryForm);
-        return "redirect:/usuario/mascotas";
+    @PostMapping("/reserva")
+    public String procesarReserva(
+            @ModelAttribute("entryForm") EntryForm entryForm,
+            @RequestParam("servicioId") Long servicioId,
+            RedirectAttributes redirectAttributes) {
+        try {
+            // Obtener el servicio seleccionado
+            Servicio servicioSeleccionado = servicioRepository.findById(servicioId)
+                    .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado"));
+
+            // Establecer el servicio directamente
+            entryForm.setServicioSeleccionado(servicioSeleccionado);
+            // El precio se actualiza automáticamente en el setter
+
+            return "redirect:/usuario/mascotas";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al procesar la reserva: " + e.getMessage());
+            return "redirect:/usuario/reserva";
+        }
     }
 
     @GetMapping("/mascotas")

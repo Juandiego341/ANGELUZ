@@ -114,7 +114,7 @@
 <main class="max-w-7xl mx-auto py-16 px-4 sm:px-7 lg:px-8">
     <section class="formulario-transparente">
         <h1 class="text-4xl font-bold text-gray-900 mb-4">Solicitar Servicio</h1>
-        <form th:action="@{/usuario/checkout}" th:object="${entryForm}" method="post" class="space-y-8">
+        <form th:action="@{/usuario/reserva}" th:object="${entryForm}" method="post" class="space-y-8">
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -144,40 +144,63 @@
                 </div>
             </div>
 
-            <div>
-                <label for="queVaASer" class="block text-sm font-medium text-gray-700">¿Qué servicio desea?</label>
-                <select id="queVaASer" th:field="*{queVaASer}" onchange="toggleFechaFields()"
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required>
-                    <option value="" disabled>Seleccione...</option>
-                    <option th:each="servicio : ${servicios}"
-                            th:value="${servicio.nombre}"
-                            th:text="${servicio.nombre}">
-                    </option>
-                </select>
-            </div>
+            <div class="md:col-span-2">
+            <label for="servicioId" class="block text-sm font-medium text-gray-700">Seleccione el Servicio</label>
+            <select id="servicioId" name="servicioId"
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400"
+                    onchange="toggleFechaFields()" required>
+                <option value="">Seleccione un servicio...</option>
+                <option th:each="servicio : ${servicios}"
+                        th:value="${servicio.id}"
+                        th:text="${servicio.nombre + ' - $' + #numbers.formatDecimal(servicio.precio, 0, 2)}">
+                </option>
+            </select>
+        </div>
 
             <div id="fechaFields" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
                 <div>
-                    <label for="fechaInicio" class="block text-sm font-medium text-gray-700">Fecha de Inicio (Alojamiento)</label>
-                    <input id="fechaInicio" type="date" th:field="*{fechaInicio}"
-                           class="w-full border rounded px-3 py-2 mt-1">
+                    <label for="fechaInicio" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
+                    <input type="date" id="fechaInicio" th:field="*{fechaInicio}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400">
                 </div>
                 <div>
-                    <label for="fechaFin" class="block text-sm font-medium text-gray-700">Fecha de Fin (Alojamiento)</label>
-                    <input id="fechaFin" type="date" th:field="*{fechaFin}"
-                           class="w-full border rounded px-3 py-2 mt-1">
+                    <label for="fechaFin" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
+                    <input type="date" id="fechaFin" th:field="*{fechaFin}"
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400">
                 </div>
             </div>
-
             <div class="text-right">
                 <button type="submit"
-                        class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    Continuar al Registro de Mascotas
+                        class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Continuar
                 </button>
             </div>
         </form>
     </section>
 </main>
+
+
+    <script>
+        function toggleFechaFields() {
+            const servicioId = document.getElementById("servicioId").value;
+            const fechaFields = document.getElementById("fechaFields");
+
+            // Asumiendo que el ID 1 es para alojamiento (ajusta según tu base de datos)
+            const alojamientoServicioId = "1";
+
+            if (servicioId === alojamientoServicioId) {
+                fechaFields.classList.remove("hidden");
+                document.getElementById("fechaInicio").required = true;
+                document.getElementById("fechaFin").required = true;
+            } else {
+                fechaFields.classList.add("hidden");
+                document.getElementById("fechaInicio").required = false;
+                document.getElementById("fechaFin").required = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', toggleFechaFields);
+    </script>
 
 <footer th:replace="fragments/footer :: footer" class="mt-12"></footer>
 </body>

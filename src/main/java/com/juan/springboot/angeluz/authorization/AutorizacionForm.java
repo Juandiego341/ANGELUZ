@@ -133,4 +133,18 @@ public class AutorizacionForm {
     public void setFechaFirma(LocalDate d) {
         this.fechaFirma = d;
     }
+
+
+    public void actualizarDatos(AutorizacionForm otra) {
+            this.setAutorizacionContactoVeterinario(otra.isAutorizacionContactoVeterinario());
+            this.setConsentimientoPrimerosAuxilios(otra.isConsentimientoPrimerosAuxilios());
+            this.setAutorizacionUsoImagen(otra.isAutorizacionUsoImagen());
+            this.setDeclaracionResponsabilidad(otra.isDeclaracionResponsabilidad());
+            this.setAutorizoCuidado(otra.isAutorizoCuidado());
+            this.setAutorizoDecisionesMedicas(otra.isAutorizoDecisionesMedicas());
+            this.setHorariosEntradaSalida(otra.getHorariosEntradaSalida());
+            this.setTarifasYPago(otra.getTarifasYPago());
+            this.setFechaFirma(otra.getFechaFirma());
+
+    }
 }
