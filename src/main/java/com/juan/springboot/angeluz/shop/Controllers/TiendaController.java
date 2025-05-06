@@ -22,9 +22,18 @@ public class TiendaController {
 
     @GetMapping("/tienda")
     public String mostrarTienda(Model model) {
-        List<Producto> productos = productoService.obtenerTodos();
+        // Vista pública - solo productos disponibles
+        List<Producto> productos = productoService.obtenerProductosDisponibles();
         model.addAttribute("productos", productos);
         return "tienda";
+    }
+
+    @GetMapping("/admin/productos")
+    public String listarProductos(Model model) {
+        // Vista admin - todos los productos
+        List<Producto> productos = productoService.obtenerTodos();
+        model.addAttribute("productos", productos);
+        return "admin/lista_productos";
     }
 
     @GetMapping("/admin/nuevo_producto")
@@ -39,11 +48,7 @@ public class TiendaController {
         return "redirect:/admin/productos";
     }
 
-    @GetMapping("/admin/productos")
-    public String listarProductos(Model model) {
-        model.addAttribute("productos", productoService.obtenerTodos());
-        return "admin/lista_productos";
-    }
+
 
     @GetMapping("/admin/productos/eliminar/{id}")
     public String eliminarProducto(@PathVariable Long id) {

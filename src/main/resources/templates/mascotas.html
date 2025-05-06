@@ -148,6 +148,12 @@
                                 <input type="text" th:field="*{mascotas[__${iterStat.index}__].contactoEmergencia}" class="w-full border rounded px-3 py-2 mt-1" />
                             </label></div>
                     </div>
+                    <div>
+                        <label class="font-semibold">Imagen de la Mascota</label>
+                        <input type="file" name="imagen" th:field="*{mascotas[__${iterStat.index}__].imagen}"
+                               class="w-full border rounded px-3 py-2 mt-1" accept="image/*" />
+                    </div>
+
                 </div>
 
                 <div class="mt-6 flex justify-end">
@@ -159,9 +165,7 @@
         </div>
 
         <div class="flex justify-between items-center mt-8">
-            <button type="button" onclick="agregarMascota()" class="bg-green-500 text-white px-5 py-2 rounded hover:bg-green-600">
-                + Agregar otra mascota
-            </button>
+
             <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
                 Guardar Formulario
             </button>
@@ -171,19 +175,7 @@
 
 <script>
     function agregarMascota() {
-        const container = document.getElementById('mascotas-container');
-        const total = container.children.length;
-        const primeraMascota = container.children[0];
-        const nuevaMascota = primeraMascota.cloneNode(true);
 
-        // Limpiar los campos del formulario clonado
-        nuevaMascota.querySelectorAll('input, textarea, select').forEach(el => {
-            if (el.type === 'checkbox' || el.type === 'radio') {
-                el.checked = false;
-            } else {
-                el.value = '';
-            }
-        });
 
         // Actualizar los índices de los campos del formulario clonado
         nuevaMascota.innerHTML = nuevaMascota.innerHTML.replace(/\[\d+\]/g, `[${total}]`);

@@ -1,4 +1,4 @@
-package com.juan.springboot.angeluz.shop.service.impl;
+package com.juan.springboot.angeluz.shop.service;
 
 import com.juan.springboot.angeluz.shop.Producto;
 import com.juan.springboot.angeluz.shop.ProductoRepository;
@@ -23,6 +23,11 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
+    public List<Producto> obtenerProductosDisponibles() {
+        return productoRepository.findByStockGreaterThanAndActivoTrue(0L);
+    }
+
+    @Override
     public Optional<Producto> obtenerPorId(Long id) {
         return productoRepository.findById(id);
     }
@@ -41,4 +46,31 @@ public class ProductoServiceImpl implements ProductoService {
     public List<Producto> buscarPorCategoria(String categoria) {
         return productoRepository.findByCategoria(categoria);
     }
+    // Nuevo método para actualizar stock
+    public void actualizarStock(Long productoId, Long cantidad) {
+        Producto producto = productoRepository.findById(productoId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        Long nuevoStock = producto.getStock() - cantidad;
+        producto.setStock(nuevoStock);
+
+        if (nuevoStock <= 0) {
+            producto.desactivar();
+        }
+
+        productoRepository.save(producto);
+    }
+
+    // Método para reactivar producto
+    public void reactivarProducto(Long productoId, Long nuevoStock) {
+        Producto producto = productoRepository.findById(productoId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        if (nuevoStock > 0) {
+            producto.setStock(nuevoStock);
+            producto.activar();
+            productoRepository.save(producto);
+        }
+    }
 }
+

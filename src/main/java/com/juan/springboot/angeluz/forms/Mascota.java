@@ -2,6 +2,8 @@ package com.juan.springboot.angeluz.forms;
 
 import jakarta.persistence.*;
 
+import java.awt.*;
+
 @Entity
 public class Mascota {
 
@@ -18,7 +20,7 @@ public class Mascota {
     private boolean esterilizado;
     private String colorYMarcas;
     private String numeroMicrochip;
-
+    private String imagen;
 
 
     // Necesidades especiales
@@ -272,5 +274,11 @@ public class Mascota {
         this.setCondicionesMedicas(otra.getCondicionesMedicas());
     }
 
+    public String getImagen() {
+        return imagen;
+    }
 
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
 }

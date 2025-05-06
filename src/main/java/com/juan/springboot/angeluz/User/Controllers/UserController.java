@@ -1,10 +1,14 @@
 package com.juan.springboot.angeluz.User.Controllers;
 
 import com.juan.springboot.angeluz.User.User;
+import com.juan.springboot.angeluz.User.UserRepository;
 import com.juan.springboot.angeluz.User.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +19,8 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/perfil")
 public class UserController {
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private UserService userService;
 
@@ -47,20 +52,40 @@ public class UserController {
 
     // Procesar edición
     @PostMapping("/editar")
-    public String actualizarPerfil(@Valid @ModelAttribute("user") User user, BindingResult result, Authentication authentication) {
-        if (result.hasErrors()) {
-            return "editarPerfil";  // Regresa a la página de edición si hay errores
+    public String editarPerfil(@ModelAttribute("user") User user,
+                               Authentication authentication,
+                               HttpServletRequest request) {
+        // Obtener usuario actual
+        String username = authentication.getName();
+        User usuarioActual = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        // Actualizar datos
+        usuarioActual.setNombre(user.getNombre());
+        usuarioActual.setEmail(user.getEmail());
+
+        // Si el username cambia, actualizar con cuidado
+        boolean usernameChanged = !usuarioActual.getUsername().equals(user.getUsername());
+        if (usernameChanged) {
+            // Verificar que el nuevo username no exista
+            if (userRepository.existsByUsername(user.getUsername())) {
+                throw new RuntimeException("El nombre de usuario ya existe");
+            }
+            usuarioActual.setUsername(user.getUsername());
         }
 
-        String username = authentication.getName();
-        User existingUser = userService.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        // Guardar cambios
+        userRepository.save(usuarioActual);
 
-        existingUser.setNombre(user.getNombre());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setUsername(user.getUsername());
+        // Si el username cambió, necesitamos reautenticar
+        if (usernameChanged) {
+            // Realizar logout
+            SecurityContextHolder.clearContext();
+            request.getSession().invalidate();
+            return "redirect:/login";
+        }
 
-        userService.saveUser(existingUser);
         return "redirect:/perfil";
     }
 }
+

@@ -11,4 +11,6 @@ public interface ProductoService {
     Producto guardar(Producto producto);
     void eliminarPorId(Long id);
     List<Producto> buscarPorCategoria(String categoria);
+
+    List<Producto> obtenerProductosDisponibles();
 }

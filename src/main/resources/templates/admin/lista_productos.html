@@ -1,56 +1,114 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="fragments/headerAdmin :: headerAdmin">
-  <title>Lista de Productos</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Administración de Productos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-100">
+    <head th:replace="fragments/header :: header"></head>
+    <nav th:replace="fragments/header :: navbar"></nav>
 
-<nav th:replace="fragments/headerAdmin :: navbarAdmin"></nav>
+    <main class="max-w-7xl mx-auto px-6 py-16">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">Administración de Productos</h1>
+            <a href="/admin/nuevo_producto" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                Nuevo Producto
+            </a>
+        </div>
 
-<main class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-  <h1 class="text-4xl font-bold text-gray-900 mb-8">Lista de productos</h1>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-4 border-b">
+                <div class="flex justify-between items-center">
+                    <div class="flex space-x-4">
+                        <div class="flex items-center">
+                            <span class="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+                            <span>Sin Stock</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                            <span>Stock Bajo (&lt;10)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                            <span>Stock Normal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-  <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-    <table class="min-w-full text-sm text-left text-gray-700">
-      <thead class="bg-gray-100">
-      <tr>
-        <th class="px-6 py-4">Imagen</th>
-        <th class="px-6 py-4">Nombre</th>
-        <th class="px-6 py-4">Precio (COP)</th>
-        <th class="px-6 py-4">Categoría</th>
-        <th class="px-6 py-4">Stock</th>
-        <th class="px-6 py-4">Acciones</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="producto : ${productos}" class="border-t">
-        <td class="px-6 py-4">
-          <img th:src="${producto.imagenUrl}" alt="Imagen del producto" class="w-20 h-20 object-cover rounded-lg">
-        </td>
-        <td class="px-6 py-4" th:text="${producto.nombre}"></td>
-        <td class="px-6 py-4" th:text="${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}"></td>
-        <td class="px-6 py-4" th:text="${producto.categoria}"></td>
-        <td class="px-6 py-4" th:text="${producto.stock}"></td>
-        <td class="px-6 py-4 flex gap-2">
-          <!-- Botón Editar -->
-          <a th:href="@{'/admin/productos/editar/' + ${producto.id}}"
-             class="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-md shadow transition">
-            Editar
-          </a>
+            <table class="min-w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Imagen</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Categoría</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <tr th:each="producto : ${productos}"
+                        th:class="${producto.stock <= 0 ? 'bg-gray-100' : ''}">
+                        <td class="px-6 py-4" th:text="${producto.id}"></td>
+                        <td class="px-6 py-4">
+                            <img th:src="${producto.imagenUrl}"
+                                 th:alt="${producto.nombre}"
+                                 class="w-16 h-16 object-cover rounded">
+                        </td>
+                        <td class="px-6 py-4" th:text="${producto.nombre}"></td>
+                        <td class="px-6 py-4" th:text="'$' + ${producto.precio}"></td>
+                        <td class="px-6 py-4" th:text="${producto.categoria}"></td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center">
+                                <span th:text="${producto.stock}"
+                                      th:class="${
+                                        producto.stock <= 0 ? 'text-red-600 font-bold' :
+                                        (producto.stock < 10 ? 'text-yellow-600 font-bold' : 'text-green-600')
+                                      }">
+                                </span>
+                                <span th:if="${producto.stock <= 0}"
+                                      class="ml-2 text-xs text-red-600">
+                                    (No visible en tienda)
+                                </span>
+                                <div th:if="${producto.stock <= 10}"
+                                     class="ml-2 flex space-x-2">
 
-          <!-- Botón Eliminar -->
-          <a th:href="@{'/admin/productos/eliminar/' + ${producto.id}}"
-             onclick="return confirm('¿Estás seguro de eliminar este producto?')"
-             class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md shadow transition">
-            Eliminar
-          </a>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-</main>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span th:if="${producto.activo}"
+                                  class="px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                                Activo
+                            </span>
+                            <span th:unless="${producto.activo}"
+                                  class="px-2 py-1 bg-red-100 text-red-800 rounded-full">
+                                Inactivo
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex space-x-2">
+                                <a th:href="@{/admin/productos/editar/{id}(id=${producto.id})}"
+                                   class="text-blue-600 hover:text-blue-900">
+                                    Editar
+                                </a>
+                                <a th:href="@{/admin/productos/eliminar/{id}(id=${producto.id})}"
+                                   onclick="return confirm('¿Estás seguro de eliminar este producto?')"
+                                   class="text-red-600 hover:text-red-900">
+                                    Eliminar
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
 
+    <footer th:replace="fragments/footer :: footer"></footer>
 </body>
 </html>

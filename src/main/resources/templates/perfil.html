@@ -19,7 +19,6 @@
                 <p class="mt-1 text-sm text-blue-200">Gestiona tu información personal y reservas.</p>
                 <div class="inline-block mt-4">
                     <img th:src="@{/images/avatar.png}" alt="Avatar" class="w-24 h-24 rounded-full border-4 border-blue-300 shadow-md">
-                    <div class="absolute bottom-0 right-0 bg-green-400 w-4 h-4 rounded-full border-2 border-white"></div>
                 </div>
             </div>
 
@@ -34,19 +33,18 @@
                     <a href="/perfil/editar" class="block w-full py-3 px-4 rounded-md shadow-sm text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
                         <i class="fas fa-user-edit mr-2"></i> Editar Perfil
                     </a>
-                    <a href="/perfil/cambiar-contrasena" class="block w-full py-3 px-4 rounded-md shadow-sm text-sm font-medium text-yellow-700 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-1">
-                        <i class="fas fa-key mr-2"></i> Cambiar Contrasena
-                    </a>
                     <nav sec:authorize="hasRole('ROLE_USER')">
                         <a th:href="@{/usuario/misReservas}" class="block w-full py-3 px-4 rounded-md shadow-sm text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1">
                             <i class="fas fa-calendar-alt mr-2"></i> Mis Reservas
                         </a>
                     </nav>
-                    <a href="/logout" class="block w-full py-3 px-4 rounded-md shadow-sm text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1">
-                        <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
-                    </a>
+                    <form th:action="@{/logout}" method="post" class="block w-full">
+                        <button type="submit"
+                                class="block w-full py-3 px-4 rounded-md shadow-sm text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
+                        </button>
+                    </form>
                 </div>
-
                 <div th:if="${usuario == null}" class="text-center text-red-500 mt-8">
                     <p>No se pudo cargar la información del perfil.</p>
                 </div>

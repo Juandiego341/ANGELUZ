@@ -19,6 +19,27 @@ public class Producto {
     @Column(name = "imagen_url", columnDefinition = "TEXT")
     private String imagenUrl;
     private Long stock;
+    private boolean activo = true;  // Por defecto true
+
+    // Método para desactivar el producto
+    public void desactivar() {
+        this.activo = false;
+    }
+
+    // Método para reactivar el producto
+    public void activar() {
+        this.activo = true;
+    }
+    public Producto() {
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
 
     public Long getId() {
         return id;

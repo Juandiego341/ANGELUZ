@@ -33,7 +33,7 @@
             </div>
             <div>
                 <p class="text-sm text-blue-500">Servicio</p>
-                <p class="text-blue-900" th:text="${registro.queVaASer}"></p>
+                <p class="text-blue-900" th:text="${registro.servicioSeleccionado != null ? registro.servicioSeleccionado.nombre : 'No disponible'}"></p>
             </div>
             <div>
                 <p class="text-sm text-blue-500">Fechas</p>

@@ -2,6 +2,8 @@ package com.juan.springboot.angeluz.forms.Controller;
 
 import com.juan.springboot.angeluz.Admin.servicios.Servicio;
 import com.juan.springboot.angeluz.Admin.servicios.ServicioRepositorio;
+import com.juan.springboot.angeluz.User.User;
+import com.juan.springboot.angeluz.User.UserRepository;
 import com.juan.springboot.angeluz.authorization.AutorizacionForm;
 import com.juan.springboot.angeluz.authorization.AutorizacionFormRepository;
 import com.juan.springboot.angeluz.forms.EntryForm;
@@ -11,6 +13,8 @@ import com.juan.springboot.angeluz.shop.Producto;
 import com.juan.springboot.angeluz.shop.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +39,8 @@ public class UsuarioController {
 
     @Autowired
     private ProductoRepository productoRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @ModelAttribute("autorizacionForm")
     public AutorizacionForm setupAutorizacionForm() {
@@ -192,27 +198,35 @@ public class UsuarioController {
     }
     @GetMapping("/misReservas")
     public String verMisReservas(Model model, Principal principal) {
-        String correoUsuario = principal.getName(); // El correo del usuario logueado
-        List<EntryForm> reservas = entryFormRepository.findByCorreo(correoUsuario);
+        String correoUsuario = principal.getName(); // Obtiene el correo del usuario autenticado
+        List<EntryForm> reservas = entryFormRepository.findByCorreo(correoUsuario); // Filtra por correo
 
-        model.addAttribute("reservasUsuario", reservas);
-        return "misReservas";
+        model.addAttribute("reservasUsuario", reservas); // Agrega las reservas al modelo
+        return "misReservas"; // Retorna la vista correspondiente
     }
-    @GetMapping("/registro/detalle/{id}")
-    public String mostrarDetallesRegistro(@PathVariable Long id, Model model, Authentication authentication) {
-        String correoUsuario = authentication.getName();
-        Optional<EntryForm> registro = entryFormRepository.findByIdWithMascotas(id);
+  @GetMapping("/registro/detalle/{id}")
+  public String mostrarDetallesRegistro(@PathVariable Long id, Model model, Authentication authentication) {
+      UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+      // Obtener el usuario desde la base de datos para tener acceso al correo
+      User usuario = userRepository.findByUsername(userDetails.getUsername())
+              .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        if (registro.isPresent()) {
-            EntryForm entryForm = registro.get();
-            if (entryForm.getCorreo().equals(correoUsuario)) {
-                model.addAttribute("registro", entryForm);
-                return "detallesDeReserva"; // Asegúrate que este nombre coincida con tu archivo HTML
-            }
-        }
+      Optional<EntryForm> registro = entryFormRepository.findById(id);
 
-        return "redirect:/usuario/mis-reservas"; // Corregido para coincidir con tu mapping existente
-    }
+      if (registro.isPresent()) {
+          EntryForm entryForm = registro.get();
+          // Verificar que el usuario tenga acceso a este registro usando el username
+          if (entryForm.getCorreo().equals(userDetails.getUsername())) {
+              // Actualizar el correo con el correo real del usuario
+              entryForm.setCorreo(usuario.getEmail());
+              entryFormRepository.save(entryForm);
+
+              model.addAttribute("registro", entryForm);
+              return "detallesDeReserva";
+          }
+      }
+      return "redirect:/usuario/misReservas";
+  }
     @PostMapping("/registro/eliminar/{id}")
     public String eliminarRegistro(@PathVariable Long id, RedirectAttributes redirectAttributes, Principal principal) {
         String correoUsuario = principal.getName();
