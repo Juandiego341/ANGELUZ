@@ -44,6 +44,7 @@
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Inicio</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Fin</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado Pago</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
             </tr>
             </thead>
@@ -58,10 +59,26 @@
                     <span th:if="${registro.esReserva}" class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Reserva</span>
                     <span th:unless="${registro.esReserva}" class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Registro</span>
                 </td>
+                <td class="px-6 py-4">
+                    <span th:if="${registro.estadoPago == 'Pagado'}" class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Pagado</span>
+                    <span th:unless="${registro.estadoPago == 'Pagado'}" class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">No Pagado</span>
+                </td>
                 <td class="px-6 py-4 text-sm font-medium">
-                    <a th:href="@{'/moderador/EntradasYSalidas/editar/' + ${registro.id}}" class="text-blue-600 hover:text-blue-900">Editar</a>
-                    <a th:href="@{'/moderador/EntradasYSalidas/eliminar/' + ${registro.id}}" class="text-red-600 hover:text-red-900 ml-4" onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?');">Eliminar</a>
-                    <a th:href="@{'/moderador/EntradasYSalidas/pago/' + ${registro.id}}" class="text-green-600 hover:text-green-900 ml-4">Pagar</a>
+                    <a th:href="@{'/moderador/EntradasYSalidas/editar/' + ${registro.id}}"
+                       class="text-blue-600 hover:text-blue-900"
+                       th:unless="${registro.estadoPago == 'Pagado'}">Editar</a>
+                    <span th:if="${registro.estadoPago == 'Pagado'}" class="text-gray-400">Editar</span>
+
+                    <a th:href="@{'/moderador/EntradasYSalidas/eliminar/' + ${registro.id}}"
+                       class="text-red-600 hover:text-red-900 ml-4"
+                       onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?');"
+                       th:unless="${registro.estadoPago == 'Pagado'}">Eliminar</a>
+                    <span th:if="${registro.estadoPago == 'Pagado'}" class="text-gray-400 ml-4">Eliminar</span>
+
+                    <a th:href="@{'/moderador/EntradasYSalidas/pago/' + ${registro.id}}"
+                       class="text-green-600 hover:text-green-900 ml-4"
+                       th:unless="${registro.estadoPago == 'Pagado'}">Pagar</a>
+                    <span th:if="${registro.estadoPago == 'Pagado'}" class="text-gray-400 ml-4">Pagar</span>
                 </td>
             </tr>
 
@@ -74,10 +91,26 @@
                     <span th:if="${registro.esReserva}" class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Reserva</span>
                     <span th:unless="${registro.esReserva}" class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Registro</span>
                 </td>
+                <td class="px-6 py-4">
+                    <span th:if="${registro.estadoPago == 'Pagado'}" class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Pagado</span>
+                    <span th:unless="${registro.estadoPago == 'Pagado'}" class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">No Pagado</span>
+                </td>
                 <td class="px-6 py-4 text-sm font-medium">
-                    <a th:href="@{'/moderador/EntradasYSalidas/editar/' + ${registro.id}}" class="text-blue-600 hover:text-blue-900">Editar</a>
-                    <a th:href="@{'/moderador/EntradasYSalidas/eliminar/' + ${registro.id}}" class="text-red-600 hover:text-red-900 ml-4" onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?');">Eliminar</a>
-                    <a th:href="@{'/moderador/EntradasYSalidas/pago/' + ${registro.id}}" class="text-green-600 hover:text-green-900 ml-4">Pagar</a>
+                    <a th:href="@{'/moderador/EntradasYSalidas/editar/' + ${registro.id}}"
+                       class="text-blue-600 hover:text-blue-900"
+                       th:unless="${registro.estadoPago == 'Pagado'}">Editar</a>
+                    <span th:if="${registro.estadoPago == 'Pagado'}" class="text-gray-400">Editar</span>
+
+                    <a th:href="@{'/moderador/EntradasYSalidas/eliminar/' + ${registro.id}}"
+                       class="text-red-600 hover:text-red-900 ml-4"
+                       onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?');"
+                       th:unless="${registro.estadoPago == 'Pagado'}">Eliminar</a>
+                    <span th:if="${registro.estadoPago == 'Pagado'}" class="text-gray-400 ml-4">Eliminar</span>
+
+                    <a th:href="@{'/moderador/EntradasYSalidas/pago/' + ${registro.id}}"
+                       class="text-green-600 hover:text-green-900 ml-4"
+                       th:unless="${registro.estadoPago == 'Pagado'}">Pagar</a>
+                    <span th:if="${registro.estadoPago == 'Pagado'}" class="text-gray-400 ml-4">Pagar</span>
                 </td>
             </tr>
             </tbody>
