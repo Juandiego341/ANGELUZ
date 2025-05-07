@@ -27,13 +27,17 @@ public class EntryForm {
     private String cliente;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
-
+    private String metodoPago;
+    private String estadoPago;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "servicio_id")
     private Servicio servicioSeleccionado;
-
+    private boolean esReserva = false;
     @Column(nullable = false)
     private Double precioServicio = 0.0;
+    private boolean completado = false;
+
+
 
     @Column(nullable = false)
     private Double valorTotal = 0.0;
@@ -51,6 +55,7 @@ public class EntryForm {
 
     @OneToMany(mappedBy = "entryForm", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Mascota> mascotas = new ArrayList<>();
+
 
     // Constructor
     public EntryForm() {
@@ -124,6 +129,14 @@ public class EntryForm {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean isEsReserva() {
+        return esReserva;
+    }
+
+    public void setEsReserva(boolean esReserva) {
+        this.esReserva = esReserva;
     }
 
     public Integer getVersion() {
@@ -208,6 +221,26 @@ public class EntryForm {
 
     public Servicio getServicioSeleccionado() {
         return servicioSeleccionado;
+    }
+
+    public String getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(String metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+
+    public String getEstadoPago() {
+        return estadoPago;
+    }
+
+    public void setEstadoPago(String estadoPago) {
+        this.estadoPago = estadoPago;
+    }
+
+    public void setCompletado(boolean completado) {
+        this.completado = completado;
     }
 
     public void setServicioSeleccionado(Servicio servicioSeleccionado) {

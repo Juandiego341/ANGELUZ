@@ -245,6 +245,10 @@
                     class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
                 Guardar Todos los Cambios
             </button>
+            <a th:href="@{/moderador/EntradasYSalidas/pago/{id}(id=${entryForm.id})}"
+               class="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600 ml-4">
+                Ir a Detalles de Pago
+            </a>
         </div>
     </form>
 
@@ -275,11 +279,10 @@
                           method="post"
                           class="flex items-center space-x-2">
                         <input type="hidden" name="_csrf" th:value="${_csrf?.token}"/>
-                        <select name="productoId" class="flex-1 border rounded px-3 py-2">
-                            <option value="">-- Seleccionar Producto --</option>
-                            <option th:each="prod : ${productosDisponibles}"
-                                    th:value="${prod.id}"
-                                    th:text="${prod.nombre} + ' - $' + ${#numbers.formatDecimal(prod.precio,0,2)}">
+                        <select name="productoId" required>
+                            <option th:each="producto : ${productosDisponibles}"
+                                    th:value="${producto.id}"
+                                    th:text="${producto.nombre + ' (Stock: ' + producto.stock + ')'}">
                             </option>
                         </select>
                         <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">

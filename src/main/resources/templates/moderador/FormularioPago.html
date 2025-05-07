@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="fragments/headerModerator :: headerModerator">
+    <meta charset="UTF-8">
+    <title>Detalles de Pago</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<nav th:replace="fragments/headerModerator :: navbarModerator"></nav>
+
+<div class="max-w-7xl mx-auto py-16 px-4 sm:px-7 lg:px-8">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">Detalles de Pago</h1>
+
+    <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+         role="alert">
+        <span class="block sm:inline" th:text="${errorMessage}"></span>
+    </div>
+
+    <div th:if="${entryForm}">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Registro #<span th:text="${entryForm.id}"></span></h2>
+
+        <div class="mb-4">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Servicio:</h3>
+            <div th:if="${entryForm.servicioSeleccionado != null}">
+                <p><span th:text="${entryForm.servicioSeleccionado.nombre}"></span> -
+                    <span th:text="${' $' + #numbers.formatDecimal(entryForm.servicioSeleccionado.precio, 0, 2)}"></span>
+                </p>
+            </div>
+            <p th:unless="${entryForm.servicioSeleccionado != null}" class="text-gray-500">No se seleccionó ningún servicio.</p>
+        </div>
+
+        <div class="mb-4">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Productos:</h3>
+            <ul th:if="${not #lists.isEmpty(entryForm.productosSeleccionados)}" class="list-disc pl-5">
+                <li th:each="producto : ${entryForm.productosSeleccionados}"
+                    th:text="${producto.nombre} + ' - $' + ${#numbers.formatDecimal(producto.precio, 0, 2)}"></li>
+            </ul>
+            <p th:if="${#lists.isEmpty(entryForm.productosSeleccionados)}" class="text-gray-500">No se seleccionaron productos.</p>
+        </div>
+
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold text-gray-800">Total a Pagar: <span th:text="${' $' + #numbers.formatDecimal(total, 0, 2)}"></span></h2>
+        </div>
+
+        <form th:action="@{/moderador/EntradasYSalidas/procesar-pago/{id}(id=${entryForm.id})}" method="post" class="space-y-4">
+            <div>
+                <label for="metodoPago" class="block text-gray-700 text-sm font-bold mb-2">Método de Pago:</label>
+                <select id="metodoPago" name="metodoPago" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="efectivo">Efectivo</option>
+                    <option value="transferencia">Transferencia Bancaria</option>
+                </select>
+            </div>
+            <div>
+                <label for="detallesPago" class="block text-gray-700 text-sm font-bold mb-2">Detalles del Pago (Opcional):</label>
+                <textarea id="detallesPago" name="detallesPago" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Confirmar Pago
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

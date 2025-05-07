@@ -423,10 +423,11 @@ public class EntryFormController {
     public List<Producto> getProductosDisponibles() {
         return productoRepository.findAll();
     }
+    @Transactional
     @PostMapping("/moderador/EntradasYSalidas/editar/{id}/agregar-producto")
     public String agregarProductoAEditado(@PathVariable Long id,
-                                        @RequestParam("productoId") Long productoId,
-                                        RedirectAttributes redirectAttributes) {
+                                          @RequestParam("productoId") Long productoId,
+                                          RedirectAttributes redirectAttributes) {
         try {
             EntryForm entryForm = entryFormRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Registro no encontrado"));
@@ -434,19 +435,23 @@ public class EntryFormController {
             Producto producto = productoRepository.findById(productoId)
                     .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
-            if (entryForm.getProductosSeleccionados() == null) {
-                entryForm.setProductosSeleccionados(new ArrayList<>());
+            if (producto.getStock() > 0) {
+                producto.setStock(producto.getStock() - 1); // Disminuir el stock
+                productoRepository.save(producto);
+
+                if (entryForm.getProductosSeleccionados() == null) {
+                    entryForm.setProductosSeleccionados(new ArrayList<>());
+                }
+
+                entryForm.getProductosSeleccionados().add(producto);
+                entryFormRepository.save(entryForm);
+
+                redirectAttributes.addFlashAttribute("successMessage", "Producto agregado correctamente.");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Stock insuficiente para el producto seleccionado.");
             }
-
-            entryForm.getProductosSeleccionados().add(producto);
-            entryFormRepository.save(entryForm);
-
-            redirectAttributes.addFlashAttribute("successMessage",
-                    "Producto agregado correctamente");
-
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                "Error al agregar el producto: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Error al agregar el producto: " + e.getMessage());
         }
 
         return "redirect:/moderador/EntradasYSalidas/editar/" + id;

@@ -58,6 +58,7 @@ public class UsuarioController {
         if (entryForm.getId() == null) {
             String correoUsuario = principal.getName();
             entryForm.setCorreo(correoUsuario);
+            entryForm.setEsReserva(true); // Marcar como reserva
             entryFormRepository.save(entryForm);
         }
 
@@ -204,29 +205,28 @@ public class UsuarioController {
         model.addAttribute("reservasUsuario", reservas); // Agrega las reservas al modelo
         return "misReservas"; // Retorna la vista correspondiente
     }
-  @GetMapping("/registro/detalle/{id}")
-  public String mostrarDetallesRegistro(@PathVariable Long id, Model model, Authentication authentication) {
-      UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-      // Obtener el usuario desde la base de datos para tener acceso al correo
-      User usuario = userRepository.findByUsername(userDetails.getUsername())
-              .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+    @GetMapping("/registro/detalle/{id}")
+    public String mostrarDetallesRegistro(@PathVariable Long id, Model model, Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        // Obtener el usuario desde la base de datos para tener acceso al correo
+        User usuario = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-      Optional<EntryForm> registro = entryFormRepository.findById(id);
+        Optional<EntryForm> registro = entryFormRepository.findById(id);
 
-      if (registro.isPresent()) {
-          EntryForm entryForm = registro.get();
-          // Verificar que el usuario tenga acceso a este registro usando el username
-          if (entryForm.getCorreo().equals(userDetails.getUsername())) {
-              // Actualizar el correo con el correo real del usuario
-              entryForm.setCorreo(usuario.getEmail());
-              entryFormRepository.save(entryForm);
+        if (registro.isPresent()) {
+            EntryForm entryForm = registro.get();
+            if (entryForm.getCorreo().equals(userDetails.getUsername())) {
+                // Actualizar el correo con el correo real del usuario
+                entryForm.setCorreo(usuario.getEmail());
+                entryFormRepository.save(entryForm);
 
-              model.addAttribute("registro", entryForm);
-              return "detallesDeReserva";
-          }
-      }
-      return "redirect:/usuario/misReservas";
-  }
+                model.addAttribute("registro", entryForm);
+                return "detallesDeReserva";
+            }
+        }
+        return "redirect:/usuario/misReservas";
+    }
     @PostMapping("/registro/eliminar/{id}")
     public String eliminarRegistro(@PathVariable Long id, RedirectAttributes redirectAttributes, Principal principal) {
         String correoUsuario = principal.getName();
@@ -252,5 +252,6 @@ public class UsuarioController {
         return "redirect:/usuario/misReservas";
     }
 
-}
 
+
+}
