@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="fragments/headerModerator :: headerModerator">
+    <title>Tienda - Panel Moderador</title>
+</head>
+<body class="bg-gray-100">
+<nav th:replace="fragments/headerModerator :: navbarModerator"></nav>
+
+<div class="max-w-7xl mx-auto py-16 px-4 sm:px-7 lg:px-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">Gestión de Tienda</h1>
+
+    <div class="bg-white shadow-xl rounded-lg p-8 max-w-xl mx-auto">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">
+            <i class="fas fa-barcode mr-2"></i>Agregar Producto
+        </h2>
+
+       <form th:action="@{/moderador/tienda/agregar}" method="post" class="space-y-4">
+    <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre">
+            Nombre del Producto
+        </label>
+        <input type="text" id="nombre" name="nombre" required
+               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700">
+    </div>
+
+    <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="descripcion">
+            Descripción
+        </label>
+        <textarea id="descripcion" name="descripcion" required rows="4"
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 resize-none"></textarea>
+    </div>
+
+    <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="precio">
+            Precio
+        </label>
+        <input type="number" step="0.01" id="precio" name="precio" required
+               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700">
+    </div>
+
+    <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="stock">
+            Stock
+        </label>
+        <input type="number" id="stock" name="stock" required
+               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700">
+    </div>
+
+    <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="imagenUrl">
+            URL de la imagen
+        </label>
+        <input type="text" id="imagenUrl" name="imagenUrl" required
+               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+               placeholder="https://ejemplo.com/imagen.jpg">
+    </div>
+
+    <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="categoria">
+            Categoría
+        </label>
+        <select id="categoria" name="categoria" required
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700">
+            <option value="" disabled selected>Selecciona una categoría</option>
+            <option value="Comida">Comida</option>
+            <option value="Medicamento">Medicamento</option>
+            <option value="Juguetes">Juguetes</option>
+        </select>
+    </div>
+
+    <div class="flex justify-end">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <i class="fas fa-save mr-2"></i>Guardar
+        </button>
+    </div>
+    </form>
+
+</div>
+</div>
+</body>
+</html>

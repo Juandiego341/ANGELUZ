@@ -53,6 +53,11 @@
                    placeholder="Ingrese la URL de la imagen"
                    class="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
+        <div class="form-group">
+            <label for="codigoBarras">Código de Barras</label>
+            <input type="text" class="form-control" id="codigoBarras" th:field="*{codigoBarras}" placeholder="Ingresa el código de barras">
+            <small class="form-text text-muted">Código único para identificar el producto con el escáner.</small>
+        </div>
 
 
         <div class="flex justify-end">

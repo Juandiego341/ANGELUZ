@@ -20,6 +20,8 @@ public class Producto {
     private String imagenUrl;
     private Long stock;
     private boolean activo = true;  // Por defecto true
+    @Column(unique = true) // Para asegurar que cada código de barras sea único
+    private String codigoBarras;
 
     // Método para desactivar el producto
     public void desactivar() {
@@ -96,6 +98,12 @@ public class Producto {
     public void setStock(Long stock) {
         this.stock = stock;
     }
+    public String getCodigoBarras() {
+        return codigoBarras;
+    }
 
+    public void setCodigoBarras(String codigoBarras) {
+        this.codigoBarras = codigoBarras;
+    }
 
 }
