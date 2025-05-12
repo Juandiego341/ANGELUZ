@@ -97,9 +97,9 @@
                 </td>
                 <td class="px-6 py-4 text-sm font-medium">
                     <a th:href="@{'/moderador/EntradasYSalidas/editar/' + ${registro.id}}"
-                       class="text-blue-600 hover:text-blue-900"
+                       class="text-blue-600 hover:text-blue-900 ml-4"
                        th:unless="${registro.estadoPago == 'Pagado'}">Editar</a>
-                    <span th:if="${registro.estadoPago == 'Pagado'}" class="text-gray-400">Editar</span>
+                    <span th:if="${registro.estadoPago == 'Pagado'}" class="text-gray-400 ml-4">Editar</span>
 
                     <a th:href="@{'/moderador/EntradasYSalidas/eliminar/' + ${registro.id}}"
                        class="text-red-600 hover:text-red-900 ml-4"

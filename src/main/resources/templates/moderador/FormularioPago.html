@@ -61,6 +61,12 @@
             </div>
         </form>
     </div>
+    <div th:if="${pagoConfirmado}" class="mt-6">
+        <a th:href="@{/moderador/EntradasYSalidas/factura/{id}(id=${entryForm.id})}"
+           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-block">
+            Imprimir Factura
+        </a>
+    </div>
 </div>
 
 </body>

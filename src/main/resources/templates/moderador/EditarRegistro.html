@@ -275,22 +275,37 @@
 
                 <div>
                     <h3 class="text-xl font-semibold mb-2">Agregar Producto</h3>
-                    <form th:action="@{/moderador/EntradasYSalidas/editar/{id}/agregar-producto(id=${entryForm.id})}"
-                          method="post"
-                          class="flex items-center space-x-2">
-                        <input type="hidden" name="_csrf" th:value="${_csrf?.token}"/>
-                        <select name="productoId" required>
-                            <option th:each="producto : ${productosDisponibles}"
-                                    th:value="${producto.id}"
-                                    th:text="${producto.nombre + ' (Stock: ' + producto.stock + ')'}">
-                            </option>
-                        </select>
-                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
-                            Agregar
-                        </button>
-                    </form>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-1">Seleccionar de la lista</h4>
+                        <form th:action="@{/moderador/EntradasYSalidas/editar/{id}/agregar-producto(id=${entryForm.id})}"
+                              method="post"
+                              class="flex items-center space-x-2 mb-4">
+                            <input type="hidden" name="_csrf" th:value="${_csrf?.token}"/>
+                            <select name="productoId" required class="flex-1 border rounded px-3 py-2">
+                                <option th:each="producto : ${productosDisponibles}"
+                                        th:value="${producto.id}"
+                                        th:text="${producto.nombre + ' (Stock: ' + producto.stock + ')'}">
+                                </option>
+                            </select>
+                            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                                Agregar
+                            </button>
+                        </form>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-1">Agregar por Código de Barras</h4>
+                        <form th:action="@{/moderador/EntradasYSalidas/editar/{id}/agregar-producto-codigo(id=${entryForm.id})}"
+                              method="post"
+                              class="flex items-center space-x-2">
+                            <input type="hidden" name="_csrf" th:value="${_csrf?.token}"/>
+                            <input type="text" name="codigoBarras" placeholder="Ingrese el código de barras"
+                                   class="flex-1 border rounded px-3 py-2" required>
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                                Buscar y Agregar
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
         </section>
 
 </div>

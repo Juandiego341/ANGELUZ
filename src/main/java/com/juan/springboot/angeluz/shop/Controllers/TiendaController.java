@@ -83,9 +83,22 @@ public class TiendaController {
     }
 
     @PostMapping("/admin/productos/actualizar")
-    public String actualizarProducto(@ModelAttribute Producto producto) {
-        productoRepository.save(producto);
-        return "redirect:/admin/productos";
+    public String actualizarProducto(@ModelAttribute Producto producto, RedirectAttributes redirectAttributes) {
+        try {
+            // Validar que el código de barras sea único si se cambió
+            Optional<Producto> productoExistente = productoRepository.findByCodigoBarras(producto.getCodigoBarras());
+            if (productoExistente.isPresent() && !productoExistente.get().getId().equals(producto.getId())) {
+                redirectAttributes.addFlashAttribute("error", "El código de barras ya está en uso");
+                return "redirect:/admin/productos/editar/" + producto.getId();
+            }
+
+            productoRepository.save(producto);
+            redirectAttributes.addFlashAttribute("success", "Producto actualizado correctamente");
+            return "redirect:/admin/productos";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar: " + e.getMessage());
+            return "redirect:/admin/productos/editar/" + producto.getId();
+        }
     }
     @PostMapping("/admin/productos/importarCodigosBarras")
     public String importarCodigosBarras(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {

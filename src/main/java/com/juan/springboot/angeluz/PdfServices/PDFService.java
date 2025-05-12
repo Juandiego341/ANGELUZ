@@ -22,34 +22,27 @@ public class PDFService {
             PdfWriter.getInstance(document, out);
             document.open();
 
-            // Título del reporte
             Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, BaseColor.BLUE);
             Paragraph title = new Paragraph("Reporte de Entradas", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             title.setSpacingAfter(20);
             document.add(title);
 
-            // Crear tabla
-            PdfPTable table = new PdfPTable(5);
+            // Modificar la tabla para incluir la columna de pago
+            PdfPTable table = new PdfPTable(6); // Ahora 6 columnas
             table.setWidthPercentage(100);
-            table.setWidths(new float[]{2, 3, 3, 4, 2});
+            table.setWidths(new float[]{2, 3, 3, 3, 2, 2}); // Ajustar los anchos
             table.setSpacingBefore(10);
 
-            // Encabezados
             addTableHeader(table);
-
-            // Datos
             addTableData(table, entradas);
 
-            // Agregar tabla al documento
             document.add(table);
 
-            // Calcular suma total
             double sumaTotal = entradas.stream()
                     .mapToDouble(e -> e.getValorTotal() != null ? e.getValorTotal() : 0.0)
                     .sum();
 
-            // Mostrar suma total
             Font totalFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.BLACK);
             Paragraph totalParagraph = new Paragraph("Suma Total: $" + String.format("%.2f", sumaTotal), totalFont);
             totalParagraph.setAlignment(Element.ALIGN_RIGHT);
@@ -65,7 +58,8 @@ public class PDFService {
     }
 
     private void addTableHeader(PdfPTable table) {
-        String[] headers = {"Fecha", "Cliente", "Servicio", "Productos", "Total"};
+        // Agregar "Pago" a los encabezados
+        String[] headers = {"Fecha", "Cliente", "Servicio", "Productos", "Total", "Pago"};
         Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.WHITE);
 
         for (String header : headers) {
@@ -73,49 +67,48 @@ public class PDFService {
             cell.setBackgroundColor(BaseColor.DARK_GRAY);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setPadding(8); // Espaciado interno
+            cell.setPadding(8);
             table.addCell(cell);
         }
     }
 
     private void addTableData(PdfPTable table, List<EntryForm> entradas) {
-        Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.BLACK);
+    Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.BLACK);
 
-        for (EntryForm entrada : entradas) {
-            // Fecha
-            String fechaInicio = (entrada.getFechaInicio() != null)
-                    ? entrada.getFechaInicio().toString()
-                    : "N/A";
-            PdfPCell fechaCell = new PdfPCell(new Phrase(fechaInicio, dataFont));
-            fechaCell.setPadding(5);
-            fechaCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(fechaCell);
+    for (EntryForm entrada : entradas) {
+        // Fecha
+        addCell(table, entrada.getFechaInicio() != null ? entrada.getFechaInicio().toString() : "N/A", dataFont);
 
-            // Cliente
-            PdfPCell clienteCell = new PdfPCell(new Phrase(
-                    entrada.getNombrePropietario() != null ? entrada.getNombrePropietario() : "N/A", dataFont));
-            clienteCell.setPadding(5);
-            table.addCell(clienteCell);
+        // Cliente
+        addCell(table, entrada.getNombrePropietario() != null ? entrada.getNombrePropietario() : "N/A", dataFont);
 
-            // Servicio
-            PdfPCell servicioCell = new PdfPCell(new Phrase(
-                    entrada.getQueVaASer() != null ? entrada.getQueVaASer() : "N/A", dataFont));
-            servicioCell.setPadding(5);
-            table.addCell(servicioCell);
+        // Servicio
+        addCell(table, entrada.getQueVaASer() != null ? entrada.getQueVaASer() : "N/A", dataFont);
 
-            // Productos
-            PdfPCell productosCell = new PdfPCell(new Phrase(
-                    getProductosString(entrada.getProductosSeleccionados()), dataFont));
-            productosCell.setPadding(5);
-            table.addCell(productosCell);
+        // Productos
+        addCell(table, getProductosString(entrada.getProductosSeleccionados()), dataFont);
 
-            // Total
-            PdfPCell totalCell = new PdfPCell(new Phrase(
-                    "$" + (entrada.getValorTotal() != null ? entrada.getValorTotal() : "0.00"), dataFont));
-            totalCell.setPadding(5);
-            totalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            table.addCell(totalCell);
-        }
+        // Total
+        PdfPCell totalCell = new PdfPCell(new Phrase(
+                "$" + (entrada.getValorTotal() != null ? entrada.getValorTotal() : "0.00"), dataFont));
+        totalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        totalCell.setPadding(5);
+        table.addCell(totalCell);
+
+        // Estado de Pago
+        String estadoPago = entrada.getEstadoPago() != null ? entrada.getEstadoPago() : "Pendiente";
+        BaseColor colorPago = "Pagado".equals(estadoPago) ? BaseColor.GREEN : BaseColor.RED;
+        Font pagoFont = FontFactory.getFont(FontFactory.HELVETICA, 10, colorPago);
+        PdfPCell pagoCell = new PdfPCell(new Phrase(estadoPago, pagoFont));
+        pagoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        pagoCell.setPadding(5);
+        table.addCell(pagoCell);
+    }
+}
+    private void addCell(PdfPTable table, String text, Font font) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setPadding(5);
+        table.addCell(cell);
     }
 
     private String getProductosString(List<Producto> productos) {
@@ -123,7 +116,7 @@ public class PDFService {
             return "Sin productos";
         }
         return productos.stream()
-                .map(Producto::getNombre) // Obtiene el nombre de cada producto
-                .collect(Collectors.joining(", ")); // Une los nombres con comas
+                .map(Producto::getNombre)
+                .collect(Collectors.joining(", "));
     }
 }
