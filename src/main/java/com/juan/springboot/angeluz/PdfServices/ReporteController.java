@@ -1,5 +1,6 @@
 package com.juan.springboot.angeluz.PdfServices;
 
+import com.juan.springboot.angeluz.PdfServices.CSVService; // Importa el servicio CSV
 import com.juan.springboot.angeluz.forms.EntryForm;
 import com.juan.springboot.angeluz.forms.EntryFormService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,32 +26,49 @@ public class ReporteController {
     @Autowired
     private EntryFormService entryFormService;
 
-   @GetMapping("/generar")
+    @Autowired
+    private CSVService csvService; // Inyecta el servicio CSV
+
+    @GetMapping("/generar")
     public ResponseEntity<InputStreamResource> generarReporte(
             @RequestParam("tipo") String tipo,
             @RequestParam("formato") String formato,
             @RequestParam(value = "mes", required = false) Integer mes) {
 
-        // Obtener las entradas
+        // Obtener las entradas (esta parte es común para ambos formatos)
         List<EntryForm> entradas = entryFormService.getAllEntries();
 
-        // Filtrar por mes si se proporciona
+        // Filtrar por mes (también común)
         if (mes != null) {
             entradas = entradas.stream()
                     .filter(e -> e.getFechaInicio() != null && e.getFechaInicio().getMonthValue() == mes)
                     .toList();
         }
 
-        // Generar el PDF
-        ByteArrayInputStream pdfStream = pdfService.generarReportePDF(entradas);
-
-        // Configurar la respuesta HTTP
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "inline; filename=reporte.pdf");
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(new InputStreamResource(pdfStream));
+        if ("reporte".equalsIgnoreCase(tipo)) {
+            if ("pdf".equalsIgnoreCase(formato)) {
+                // Generar el PDF (tu código original)
+                ByteArrayInputStream pdfStream = pdfService.generarReportePDF(entradas);
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Content-Disposition", "inline; filename=reporte.pdf");
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .body(new InputStreamResource(pdfStream));
+            } else if ("csv".equalsIgnoreCase(formato)) {
+                // Generar el CSV (la nueva lógica)
+                ByteArrayInputStream csvStream = csvService.generarCSV(entradas);
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Content-Disposition", "attachment; filename=reporte.csv");
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .contentType(MediaType.TEXT_PLAIN) // O MediaType.TEXT_CSV
+                        .body(new InputStreamResource(csvStream));
+            } else {
+                return ResponseEntity.badRequest().body(new InputStreamResource(new ByteArrayInputStream("Formato no soportado".getBytes())));
+            }
+        } else {
+            return ResponseEntity.badRequest().body(new InputStreamResource(new ByteArrayInputStream("Tipo de reporte no soportado".getBytes())));
+        }
     }
 }

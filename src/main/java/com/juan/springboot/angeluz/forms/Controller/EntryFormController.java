@@ -38,8 +38,6 @@ public class EntryFormController {
     private ProductoRepository productoRepository;
 
 
-
-
     @Transactional
     @GetMapping("/moderador/EntradasYSalidas/editar/{id}")
     public String editarRegistro(@PathVariable Long id, Model model) {
@@ -149,6 +147,7 @@ public class EntryFormController {
             return "redirect:/moderador/checkout";
         }
     }
+
     @GetMapping("/moderador/mascotas")
     public String mostrarFormularioMascotas(Model model) {
         EntryForm entryForm = (EntryForm) model.asMap().get("entryForm");
@@ -181,8 +180,6 @@ public class EntryFormController {
     }
 
 
-
-
     @GetMapping("/moderador/EntradasYSalidas")
     public String listarRegistros(Model model) {
         List<EntryForm> registros = entryFormRepository.findAll();
@@ -200,8 +197,6 @@ public class EntryFormController {
         }
         return "moderador/EntradasYSalidas";
     }
-
-
 
 
     @GetMapping("/moderador/EntradasYSalidas/eliminar/{id}")
@@ -259,13 +254,13 @@ public class EntryFormController {
     }
 
 
-
     @GetMapping("/moderador/seleccionar-productos")
     public String seleccionarProductos(Model model, @SessionAttribute("entryForm") EntryForm entryForm) {
         model.addAttribute("entryForm", entryForm);
         model.addAttribute("productos", productoRepository.findAll());
         return "moderador/SeleccionarProductos";
     }
+
     @PostMapping("/moderador/guardar-productos")
     public String guardarProductosSeleccionados(@RequestParam("productoIds") List<Long> productoIds,
                                                 @SessionAttribute("entryForm") EntryForm entryForm,
@@ -310,6 +305,7 @@ public class EntryFormController {
         model.addAttribute("entryForm", entryForm);
         return "Total";
     }
+
     @PostMapping("/resumen-total")
     public String finalizarRegistro(@SessionAttribute("entryForm") EntryForm entryForm,
                                     SessionStatus status) {
@@ -333,6 +329,7 @@ public class EntryFormController {
         }
         return "redirect:/resumen-total";
     }
+
     @PostMapping("/moderador/agregar-servicio")
     public String agregarServicio(
             @RequestParam(value = "servicioId", required = false) Long servicioId,
@@ -423,6 +420,7 @@ public class EntryFormController {
     public List<Producto> getProductosDisponibles() {
         return productoRepository.findAll();
     }
+
     @Transactional
     @PostMapping("/moderador/EntradasYSalidas/editar/{id}/agregar-producto")
     public String agregarProductoAEditado(@PathVariable Long id,
@@ -461,8 +459,8 @@ public class EntryFormController {
     @PostMapping("/moderador/EntradasYSalidas/editar/{id}")
     @Transactional
     public String guardarEdicion(@PathVariable Long id,
-                               @ModelAttribute("entryForm") EntryForm formData,
-                               RedirectAttributes redirectAttributes) {
+                                 @ModelAttribute("entryForm") EntryForm formData,
+                                 RedirectAttributes redirectAttributes) {
         try {
             // Obtener el registro existente
             EntryForm entryForm = entryFormRepository.findById(id)
@@ -490,15 +488,16 @@ public class EntryFormController {
             entryFormRepository.saveAndFlush(entryForm);
 
             redirectAttributes.addFlashAttribute("successMessage",
-                "Cambios guardados correctamente");
+                    "Cambios guardados correctamente");
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage",
-                "Error al guardar los cambios: " + e.getMessage());
+                    "Error al guardar los cambios: " + e.getMessage());
         }
 
         return "redirect:/moderador/EntradasYSalidas/editar/" + id;
     }
+
     @PostMapping("/moderador/EntradasYSalidas/editar/{id}/eliminar-producto")
     @Transactional
     public String eliminarProducto(@PathVariable Long id,
@@ -510,84 +509,52 @@ public class EntryFormController {
                     .orElseThrow(() -> new RuntimeException("Registro no encontrado"));
 
             if (entryForm.getProductosSeleccionados() != null) {
-                // Buscar el primer producto con el ID especificado en la lista
-                Optional<Producto> productoAEliminarOptional = entryForm.getProductosSeleccionados().stream()
-                        .filter(producto -> producto.getId().equals(productoId))
-                        .findFirst();
+                // Buscar y eliminar el producto por ID
+                boolean removed = entryForm.getProductosSeleccionados()
+                        .removeIf(producto -> producto.getId().equals(productoId));
 
-                if (productoAEliminarOptional.isPresent()) {
-                    Producto productoAEliminar = productoAEliminarOptional.get();
-
-                    // Eliminar solo la primera instancia del producto con ese ID
-                    entryForm.getProductosSeleccionados().remove(productoAEliminar);
-
-                    // Intentar recuperar el stock solo si el producto parece ser un "producto real"
-                    // Aquí podríamos usar una lógica más robusta si tuvieras un flag en la entidad Producto
-                    Producto productoEnBaseDeDatos = productoRepository.findById(productoId)
-                            .orElse(null);
-                    if (productoEnBaseDeDatos != null && productoEnBaseDeDatos.getStock() != null) {
-                        productoEnBaseDeDatos.setStock(productoEnBaseDeDatos.getStock() + 1);
-                        productoRepository.save(productoEnBaseDeDatos);
-                    }
-
+                if (removed) {
                     // Guardar los cambios en la base de datos
                     entryFormRepository.saveAndFlush(entryForm);
-                    redirectAttributes.addFlashAttribute("successMessage", "Producto/Servicio eliminado correctamente.");
+                    redirectAttributes.addFlashAttribute("successMessage", "Producto eliminado correctamente.");
                 } else {
-                    redirectAttributes.addFlashAttribute("errorMessage", "Producto/Servicio no encontrado en la lista.");
+                    redirectAttributes.addFlashAttribute("errorMessage", "Producto no encontrado en la lista.");
                 }
             } else {
-                redirectAttributes.addFlashAttribute("errorMessage", "No hay productos/servicios seleccionados para eliminar.");
+                redirectAttributes.addFlashAttribute("errorMessage", "No hay productos seleccionados para eliminar.");
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error al eliminar el producto/servicio: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Error al eliminar el producto: " + e.getMessage());
         }
 
         return "redirect:/moderador/EntradasYSalidas/editar/" + id;
     }
-    @Transactional
-    @PostMapping("/moderador/EntradasYSalidas/editar/{id}/agregar-producto-codigo")
-    public String agregarProductoPorCodigoBarrasAEditado(@PathVariable Long id,
-                                                         @RequestParam("codigoBarras") String codigoBarras,
-                                                         RedirectAttributes redirectAttributes) {
-        try {
-            EntryForm entryForm = entryFormRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Registro no encontrado"));
+@GetMapping("/moderador/EntradasYSalidas/factura/{id}")
+public String mostrarFactura(@PathVariable Long id, Model model) {
+    try {
+        EntryForm entryForm = entryFormRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Registro no encontrado"));
 
-            // Buscar el producto en la base de datos por su código de barras
-            Producto producto = productoRepository.findByCodigoBarras(codigoBarras)
-                    .orElse(null); // O podrías lanzar una excepción si prefieres
-
-            if (producto != null) {
-                if (producto.getStock() > 0) {
-                    producto.setStock(producto.getStock() - 1); // Disminuir el stock
-                    productoRepository.save(producto);
-
-                    if (entryForm.getProductosSeleccionados() == null) {
-                        entryForm.setProductosSeleccionados(new ArrayList<>());
-                    }
-
-                    entryForm.getProductosSeleccionados().add(producto);
-                    entryFormRepository.save(entryForm);
-
-                    redirectAttributes.addFlashAttribute("successMessage",
-                            "Producto con código de barras '" + codigoBarras + "' agregado correctamente.");
-                } else {
-                    redirectAttributes.addFlashAttribute("errorMessage",
-                            "Stock insuficiente para el producto con código de barras '" + codigoBarras + "'.");
-                }
-            } else {
-                redirectAttributes.addFlashAttribute("errorMessage",
-                        "No se encontró ningún producto con el código de barras '" + codigoBarras + "'.");
-            }
-
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Error al agregar el producto por código de barras: " + e.getMessage());
+        // Calcular el total
+        double total = 0;
+        if (entryForm.getServicioSeleccionado() != null) {
+            total += entryForm.getServicioSeleccionado().getPrecio();
+        }
+        if (entryForm.getProductosSeleccionados() != null) {
+            total += entryForm.getProductosSeleccionados().stream()
+                    .mapToDouble(Producto::getPrecio)
+                    .sum();
         }
 
-        return "redirect:/moderador/EntradasYSalidas/editar/" + id;
+        model.addAttribute("entryForm", entryForm);
+        model.addAttribute("total", total);
+        model.addAttribute("metodoPago", entryForm.getMetodoPago());
+
+        return "moderador/factura";
+    } catch (Exception e) {
+        return "redirect:/moderador/EntradasYSalidas";
     }
+}
 
 }
 
