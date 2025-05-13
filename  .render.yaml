@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: angeluz-backend
+    runtime: java
+    buildCommand: ./mvnw clean install
+    startCommand: java -jar target/Angeluz-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: JAVA_VERSION
+        value: 21
