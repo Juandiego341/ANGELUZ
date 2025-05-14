@@ -509,16 +509,30 @@ public class EntryFormController {
                     .orElseThrow(() -> new RuntimeException("Registro no encontrado"));
 
             if (entryForm.getProductosSeleccionados() != null) {
-                // Buscar y eliminar el producto por ID
-                boolean removed = entryForm.getProductosSeleccionados()
-                        .removeIf(producto -> producto.getId().equals(productoId));
+                // Buscar el primer producto en la lista con el ID proporcionado
+                Optional<Producto> productoAEliminarOptional = entryForm.getProductosSeleccionados().stream()
+                        .filter(producto -> producto.getId().equals(productoId))
+                        .findFirst();
 
-                if (removed) {
-                    // Guardar los cambios en la base de datos
+                if (productoAEliminarOptional.isPresent()) {
+                    Producto productoAEliminar = productoAEliminarOptional.get();
+
+                    // Eliminar solo la primera instancia del producto de la lista
+                    entryForm.getProductosSeleccionados().remove(productoAEliminar);
+
+                    // Incrementar el stock del producto en la base de datos
+                    Producto productoEnBD = productoRepository.findById(productoId)
+                            .orElse(null);
+                    if (productoEnBD != null) {
+                        productoEnBD.setStock(productoEnBD.getStock() + 1);
+                        productoRepository.save(productoEnBD);
+                    }
+
+                    // Guardar los cambios en el EntryForm
                     entryFormRepository.saveAndFlush(entryForm);
                     redirectAttributes.addFlashAttribute("successMessage", "Producto eliminado correctamente.");
                 } else {
-                    redirectAttributes.addFlashAttribute("errorMessage", "Producto no encontrado en la lista.");
+                    redirectAttributes.addFlashAttribute("errorMessage", "El producto no se encontró en la lista.");
                 }
             } else {
                 redirectAttributes.addFlashAttribute("errorMessage", "No hay productos seleccionados para eliminar.");
@@ -529,6 +543,7 @@ public class EntryFormController {
 
         return "redirect:/moderador/EntradasYSalidas/editar/" + id;
     }
+
 @GetMapping("/moderador/EntradasYSalidas/factura/{id}")
 public String mostrarFactura(@PathVariable Long id, Model model) {
     try {
@@ -555,6 +570,43 @@ public String mostrarFactura(@PathVariable Long id, Model model) {
         return "redirect:/moderador/EntradasYSalidas";
     }
 }
+    @PostMapping("/moderador/EntradasYSalidas/editar/{id}/agregar-producto-codigo")
+    @Transactional
+    public String agregarProductoPorCodigoBarrasAEditado(@PathVariable Long id,
+                                                         @RequestParam("codigoBarras") String codigoBarras,
+                                                         RedirectAttributes redirectAttributes) {
+        try {
+            EntryForm entryForm = entryFormRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Registro no encontrado"));
+
+            Producto producto = productoRepository.findByCodigoBarras(codigoBarras) // Asumo que tienes un método para buscar por código de barras
+                    .orElse(null);
+
+            if (producto != null) {
+                if (producto.getStock() > 0) {
+                    producto.setStock(producto.getStock() - 1);
+                    productoRepository.save(producto);
+
+                    if (entryForm.getProductosSeleccionados() == null) {
+                        entryForm.setProductosSeleccionados(new ArrayList<>());
+                    }
+                    entryForm.getProductosSeleccionados().add(producto);
+                    entryFormRepository.save(entryForm);
+                    redirectAttributes.addFlashAttribute("successMessage", "Producto agregado correctamente por código de barras.");
+                } else {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Stock insuficiente para el producto con código de barras: " + codigoBarras);
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "No se encontró ningún producto con el código de barras: " + codigoBarras);
+            }
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error al agregar el producto por código de barras: " + e.getMessage());
+        }
+
+        return "redirect:/moderador/EntradasYSalidas/editar/" + id;
+    }
+
 
 }
 
