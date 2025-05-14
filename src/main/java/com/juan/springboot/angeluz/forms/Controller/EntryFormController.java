@@ -544,32 +544,7 @@ public class EntryFormController {
         return "redirect:/moderador/EntradasYSalidas/editar/" + id;
     }
 
-@GetMapping("/moderador/EntradasYSalidas/factura/{id}")
-public String mostrarFactura(@PathVariable Long id, Model model) {
-    try {
-        EntryForm entryForm = entryFormRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Registro no encontrado"));
 
-        // Calcular el total
-        double total = 0;
-        if (entryForm.getServicioSeleccionado() != null) {
-            total += entryForm.getServicioSeleccionado().getPrecio();
-        }
-        if (entryForm.getProductosSeleccionados() != null) {
-            total += entryForm.getProductosSeleccionados().stream()
-                    .mapToDouble(Producto::getPrecio)
-                    .sum();
-        }
-
-        model.addAttribute("entryForm", entryForm);
-        model.addAttribute("total", total);
-        model.addAttribute("metodoPago", entryForm.getMetodoPago());
-
-        return "moderador/factura";
-    } catch (Exception e) {
-        return "redirect:/moderador/EntradasYSalidas";
-    }
-}
     @PostMapping("/moderador/EntradasYSalidas/editar/{id}/agregar-producto-codigo")
     @Transactional
     public String agregarProductoPorCodigoBarrasAEditado(@PathVariable Long id,

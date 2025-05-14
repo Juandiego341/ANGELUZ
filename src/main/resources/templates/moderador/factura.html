@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <title>Factura</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            font-size: 10px;
+            line-height: 1.2;
+            margin: 5px;
+            width: 80mm;
+            max-width: 80mm;
+        }
+        h1, h2, h3, p {
+            margin: 3px 0;
+            text-align: center;
+            font-size: 12px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .logo img {
+            max-width: 70mm;
+            height: auto;
+        }
+        .business-info {
+            text-align: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+        }
+        .ticket-info {
+            margin-bottom: 8px;
+        }
+        .items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+            border: 1px solid #000; /* Borde alrededor de la tabla */
+        }
+        .items th, .items td {
+            padding: 2px 5px;
+            text-align: left;
+            font-size: 10px;
+            border-bottom: 1px solid #000; /* Líneas entre filas */
+        }
+        .items th {
+            font-weight: bold;
+        }
+        .items th:last-child, .items td:last-child {
+            text-align: right; /* Alinear el precio a la derecha */
+        }
+        .total-section {
+            text-align: right;
+            margin-top: 10px;
+            padding-top: 5px;
+            border-top: 1px solid #000;
+        }
+        .total-amount {
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .payment-info {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 10px;
+            color: #000000;
+        }
+        .thanks-message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 11px;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        @media print {
+            body {
+                width: 80mm;
+                max-width: 80mm;
+                margin: 0;
+                font-size: 10pt;
+            }
+            .print-button {
+                display: none;
+            }
+            .business-info {
+                border-bottom: 1px solid #000;
+            }
+            .total-section {
+                border-top: 1px solid #000;
+            }
+            .items {
+                border: 1px solid #000;
+            }
+            .items th, .items td {
+                border-bottom: 1px solid #000;
+            }
+        }
+    </style>
+</head>
+<body>
+<div th:if="${entryForm}">
+    <div class="logo">
+        <img th:src="@{/images/AngeluzFactura.png}" alt="Logo Angeluz">
+    </div>
+    <div class="business-info">
+        <p>ANGELUZ</p>
+        <p>Hotel Campestre</p>
+        <p>Dirección, Manizales</p>
+    </div>
+    <div class="ticket-info">
+        <p th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy HH:mm a')}"></p>
+        <p>Ticket #: <span th:text="${entryForm.id}"></span></p>
+    </div>
+
+    <table class="items">
+        <thead>
+        <tr>
+            <th>Cant</th>
+            <th>Producto</th>
+            <th style="text-align: right;">Precio</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${entryForm.servicioSeleccionado}">
+            <td style="text-align: center;">1</td>
+            <td th:text="${entryForm.servicioSeleccionado.nombre}"></td>
+            <td style="text-align: right;">$<span th:text="${#numbers.formatDecimal(entryForm.servicioSeleccionado.precio, 0, 'COMMA', 2, 'POINT')}"></span></td>
+        </tr>
+        <tr th:each="producto : ${entryForm.productosSeleccionados}">
+            <td style="text-align: center;">1</td>
+            <td th:text="${producto.nombre}"></td>
+            <td style="text-align: right;">$<span th:text="${#numbers.formatDecimal(producto.precio, 0, 'COMMA', 2, 'POINT')}"></span></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="total-section">
+        <p class="total-amount">TOTAL: $<span th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')}"></span></p>
+    </div>
+    <p class="payment-info">Pago: <span th:text="${entryForm.metodoPago}"></span></p>
+
+    <p class="thanks-message">¡GRACIAS POR SU COMPRA!</p>
+    <button onclick="window.print()" class="print-button">Imprimir Ticket</button>
+</div>
+
+<div th:if="${errorMessage}">
+    <p class="error" th:text="${errorMessage}"></p>
+</div>
+</body>
+</html>

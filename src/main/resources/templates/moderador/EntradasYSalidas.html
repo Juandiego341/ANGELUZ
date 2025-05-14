@@ -109,7 +109,7 @@
 
                     <a th:href="@{'/moderador/EntradasYSalidas/pago/' + ${registro.id}}"
                        class="text-green-600 hover:text-green-900 ml-4"
-                       th:unless="${registro.estadoPago == 'Pagado'}">Pagar</a>
+                       th:if="${registro.estadoPago != 'Pagado'}">Pagar</a>
                     <span th:if="${registro.estadoPago == 'Pagado'}" class="text-gray-400 ml-4">Pagar</span>
                 </td>
             </tr>

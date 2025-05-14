@@ -1,7 +1,5 @@
 package com.juan.springboot.angeluz.Pago;
 
-
-
 import com.juan.springboot.angeluz.forms.EntryForm;
 import com.juan.springboot.angeluz.forms.EntryFormRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +25,29 @@ public class PagoController {
         if (entryFormOptional.isPresent()) {
             EntryForm entryForm = entryFormOptional.get();
             model.addAttribute("entryForm", entryForm);
-            model.addAttribute("total", entryForm.getValorTotal()); // Asegúrate de que este método esté en tu EntryForm
+            // Asumo que tienes un campo o método para obtener el total a pagar
+            // Reemplaza 'entryForm.getValorTotal()' con la forma correcta de obtener el total
+            model.addAttribute("total", calcularTotal(entryForm));
             return "moderador/FormularioPago"; // Nombre de tu página HTML para el formulario de pago
         } else {
             model.addAttribute("errorMessage", "Registro no encontrado.");
             return "redirect:/moderador/EntradasYSalidas";
         }
     }
+
+    private double calcularTotal(EntryForm entryForm) {
+        double total = 0;
+        if (entryForm.getServicioSeleccionado() != null) {
+            total += entryForm.getServicioSeleccionado().getPrecio();
+        }
+        if (entryForm.getProductosSeleccionados() != null) {
+            total += entryForm.getProductosSeleccionados().stream()
+                    .mapToDouble(p -> p.getPrecio() != null ? p.getPrecio() : 0.0)
+                    .sum();
+        }
+        return total;
+    }
+
     @PostMapping("/moderador/EntradasYSalidas/procesar-pago/{id}")
     public String procesarPago(@PathVariable Long id,
                                @RequestParam String metodoPago,
@@ -46,11 +60,10 @@ public class PagoController {
             entryForm.setEstadoPago("Pagado"); // Establecer el estado del pago
             entryFormRepository.save(entryForm);
             redirectAttributes.addFlashAttribute("successMessage", "Pago registrado correctamente.");
-            return "redirect:/moderador/EntradasYSalidas"; // Redirigir a la lista de entradas y salidas
+            return "redirect:/moderador/EntradasYSalidas/factura/" + id; // Redirigir directamente a la factura
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Error al procesar el pago: Registro no encontrado.");
             return "redirect:/moderador/EntradasYSalidas";
         }
     }
-    // Aquí puedes agregar métodos POST para procesar el pago si es necesario
 }
